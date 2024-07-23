@@ -75,6 +75,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{caption} %für captionof
 \usepackage{graphicx}
 \usepackage{placeins}
+\usepackage{dirtree}
 
 
     %%%%%%% Neues Design %%%%%%%%%%%
@@ -304,15 +305,195 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \chapter{Einleitung}
 \pagenumbering{arabic}
 
-    TBD
-
     % Ziel: Einleitung: ca. 20%
     % Dafür wären eigentlich 2,5 Seiten nötig! Evtl strecken oder Bilder einbauen!
 
+    Die effiziente Planung des Bereitschaftsdienstes für Einsatzfahrende stellt den Berliner Rotkreuz-Rettungsdienst vor erhebliche Herausforderungen. 
+    Die derzeitige Planungslogik erweist sich als unzureichend, insbesondere bei kurzfristigen Krankenständen und unvorhersehbar hohen Notrufaufkommen. 
+    Diese unvorhersehbaren Ereignisse führen regelmäßig zu Kapazitätsengpässen, die nur durch die kurzfristige Aktivierung zusätzlicher Einsatzfahrender ausgeglichen werden können. 
+    Solche ad-hoc Lösungen sind jedoch oft ineffizient und können die Einsatzbereitschaft und Reaktionszeit negativ beeinflussen.
 
-\chapter{foobar}
+    Das Ziel dieses Projekts ist es, die bestehende Planungslogik zu verbessern und die Bereitschaftsdienstplanung zu automatisieren. 
+    Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden auf Tagesbasis effizient abgeschätzt werden. 
+    Ein besonderes Augenmerk liegt dabei auf der Identifikation saisonaler Muster, wie zum Beispiel die erhöhte Ausfallrate in den Wintermonaten. 
+    Durch die Analyse historischer Daten zu Abwesenheiten und Notrufaufkommen sollen präzise Vorhersagen getroffen werden, um die Einsatzbereitschaft optimal zu gewährleisten.
+    
+    Ein datengetriebener Ansatz bietet hier signifikante Vorteile. 
+    Durch die Nutzung von maschinellem Lernen können komplexe Muster und Zusammenhänge in den Daten erkannt werden, die mit herkömmlichen Methoden schwer zu identifizieren wären. 
+    Dies ermöglicht eine proaktive und vorausschauende Planung, die sowohl die Zufriedenheit der Einsatzfahrenden als auch die Effizienz des Rettungsdienstes verbessert.
+    
+    Das Vorhersagemodell wird darauf abzielen, den Prozentsatz der aktivierten Einsatzfahrenden zu maximieren und die Tage mit zu wenigen Einsatzfahrenden zu minimieren. 
+    Dies soll zu einer besseren Planbarkeit und einer effizienteren Ressourcennutzung führen. 
+    Ein weiterer wichtiger Aspekt ist die Benutzerfreundlichkeit des Systems. 
+    Das Modell soll in eine intuitive Benutzeroberfläche integriert werden, die den Planungsverantwortlichen die Handhabung erleichtert und ihnen erlaubt, schnell und flexibel auf Veränderungen zu reagieren.
+    
+    In den folgenden Kapiteln wird das Projekt im Detail beschrieben. 
+    Zunächst wird die angewendete Projektmanagementmethodik erläutert und die Strukturierung des Git-Repositories vorgestellt. 
+    Daraufhin folgt eine ausführliche Datenanalyse, die die Grundlage für die Modellierung bildet. 
+    Es werden sowohl ein erstes Basismodell als auch ein präziseres Vorhersagemodell entwickelt und deren Performance evaluiert. 
+    Besonderes Augenmerk wird dabei auf die Interpretierbarkeit der Modellresultate und eine detaillierte Fehleranalyse gelegt. 
+    Abschließend wird ein Vorschlag zur Integration des Modells in den Arbeitsalltag des Fachbereichs präsentiert und eine beispielhafte graphische Benutzeroberfläche vorgestellt. 
+    Die Arbeit schließt mit einer Zusammenfassung der Ergebnisse und Empfehlungen für zukünftige Arbeiten oder Verbesserungen.
+    
+    Durch die erfolgreiche Implementierung dieses Projekts könnte der Berliner Rotkreuz-Rettungsdienst einen bedeutenden Schritt in Richtung einer moderneren und effizienteren Bereitschaftsdienstplanung machen. 
+    Dies würde nicht nur die Einsatzbereitschaft und Reaktionszeit verbessern, sondern auch die Arbeitszufriedenheit der Einsatzfahrenden erhöhen.
+    
 
-    TBD
+\chapter{Projektmanagement und Methodik}
+
+    Die erfolgreiche Umsetzung eines datengetriebenen Projekts wie der Automatisierung des Bereitschaftsdienstplans erfordert eine strukturierte und systematische Vorgehensweise. 
+    In diesem Kapitel werden die angewendete Projektmanagementmethodik und die vorgeschlagene Ordnerstruktur des Git-Repositories beschrieben.
+
+    \section{Projektmanagementmethodik}
+
+        Für dieses Projekt wird die CRISP-DM (Cross Industry Standard Process for Data Mining) Methodik verwendet, die sich als Industriestandard für Data-Mining-Projekte etabliert hat. 
+        Die Wahl von CRISP-DM gegenüber der Microsoft Team Data Science Process (TDSP) Methode wurde aus mehreren Gründen getroffen:
+
+        \begin{itemize}
+            \item \textbf{Reife und Anerkennung}: CRISP-DM ist seit den 1990er Jahren etabliert und hat sich als Industriestandard bewährt. 
+            Es ist gut dokumentiert und wird in verschiedenen Branchen erfolgreich angewendet.
+            \item \textbf{Universelle Anwendbarkeit}: CRISP-DM ist technologie- und plattformunabhängig und kann in einer Vielzahl von Projekten und mit unterschiedlichen Toolsets genutzt werden. 
+            Dies macht es besonders flexibel für Projekte, die hybride Umgebungen nutzen.
+            \item \textbf{Klare Phasenstruktur}: CRISP-DM besteht aus sechs klar definierten Phasen (Business Understanding, Data Understanding, Data Preparation, Modeling, Evaluation, Deployment), die einen systematischen und leicht nachvollziehbaren Ablauf bieten.
+            \item \textbf{Umfangreiche Ressourcen}: Es gibt eine Fülle an Ressourcen, Fallstudien, Best Practices und Community-Support für CRISP-DM, was den Einstieg erleichtert und die Wahrscheinlichkeit eines erfolgreichen Projekts erhöht.
+            \item \textbf{Erfahrung und Vertrautheit}: Viele Data-Science-Teams und Fachleute sind bereits mit CRISP-DM vertraut, was den Schulungsaufwand reduziert und die Implementierung beschleunigt.
+        \end{itemize}
+
+        Die CRISP-DM Methodik umfasst die folgenden sechs Phasen:
+
+        \begin{enumerate}
+            \item \textbf{Business Understanding}: In dieser Phase wird das Geschäftsproblem definiert, die Ziele des Projekts festgelegt und die Anforderungen spezifiziert. 
+            Für unser Projekt bedeutet dies, die Herausforderungen der aktuellen Bereitschaftsdienstplanung zu verstehen und die Zielsetzungen der Automatisierung klar zu formulieren.
+            \item \textbf{Data Understanding}: Diese Phase beinhaltet das Sammeln von Daten, die erste Datenexploration und die Bewertung der Datenqualität. 
+            Im Rahmen dieses Projekts werden historische Daten zu Abwesenheiten und Notrufaufkommen analysiert.
+            \item \textbf{Data Preparation}: Hier werden die Daten bereinigt und transformiert, um sie für die Modellierung vorzubereiten. 
+            Dies umfasst das Handling fehlender Werte, die Erstellung neuer Features und die Skalierung der Daten.
+            \item \textbf{Modeling}: In dieser Phase werden verschiedene Modellierungstechniken angewendet und optimiert. 
+            Ein Basismodell wird entwickelt und anschließend durch ein präziseres Vorhersagemodell ersetzt.
+            \item \textbf{Evaluation}: Die Modellleistung wird anhand relevanter Metriken bewertet und überprüft, ob die Modellziele erreicht wurden. 
+            Dies beinhaltet auch eine Fehleranalyse und die Interpretation der Modellresultate.
+            \item \textbf{Deployment}: Schließlich wird das Modell in den operativen Betrieb integriert. 
+            Dies umfasst die Implementierung in eine graphische Benutzeroberfläche und die Schulung der Nutzer.
+        \end{enumerate}
+
+    \section{Struktur des Git-Repositories}
+
+        Ein gut strukturiertes Git-Repository ist entscheidend für die effiziente Zusammenarbeit im Projektteam und die Nachvollziehbarkeit der Entwicklungsschritte. 
+        Die folgende Ordnerstruktur wird für dieses Projekt vorgeschlagen:
+
+
+        \dirtree{%
+        .1 /.
+        .2 data.
+        .3 raw.
+        .3 processed.
+        .2 notebooks.
+        .3 exploration.
+        .3 modeling.
+        .2 src.
+        .3 data\_preparation.
+        .3 models.
+        .3 evaluation.
+        .2 reports.
+        .3 figures.
+        .3 tables.
+        .2 docs.
+        }
+
+        \begin{itemize}
+            \item \textbf{data}: Dieser Ordner enthält alle Daten, die im Projekt verwendet werden. 
+            Der Unterordner \textit{raw} speichert die unbearbeiteten Rohdaten, während im Unterordner \textit{processed} die für die Modellierung vorbereiteten Daten abgelegt werden.
+            \item \textbf{notebooks}: Hier werden Jupyter-Notebooks für die Datenexploration und Modellierung gespeichert. 
+            Der Unterordner \textit{exploration} enthält Notebooks zur ersten Datenanalyse, und der Unterordner \textit{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle.
+            \item \textbf{src}: In diesem Ordner sind die Skripte zur Datenvorbereitung, Modellierung und Evaluation gespeichert. 
+            Die Skripte im Unterordner \textit{data\_preparation} kümmern sich um die Datenbereinigung und -transformation, während im Unterordner \textit{models} die Modelltrainingsskripte und im Unterordner \textit{evaluation} die Evaluationsskripte abgelegt werden.
+            \item \textbf{reports}: Dieser Ordner enthält alle Berichte, Abbildungen und Tabellen, die im Laufe des Projekts erstellt werden. 
+            Der Unterordner \textit{figures} speichert Grafiken und Diagramme, während der Unterordner \textit{tables} die erstellten Tabellen enthält.
+            \item \textbf{docs}: Hier werden alle Projektdokumentationen abgelegt. 
+            Dies umfasst Projektpläne, Anforderungsdokumente und andere relevante Dokumente.
+        \end{itemize}
+
+        Diese strukturierte Vorgehensweise und die klare Organisation des Repositories tragen wesentlich zur Effizienz und Transparenz des Projekts bei und erleichtern die Zusammenarbeit im Team.
+
+\chapter{Datenanalyse}
+        
+        Die Datenanalyse ist ein wesentlicher Bestandteil des Projekts, da sie die Grundlage für die Entwicklung und Optimierung des Vorhersagemodells bildet. 
+        Das Vorgehen zur Datenanalyse gliedert sich in mehrere Schritte, die im Folgenden detailliert beschrieben werden.
+        
+        \subsection{Explorative Datenanalyse (EDA)}
+            
+            Die explorative Datenanalyse (EDA) dient dazu, einen ersten Überblick über den Datensatz zu gewinnen und grundlegende Zusammenhänge, Verteilungen und Auffälligkeiten zu erkennen. 
+            Folgende Methoden und Techniken werden dabei eingesetzt:
+            
+            \begin{itemize}
+                \item \textbf{Dateninspektion:} Übersicht über die Struktur des Datensatzes, Datentypen, Anzahl der Beobachtungen und Features.
+                \item \textbf{Deskriptive Statistiken:} Berechnung von Kennzahlen wie Mittelwert, Median, Standardabweichung, Minimum und Maximum.
+                \item \textbf{Visualisierungen:} Einsatz von Histogrammen, Boxplots, Streudiagrammen und Heatmaps zur Darstellung von Verteilungen und Zusammenhängen.
+                \item \textbf{Korrelation:} Berechnung der Korrelation zwischen verschiedenen Features, um multivariate Zusammenhänge zu identifizieren.
+            \end{itemize}
+            
+            \subsection{Datenvorbereitung}
+            
+            Die Datenvorbereitung umfasst alle Schritte, die notwendig sind, um die Daten für die Modellierung zu bereinigen und zu transformieren. 
+            Dazu gehören:
+            
+            \begin{itemize}
+                \item \textbf{Datenbereinigung:} Umgang mit fehlenden Werten, Erkennung und Behandlung von Ausreißern, Konsistenzprüfung.
+                \item \textbf{Feature Engineering:} Erstellung neuer Features aus vorhandenen Daten, Transformation und Skalierung von Variablen.
+                \item \textbf{Datenaufteilung:} Aufteilung des Datensatzes in Trainings-, Validierungs- und Testdatensätze zur Evaluation der Modelle.
+            \end{itemize}
+            
+        \subsection{Qualitätsbeurteilung des Datensatzes}
+            
+            Ein wichtiger Schritt in der Datenanalyse ist die Beurteilung der Datenqualität. 
+            Hierbei werden folgende Aspekte geprüft:
+            
+            \begin{itemize}
+                \item \textbf{Vollständigkeit:} Überprüfung, ob alle notwendigen Datenpunkte vorhanden sind und wie mit fehlenden Werten umgegangen wird.
+                \item \textbf{Genauigkeit:} Überprüfung der Daten auf Genauigkeit und Zuverlässigkeit, Validierung gegen bekannte Quellen.
+                \item \textbf{Konsistenz:} Sicherstellung, dass die Daten konsistent und ohne Widersprüche vorliegen.
+                \item \textbf{Relevanz:} Bewertung, ob die verfügbaren Daten relevant für die Zielsetzung des Projekts sind.
+            \end{itemize}
+        
+        \subsection{Baseline-Modell}
+            
+            Nach der Datenvorbereitung wird ein erstes Basismodell (Baseline-Modell) erstellt. 
+            Dieses Modell dient als Ausgangspunkt und Vergleichsmaßstab für die weiteren Modellierungsansätze. 
+            Typischerweise wird dabei ein einfaches Modell wie eine lineare Regression oder ein Entscheidungsbaum verwendet. 
+            Ziel ist es, eine erste Einschätzung der Modellleistung zu erhalten und Verbesserungspotenziale zu identifizieren.
+            
+        \subsection{Erstellung und Evaluation des Vorhersagemodells}
+            
+            Im Anschluss an das Basismodell wird ein präzises Vorhersagemodell entwickelt, das den Anforderungen des Business gerecht wird. Dazu gehören:
+            
+            \begin{itemize}
+                \item \textbf{Modellauswahl:} Auswahl geeigneter Algorithmen (z.B. Random Forest, Gradient Boosting, neuronale Netze).
+                \item \textbf{Hyperparameter-Tuning:} Optimierung der Modellparameter zur Steigerung der Vorhersagegenauigkeit.
+                \item \textbf{Kreuzvalidierung:} Einsatz von Techniken wie k-facher Kreuzvalidierung zur robusten Evaluation der Modelle.
+                \item \textbf{Modellinterpretation:} Analyse der Wichtigkeit einzelner Features und Interpretierbarkeit der Modellresultate.
+                \item \textbf{Fehleranalyse:} Detaillierte Analyse der Vorhersagefehler, um Stärken und Schwächen des Modells zu identifizieren.
+            \end{itemize}
+        
+        \subsection{Visualisierung und Kommunikation der Ergebnisse}
+            
+            Die Ergebnisse der Datenanalyse und Modellierung werden durch geeignete Visualisierungen aufbereitet und klar kommuniziert. Dazu gehören:
+            
+            \begin{itemize}
+                \item \textbf{Graphische Darstellungen:} Visualisierung der Modellleistungen, Fehlerverteilungen und wichtiger Zusammenhänge.
+                \item \textbf{Berichterstellung:} Erstellung eines detaillierten Berichts, der die Vorgehensweise, Ergebnisse und Schlussfolgerungen zusammenfasst.
+                \item \textbf{Präsentation:} Vorbereitung und Durchführung von Präsentationen für Stakeholder, um die Ergebnisse und deren Bedeutung verständlich zu vermitteln.
+            \end{itemize}
+            
+            Durch diese strukturierte Vorgehensweise wird sichergestellt, dass die Datenanalyse fundierte Erkenntnisse liefert, die zur Entwicklung eines effektiven Vorhersagemodells beitragen und einen Mehrwert für das Unternehmen darstellen.
+            
+\chapter{Modellierung}
+
+
+\chapter{Diskussion der Modellvariablen}
+
+
+\chapter{Integration in den Arbeitsalltag}
+
 
 \chapter{Fazit \& Ausblick}
 
