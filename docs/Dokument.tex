@@ -485,7 +485,148 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \end{itemize}
             
             Durch diese strukturierte Vorgehensweise wird sichergestellt, dass die Datenanalyse fundierte Erkenntnisse liefert, die zur Entwicklung eines effektiven Vorhersagemodells beitragen und einen Mehrwert für das Unternehmen darstellen.
+
+    \section{Explorative Datenanalyse (EDA)}
+
+        Die explorative Datenanalyse (EDA) bildet die Grundlage für das Verständnis der bereitgestellten Daten und die Identifikation von Mustern und Zusammenhängen. 
+        Für dieses Projekt wurden die Daten in mehreren Schritten untersucht und analysiert.
+
+        \subsection{Dateninspektion}
+
+            Zunächst wurden die Daten auf ihre Grundstruktur hin untersucht. 
+            Dabei wurden Informationen wie die Anzahl der Datensätze, die Struktur der Datensätze und das Vorhandensein von fehlenden Werten erfasst. 
+            Die wichtigsten Merkmale der Daten sind in Tabelle \ref{tab:data_summary} zusammengefasst.
+
+            \begin{table}[H]
+                \centering
+                \begin{tabular}{|l|l|}
+                \hline
+                \textbf{Merkmal} & \textbf{Beschreibung} \\ \hline
+                date & Datum des Eintrags \\ \hline
+                n\_sick & Anzahl der Krankmeldungen \\ \hline
+                calls & Anzahl der Anrufe \\ \hline
+                n\_duty & Anzahl der Diensthabenden \\ \hline
+                n\_sby & Anzahl der Bereitschaftsdiensthabenden \\ \hline
+                sby\_need & Anzahl der benötigten Bereitschaftsdiensthabenden \\ \hline
+                drafted & Anzahl der rekrutierten Einsatzkräfte \\ \hline
+                \end{tabular}
+                \caption{Zusammenfassung der Datensätze}
+                \label{tab:data_summary}
+            \end{table}
+
+        \subsection{Verteilung der Merkmale}
+
+            Die Verteilungen der wichtigsten Merkmale wurden mittels Histogrammen und Dichteplots visualisiert. 
+            Diese Visualisierungen halfen dabei, die Verteilung der Daten und das Vorhandensein von Ausreißern zu verstehen. 
+            Abbildungen \ref{fig:n_sick_dist} und \ref{fig:calls_dist} zeigen die Verteilungen der Merkmale \textit{n\_sick} und \textit{calls}.
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.8\textwidth]{assets/n_sick_dist.png}
+                \caption{Verteilung der Anzahl der Krankmeldungen (n\_sick)}
+                \label{fig:n_sick_dist}
+            \end{figure}
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.8\textwidth]{assets/calls_dist.png}
+                \caption{Verteilung der Anzahl der Anrufe (calls)}
+                \label{fig:calls_dist}
+            \end{figure}
+
+        \subsection{Korrelationen}
+
+            Die Korrelationen zwischen den verschiedenen Merkmalen wurden mittels einer Korrelationsmatrix untersucht. 
+            Abbildung \ref{fig:corr_matrix} zeigt die Korrelationsmatrix der Merkmale.
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.8\textwidth]{assets/corr_matrix.png}
+                \caption{Korrelationsmatrix der Merkmale}
+                \label{fig:corr_matrix}
+            \end{figure}
+
+    \section{Datenvorbereitung}
+
+        Nach der initialen Untersuchung und Analyse der Daten wurde die Datenvorbereitung durchgeführt. 
+        Dieser Schritt ist entscheidend, um die Daten in ein format zu bringen, das für die Modellierung geeignet ist.
+
+        \subsection{Umgang mit fehlenden Werten}
+
+            Fehlende Werte wurden identifiziert und behandelt. 
+            Wo möglich, wurden fehlende Werte durch geeignete Imputationsmethoden ersetzt. 
+            Andernfalls wurden die betroffenen Datensätze entfernt, um die Integrität der Daten zu gewährleisten.
+
+        \subsection{Feature Engineering}
+
+            Ein wichtiger Teil der Datenvorbereitung war das Feature Engineering. 
+            Hierbei wurden neue Merkmale erstellt, die das Vorhersagemodell verbessern können. 
+            Basierend auf den Erkenntnissen der EDA wurden zeitliche Merkmale wie der Monat und der Wochentag aus dem Datum extrahiert. 
+            Tabelle \ref{tab:new_features} zeigt die neuen Merkmale, die erstellt wurden.
+
+            \begin{table}[H]
+                \centering
+                \begin{tabular}{|l|l|}
+                \hline
+                \textbf{Neues Merkmal} & \textbf{Beschreibung} \\ \hline
+                month & Monat des Jahres \\ \hline
+                day\_of\_week & Wochentag \\ \hline
+                \end{tabular}
+                \caption{Erstellte neue Merkmale}
+                \label{tab:new_features}
+            \end{table}
+
+        \subsection{Datenaufteilung}
+
+            % Auf Zeitform achten. Wann Vergangenheit und wann Zukunft?
+            % Hier noch Zukunft, da bis hier ja noch nicht umgesetzt.
+
+            Für die Modellierung werden die Daten in Trainings- und Testdaten aufgeteilt. 
+            Dies ermöglicht eine objektive Evaluierung des Modells. 
+            Die Aufteilung erfolgte zufällig, wobei 80\% der Daten für das Training und 20\% für die Testphase verwendet werden.
+
+    \section{Baseline-Modell}
+
+        Bevor komplexere Modelle entwickelt wurden, wurde ein Baseline-Modell erstellt, um eine erste Vergleichsbasis zu haben. 
+        Ein einfaches Baseline-Modell kann beispielsweise der Durchschnitt der Zielvariable oder ein einfacher linearer Regressor sein. 
+        Das Baseline-Modell in diesem Projekt war ein Durchschnittsmodell, das den mittleren Wert der Zielvariable (Anzahl der Krankmeldungen) für jede Vorhersage nutzte.
+        
+        \subsection{Ergebnisse des Baseline-Modells}
+        
+            Die Leistung des Baseline-Modells wurde mittels des Mean Absolute Error (MAE) bewertet. 
+            Abbildung \ref{fig:baseline_performance} zeigt die Performance des Baseline-Modells im Vergleich zu den tatsächlichen Werten.
             
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=1\textwidth]{assets/baseline_performance.png}
+                \caption{Performance des Baseline-Modells}
+                \label{fig:baseline_performance}
+            \end{figure}
+            
+            Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{11.86}. %To-Do: Wert aktualisieren, wenn verändert
+            Dieser Wert dient als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
+            
+
+    \section{Visualisierung der Ergebnisse}
+
+        Um die Ergebnisse der Datenanalyse und -vorbereitung anschaulich darzustellen, wurden verschiedene Visualisierungen erstellt. 
+        Diese halfen dabei, Muster und Zusammenhänge in den Daten besser zu verstehen und die Ergebnisse der Datenvorbereitung zu kommunizieren.
+
+        \subsection{Feature Importance}
+
+            Die Bedeutung der einzelnen Merkmale für das Vorhersagemodell wurde mittels Feature Importance Scores visualisiert. Abbildung \ref{fig:feature_importance} zeigt die Wichtigkeit der Merkmale für das Vorhersagemodell.
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=0.8\textwidth]{assets/feature_importance.png}
+                \caption{Wichtigkeit der Merkmale für das Vorhersagemodell}
+                \label{fig:feature_importance}
+            \end{figure}
+
+            Diese Visualisierungen und die gewonnenen Erkenntnisse aus der Datenanalyse und -vorbereitung bilden die Grundlage für die nachfolgende Modellierung und Evaluation des Vorhersagemodells.
+
+
+
 \chapter{Modellierung}
 
 
