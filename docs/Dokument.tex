@@ -20,15 +20,15 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 ]{scrreprt}	% Koma-Script report-Klasse, fuer laengere Bachelorarbeiten alternativ auch: scrbook
 
 
-\def \titel { Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende mithilfe eines Vorhersagemodells} 
+\def \titel {Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende mithilfe eines Vorhersagemodells} 
 \def \arbeit {Fallstudie}
-\def \autor {Jasper Bremenkamp}
+\def \autor {<to be replaced>}%{Jasper Bremenkamp}
 \def \abschluss {M.Sc.}
 \def \studiengang {Data Science}
 \def \datumAbgabe {\today}
 \def \modul {Model Engineering}
-\def \matrikelnr {92125193}
-\def \tutor {Markus Pak}
+\def \matrikelnr {<to be replaced>}%{92125193}
+\def \tutor {<to be replaced>}%{Markus Pak}
 
 \def \seitenrand {2cm}
 
@@ -265,10 +265,24 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \renewcommand{\abstractname}{Abstract}
 \begin{abstract}
 
-    TBD
+    % Zum Schluss nochmal neuschreiben bzw. überarbeiten
 
-%%%%%
+    In dieser Arbeit wird die Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende mithilfe eines Vorhersagemodells untersucht. 
+    Der Prozess umfasst eine detaillierte Datenanalyse, die auf einem bereitgestellten CSV-Datensatz basiert, welcher Informationen über krankheitsbedingte Abwesenheiten und Anrufvolumina enthält. 
+    Die Analyse umfasst die explorative Datenanalyse (EDA), Datenbereinigung und -vorbereitung sowie die Erstellung eines Basismodells und eines präziseren Vorhersagemodells.
 
+    Zunächst wird der Datensatz inspiziert und grundlegende Statistiken sowie Visualisierungen zur Verteilung der Variablen n\_sick (Anzahl der erkrankten Mitarbeiter) und calls (Anrufvolumen) erstellt. 
+    Dabei wird die zeitliche Dimension berücksichtigt, um saisonale Trends und Muster zu erkennen. 
+    Die Datenvorbereitung beinhaltet die Behandlung fehlender Werte, Feature Engineering und die Aufteilung in Trainings- und Testdatensätze.
+    
+    Ein Basismodell wird als Ausgangspunkt implementiert und seine Leistung mittels Mean Absolute Error (MAE) bewertet.
+    Anschließend wird ein fortgeschritteneres Modell (Random Forest) trainiert und durch Hyperparameter-Tuning optimiert. 
+    Die Modelle werden anhand von MAE und Feature-Importance-Analysen evaluiert, um die wichtigsten Einflussfaktoren zu identifizieren.
+    
+    Die Ergebnisse der Datenanalyse und Modellierung werden durch geeignete Visualisierungen und Berichte kommuniziert. 
+    Dies ermöglicht eine fundierte Entscheidungsfindung und trägt zur Effizienzsteigerung des Bereitschaftsdienstplans bei, indem präzisere Vorhersagen über krankheitsbedingte Abwesenheiten getroffen werden können. 
+    Die Arbeit zeigt, dass eine strukturierte Vorgehensweise bei der Datenanalyse und Modellierung wesentliche Erkenntnisse liefert, die zur Optimierung betrieblicher Prozesse beitragen.
+    
 
 \end{abstract}
 
@@ -419,72 +433,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         
         Die Datenanalyse ist ein wesentlicher Bestandteil des Projekts, da sie die Grundlage für die Entwicklung und Optimierung des Vorhersagemodells bildet. 
         Das Vorgehen zur Datenanalyse gliedert sich in mehrere Schritte, die im Folgenden detailliert beschrieben werden.
-        
-        \subsection{Explorative Datenanalyse (EDA)}
-            
-            Die explorative Datenanalyse (EDA) dient dazu, einen ersten Überblick über den Datensatz zu gewinnen und grundlegende Zusammenhänge, Verteilungen und Auffälligkeiten zu erkennen. 
-            Folgende Methoden und Techniken werden dabei eingesetzt:
-            
-            \begin{itemize}
-                \item \textbf{Dateninspektion:} Übersicht über die Struktur des Datensatzes, Datentypen, Anzahl der Beobachtungen und Features.
-                \item \textbf{Deskriptive Statistiken:} Berechnung von Kennzahlen wie Mittelwert, Median, Standardabweichung, Minimum und Maximum.
-                \item \textbf{Visualisierungen:} Einsatz von Histogrammen, Boxplots, Streudiagrammen und Heatmaps zur Darstellung von Verteilungen und Zusammenhängen.
-                \item \textbf{Korrelation:} Berechnung der Korrelation zwischen verschiedenen Features, um multivariate Zusammenhänge zu identifizieren.
-            \end{itemize}
-            
-            \subsection{Datenvorbereitung}
-            
-            Die Datenvorbereitung umfasst alle Schritte, die notwendig sind, um die Daten für die Modellierung zu bereinigen und zu transformieren. 
-            Dazu gehören:
-            
-            \begin{itemize}
-                \item \textbf{Datenbereinigung:} Umgang mit fehlenden Werten, Erkennung und Behandlung von Ausreißern, Konsistenzprüfung.
-                \item \textbf{Feature Engineering:} Erstellung neuer Features aus vorhandenen Daten, Transformation und Skalierung von Variablen.
-                \item \textbf{Datenaufteilung:} Aufteilung des Datensatzes in Trainings-, Validierungs- und Testdatensätze zur Evaluation der Modelle.
-            \end{itemize}
-            
-        \subsection{Qualitätsbeurteilung des Datensatzes}
-            
-            Ein wichtiger Schritt in der Datenanalyse ist die Beurteilung der Datenqualität. 
-            Hierbei werden folgende Aspekte geprüft:
-            
-            \begin{itemize}
-                \item \textbf{Vollständigkeit:} Überprüfung, ob alle notwendigen Datenpunkte vorhanden sind und wie mit fehlenden Werten umgegangen wird.
-                \item \textbf{Genauigkeit:} Überprüfung der Daten auf Genauigkeit und Zuverlässigkeit, Validierung gegen bekannte Quellen.
-                \item \textbf{Konsistenz:} Sicherstellung, dass die Daten konsistent und ohne Widersprüche vorliegen.
-                \item \textbf{Relevanz:} Bewertung, ob die verfügbaren Daten relevant für die Zielsetzung des Projekts sind.
-            \end{itemize}
-        
-        \subsection{Baseline-Modell}
-            
-            Nach der Datenvorbereitung wird ein erstes Basismodell (Baseline-Modell) erstellt. 
-            Dieses Modell dient als Ausgangspunkt und Vergleichsmaßstab für die weiteren Modellierungsansätze. 
-            Typischerweise wird dabei ein einfaches Modell wie eine lineare Regression oder ein Entscheidungsbaum verwendet. 
-            Ziel ist es, eine erste Einschätzung der Modellleistung zu erhalten und Verbesserungspotenziale zu identifizieren.
-            
-        \subsection{Erstellung und Evaluation des Vorhersagemodells}
-            
-            Im Anschluss an das Basismodell wird ein präzises Vorhersagemodell entwickelt, das den Anforderungen des Business gerecht wird. Dazu gehören:
-            
-            \begin{itemize}
-                \item \textbf{Modellauswahl:} Auswahl geeigneter Algorithmen (z.B. Random Forest, Gradient Boosting, neuronale Netze).
-                \item \textbf{Hyperparameter-Tuning:} Optimierung der Modellparameter zur Steigerung der Vorhersagegenauigkeit.
-                \item \textbf{Kreuzvalidierung:} Einsatz von Techniken wie k-facher Kreuzvalidierung zur robusten Evaluation der Modelle.
-                \item \textbf{Modellinterpretation:} Analyse der Wichtigkeit einzelner Features und Interpretierbarkeit der Modellresultate.
-                \item \textbf{Fehleranalyse:} Detaillierte Analyse der Vorhersagefehler, um Stärken und Schwächen des Modells zu identifizieren.
-            \end{itemize}
-        
-        \subsection{Visualisierung und Kommunikation der Ergebnisse}
-            
-            Die Ergebnisse der Datenanalyse und Modellierung werden durch geeignete Visualisierungen aufbereitet und klar kommuniziert. Dazu gehören:
-            
-            \begin{itemize}
-                \item \textbf{Graphische Darstellungen:} Visualisierung der Modellleistungen, Fehlerverteilungen und wichtiger Zusammenhänge.
-                \item \textbf{Berichterstellung:} Erstellung eines detaillierten Berichts, der die Vorgehensweise, Ergebnisse und Schlussfolgerungen zusammenfasst.
-                \item \textbf{Präsentation:} Vorbereitung und Durchführung von Präsentationen für Stakeholder, um die Ergebnisse und deren Bedeutung verständlich zu vermitteln.
-            \end{itemize}
-            
-            Durch diese strukturierte Vorgehensweise wird sichergestellt, dass die Datenanalyse fundierte Erkenntnisse liefert, die zur Entwicklung eines effektiven Vorhersagemodells beitragen und einen Mehrwert für das Unternehmen darstellen.
 
     \section{Explorative Datenanalyse (EDA)}
 
@@ -553,9 +501,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         \subsection{Umgang mit fehlenden Werten}
 
-            Fehlende Werte wurden identifiziert und behandelt. 
-            Wo möglich, wurden fehlende Werte durch geeignete Imputationsmethoden ersetzt. 
-            Andernfalls wurden die betroffenen Datensätze entfernt, um die Integrität der Daten zu gewährleisten.
+            %To-Do: Nochmal zum Schluss prüfen, ob das hier passt
+
+            Fehlende Werte liegen nicht vor.
+            Falls dennoch welche wären, würden sie entfernt, um die Integrität der Daten zu gewährleisten.
 
         \subsection{Feature Engineering}
 
