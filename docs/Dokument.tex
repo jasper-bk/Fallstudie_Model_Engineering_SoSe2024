@@ -76,6 +76,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{graphicx}
 \usepackage{placeins}
 \usepackage{dirtree}
+\usepackage{booktabs}
 
 
     %%%%%%% Neues Design %%%%%%%%%%%
@@ -578,11 +579,109 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
 \chapter{Modellierung}
 
+    In diesem Kapitel werden verschiedene Modellierungsansätze untersucht, um das beste Vorhersagemodell für die Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende zu finden. 
+    Insgesamt wurden zehn verschiedene Modellierungsansätze verwendet, die jeweils spezifische Vorteile bieten. 
+    Diese Ansätze umfassen lineare und nichtlineare Modelle, Entscheidungsbäume, Ensemble-Methoden, und neuronale Netze. 
+    Die Wahl dieser Ansätze basiert auf ihrer allgemeinen Verfügbarkeit und ihrer bewährten Leistung in vergleichbaren Vorhersageproblemen.
 
-\chapter{Diskussion der Modellvariablen}
+    \section{Modellierungsansätze}
 
+        Die folgenden zehn Modellierungsansätze wurden untersucht:
+        \begin{enumerate}
+            \item \textbf{Lineare Regression}: Das einfachste und leicht zu interpretierende Modell.
+            \item \textbf{Lasso Regression}: Eine Variante der linearen Regression mit L1-Regularisierung, die irrelevant Merkmale eliminiert.
+            \item \textbf{Ridge Regression}: Eine Variante der linearen Regression mit L2-Regularisierung, die die Koeffizienten schrumpft und Überanpassung verhindert.
+            \item \textbf{Entscheidungsbaum}: Ein nichtlineares Modell, das einfache Interpretationen und Visualisierungen ermöglicht.
+            \item \textbf{Random Forest}: Ein Ensemble von Entscheidungsbäumen, das Varianz reduziert und die Vorhersageleistung verbessert.
+            \item \textbf{Gradient Boosting}: Ein weiteres Ensemble-Verfahren, das sukzessive schwache Modelle trainiert, um die Vorhersagegenauigkeit zu erhöhen.
+            \item \textbf{Support Vector Machine (SVM)}: Ein Modell, das optimale Trennhyperplane für die Daten findet, geeignet für nichtlineare Daten.
+            \item \textbf{K-Nearest Neighbors (KNN)}: Ein einfaches, instanzbasiertes Lernverfahren, das Vorhersagen basierend auf den nächsten Nachbarn macht.
+            \item \textbf{XGBoost}: Eine effiziente und flexible Implementierung des Gradient Boostings, die häufig in Wettbewerben verwendet wird.
+            \item \textbf{Neuronales Netz}: Ein mehrschichtiges Perzeptron, das komplexe Muster in den Daten erfassen kann.
+        \end{enumerate}
+
+    \section{Training und Bewertung der Modelle}
+
+        Jedes Modell wurde auf den Trainingsdaten trainiert und anhand der Testdaten bewertet. 
+        Die folgenden Metriken wurden verwendet, um die Leistung der Modelle zu bewerten:
+
+        \begin{itemize}
+            \item \textbf{Mean Absolute Error (MAE)}: Ein Maß für den durchschnittlichen absoluten Fehler der Vorhersagen.
+            \item \textbf{Mean Squared Error (MSE)}: Ein Maß für den durchschnittlichen quadratischen Fehler der Vorhersagen.
+            \item \textbf{Root Mean Squared Error (RMSE)}: Die Quadratwurzel des MSE, die die gleichen Einheiten wie die Zielvariable hat.
+            \item \textbf{R2-Score}: Ein Maß dafür, wie gut die Vorhersagen die tatsächlichen Werte erklären.
+        \end{itemize}
+
+        \subsection{Ergebnisse}
+
+            Die Ergebnisse der Modellbewertungen sind in Tabelle \ref{tab:model_performance} zusammengefasst.
+
+            %To-Do: Zahlenwerte nochmal verifizieren
+            \begin{table}[H]
+                \centering
+                \begin{tabular}{lcccc}
+                    \toprule
+                    \textbf{Modell} & \textbf{MAE} & \textbf{MSE} & \textbf{RMSE} & \textbf{R2-Score} \\
+                    \midrule
+                    Gradient Boosting & 7.32 & 84.56 & 9.20 & 0.63 \\
+                    Random Forest & 7.69 & 96.80 & 9.84 & 0.57 \\
+                    XGBoost & 8.06 & 106.53 & 10.32 & 0.53 \\
+                    Linear Regression & 9.66 & 142.42 & 11.93 & 0.37 \\
+                    Ridge Regression & 9.66 & 142.43 & 11.93 & 0.37 \\
+                    Lasso Regression & 9.70 & 144.27 & 12.01 & 0.36 \\
+                    Decision Tree & 9.94 & 158.28 & 12.58 & 0.30 \\
+                    Neural Network & 11.30 & 186.78 & 13.67 & 0.17 \\
+                    K-Nearest Neighbors & 11.31 & 194.91 & 13.96 & 0.14 \\
+                    Support Vector Machine & 12.12 & 221.16 & 14.87 & 0.02 \\
+                    \bottomrule
+                \end{tabular}
+                \caption{Vergleich der Modellleistung basierend auf MAE}
+                \label{tab:model_performance}
+            \end{table}
+            
+
+            Die besten Ergebnisse wurden von XGBoost und Gradient Boosting erzielt, mit MAE-Werten von 2.13 bzw. 2.15 und R2-Scores von 0.82. 
+            Diese Modelle wurden daher für eine weitere Feinabstimmung in Betracht gezogen.
+
+    \section{Hyperparameter-Tuning}
+
+        Für das beste Modell, Gradient Boosting, wurde eine Hyperparameteroptimierung durchgeführt, um die Leistung weiter zu verbessern. 
+        Ein Gitter-Suchverfahren wurde verwendet, um die optimalen Parameterkombinationen zu finden.
+        
+        \begin{lstlisting}[language=Python, gobble=8, caption=Hyperparameteroptimierung]
+        param_grid = {
+            'n_estimators': [100, 200],
+            'learning_rate': [0.01, 0.1, 0.2],
+            'max_depth': [3, 5, 7]
+        }
+        grid_search = GridSearchCV(GradientBoostingRegressor(random_state=42), param_grid, cv=5, scoring='neg_mean_absolute_error')
+        grid_search.fit(X_train, y_train)
+        best_model = grid_search.best_estimator_
+        \end{lstlisting}
+    
+    \section{Abschließende Bewertung des besten Modells}
+
+        Das beste Modell wurde schließlich auf den gesamten Datensatz trainiert und abschließend bewertet. 
+        Die Endergebnisse des optimierten Gradient Boosting-Modells sind wie folgt:
+
+        %To-Do: Zahlenwerte nochmal verifizieren
+        \begin{itemize}
+            \item \textbf{MAE}: 7.32
+            \item \textbf{MSE}: 84.56
+            \item \textbf{RMSE}: 9.20
+            \item \textbf{R2-Score}: 0.63
+        \end{itemize}
+
+        Eine Verbesserung konnte die Hyperparameteroptimierung nicht erzielen.        
+        Die Ergebnisse bestätigen dennoch, dass das optimierte Gradient Boosting-Modell das leistungsfähigste Modell für die Vorhersage der Anzahl der kranken Einsatzfahrenden ist.
+        %To-Do: Evtl noch Effizienz berücksichtigen. Könnte sein, dass XGBoost da die Nase vorn hat
+
+
+%\chapter{Diskussion der Modellvariablen}
+% To-Do: Evaluieren, ob dieses Kapitel weiterhin Sinn  machen kann oder ob man Teile aus den Kapitel darüber einfach hierrein verschiebt.
 
 \chapter{Integration in den Arbeitsalltag}
+
 
 
 \chapter{Fazit \& Ausblick}
@@ -605,5 +704,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \bibliographystyle{apacite} %Einträge sind unsortiert
     \bibliography{bibliographie.bib}
 \fi
+
+
+% Overall To-Do: Zahlenwerte nochmal prüfen, ob diese übereinstimmen
 
 \end{document}
