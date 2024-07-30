@@ -405,7 +405,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         .2 notebooks.
         .3 exploration.
         .3 modeling.
-        .2 src.
+        .2 app. 
         .3 data\_preparation.
         .3 models.
         .3 evaluation.
@@ -420,7 +420,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Der Unterordner \textit{raw} speichert die unbearbeiteten Rohdaten, während im Unterordner \textit{processed} die für die Modellierung vorbereiteten Daten abgelegt werden.
             \item \textbf{notebooks}: Hier werden Jupyter-Notebooks für die Datenexploration und Modellierung gespeichert. 
             Der Unterordner \textit{exploration} enthält Notebooks zur ersten Datenanalyse, und der Unterordner \textit{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle.
-            \item \textbf{src}: In diesem Ordner sind die Skripte zur Datenvorbereitung, Modellierung und Evaluation gespeichert. 
+            \item \textbf{app}: In diesem Ordner sind die Skripte zur Datenvorbereitung, Modellierung und Evaluation gespeichert. %To-Do: Aktuell halten
             Die Skripte im Unterordner \textit{data\_preparation} kümmern sich um die Datenbereinigung und -transformation, während im Unterordner \textit{models} die Modelltrainingsskripte und im Unterordner \textit{evaluation} die Evaluationsskripte abgelegt werden.
             \item \textbf{reports}: Dieser Ordner enthält alle Berichte, Abbildungen und Tabellen, die im Laufe des Projekts erstellt werden. 
             Der Unterordner \textit{figures} speichert Grafiken und Diagramme, während der Unterordner \textit{tables} die erstellten Tabellen enthält.
@@ -586,7 +586,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Modellierungsansätze}
 
-        Die folgenden zehn Modellierungsansätze wurden untersucht:
+        Die folgenden zehn Modellierungsansätze werden untersucht:
         \begin{enumerate}
             \item \textbf{Lineare Regression}: Das einfachste und leicht zu interpretierende Modell.
             \item \textbf{Lasso Regression}: Eine Variante der linearen Regression mit L1-Regularisierung, die irrelevant Merkmale eliminiert.
@@ -682,11 +682,86 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
 \chapter{Integration in den Arbeitsalltag}
 
+    Die Integration des Vorhersagemodells für den Bereitschaftsdienstplan der Einsatzfahrenden in den Arbeitsalltag erfolgt durch die Bereitstellung einer API, die Vorhersagen basierend auf den aktuellen Daten ermöglicht. 
+    Diese API ist als Web-Service konzipiert und erlaubt die einfache Abfrage von Vorhersagen über eine REST-Schnittstelle.
 
+    \section{Architektur und Implementierung}
+
+        Die Implementierung basiert auf einem Flask-Web-Framework, das als leichtgewichtiger Web-Server fungiert. 
+        Das Modell und die erforderlichen Vorverarbeitungswerkzeuge werden als trainierte Artefakte gespeichert und bei Bedarf geladen. Das folgende Code-Snippet zeigt die Struktur des Servers:
+
+        % To-Do: Code-Schnipsel im Blick behalten und vor Abgabe sicherstellen, dass diese zum echten Code passen
+        \begin{lstlisting}[language=Python, gobble=8, caption=Aufbau Prediction API]
+        import pandas as pd
+        import numpy as np
+        import joblib
+        from flask import Flask, request, jsonify
+
+        # Funktion zur Vorhersage neuer Daten
+        def predict_readiness(calls, day_of_week, month):
+            model = joblib.load('app/models/readiness_model.pkl')
+            new_data = np.array([[calls, day_of_week, month]])
+            prediction = model.predict(new_data)
+            return prediction[0]
+
+        app = Flask(__name__)
+
+        @app.route('/predict', methods=['POST'])
+        def predict():
+            data = request.json
+            calls = data['calls']
+            day_of_week = data['day_of_week']
+            month = data['month']
+            prediction = predict_readiness(calls, day_of_week, month)
+            return jsonify({'prediction': prediction})
+
+        if __name__ == '__main__':
+            app.run(debug=True)
+        \end{lstlisting}
+
+    \section{Benutzerinteraktion}
+
+        Die Benutzer können über eine einfache Web-Oberfläche oder direkt über HTTP-Requests mit der API interagieren. 
+        Dabei werden relevante Informationen wie die Anzahl der Anrufe, der Wochentag und der Monat an die API gesendet, welche daraufhin eine Vorhersage für die Anzahl der Krankmeldungen liefert.
+
+        % To-Do: evtl auch in bestehendes Verwaltungssystem integrieren und dann warnen, wenn Engpässe "vermutet" bzw predictet werden
+
+    \section{Einbindung in den Arbeitsalltag}
+
+        Um die Vorhersagen effektiv in den Arbeitsalltag zu integrieren, können verschiedene Strategien angewendet werden:
+        \begin{itemize}
+            \item \textbf{Planung des Dienstplans}: Basierend auf den Vorhersagen können die Einsatzkräfte besser auf mögliche Engpässe vorbereitet werden, indem zusätzliche Ressourcen eingeplant werden.
+            \item \textbf{Proaktive Maßnahmen}: Bei einer hohen vorhergesagten Anzahl von Krankmeldungen können präventive Maßnahmen ergriffen werden, um die Einsatzbereitschaft sicherzustellen.
+            \item \textbf{Monitoring und Anpassung}: Die Vorhersagen können regelmäßig überprüft und mit den tatsächlichen Ereignissen verglichen werden, um das Modell kontinuierlich zu verbessern.
+        \end{itemize}
+
+    \section{Zukunftsperspektiven}
+
+        Um die Integration weiter zu verbessern, wird angestrebt, eine einfache Web-UI zu entwickeln, die eine benutzerfreundliche Interaktion mit der API ermöglicht. 
+        Langfristig könnte das System auch um zusätzliche Funktionen wie die automatische Anpassung des Modells an neue Daten und die Integration weiterer Datenquellen erweitert werden.
+
+        % To-Do: Auch hier wieder berücksichtigen, ob es nicht Sinn macht die API in eine bestehendes Verwaltungssystem anzubinden, um bei der Planung bereits vor Engpässen zu warnen
 
 \chapter{Fazit \& Ausblick}
 
-    TBD
+    In dieser Arbeit wurde ein Vorhersagemodell zur Unterstützung der Einsatzplanung im Bereitschaftsdienst entwickelt. 
+    Ausgehend von einer detaillierten Datenanalyse wurde ein geeignetes Modell trainiert, das anhand historischer Daten Prognosen über die Anzahl der Krankmeldungen ermöglicht. 
+    Dabei stellte sich das Gradient Boosting als der leistungsfähigste Algorithmus heraus, gefolgt von Random Forest und XGBoost. 
+
+    Die Integration des Modells in den Arbeitsalltag wurde durch eine API realisiert, die eine einfache und effektive Nutzung der Vorhersagen ermöglicht. 
+    Die Ergebnisse zeigen, dass das Modell eine zuverlässige Unterstützung bei der Personalplanung bieten kann, indem es proaktive Maßnahmen zur Ressourcenplanung ermöglicht. 
+    Die Genauigkeit der Vorhersagen und die Anpassungsfähigkeit des Systems an verschiedene Situationen bieten einen signifikanten Mehrwert für die Einsatzbereitschaft und Effizienzsteigerung.
+
+    Trotz der erzielten Erfolge gibt es mehrere Bereiche, die in zukünftigen Arbeiten weiterentwickelt werden können. 
+    Eine Erweiterung der Datenbasis durch die Integration weiterer relevanter Datenquellen wie Wetterinformationen oder externe Ereignisse könnte die Genauigkeit der Vorhersagen weiter erhöhen. 
+    Die kontinuierliche Überwachung der Modellleistung und die Anpassung der Hyperparameter könnten die Genauigkeit und Robustheit des Modells verbessern. 
+
+    Darüber hinaus könnte die Implementierung eines Systems zur Echtzeit-Datenerfassung und -vorhersage die Reaktionsfähigkeit auf unvorhergesehene Ereignisse steigern. 
+    Eine benutzerfreundliche Schnittstelle, etwa in Form einer Web-UI oder mobilen Anwendung, würde die Nutzung und Integration der Vorhersagen in den täglichen Arbeitsablauf erleichtern. 
+
+    Schließlich könnte die Erweiterung der Vorhersagehorizonte und die Implementierung von Strategien zur langfristigen Personalplanung eine strategische Entscheidungsfindung unterstützen. 
+    Diese Verbesserungen bieten spannende Möglichkeiten für zukünftige Entwicklungen und könnten das System zu einem unverzichtbaren Werkzeug in der Einsatzplanung und Ressourcenverwaltung machen. 
+    Insgesamt bietet diese Arbeit eine solide Grundlage für weitere Forschung und Entwicklung in diesem Bereich.
 
     % Schluss ca. 10%
 
@@ -706,6 +781,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \fi
 
 
-% Overall To-Do: Zahlenwerte nochmal prüfen, ob diese übereinstimmen
+% Overall Abschluss To-Dos: 
+% Zahlenwerte nochmal prüfen, ob diese übereinstimmen
+% Dokument durchgehen und die Werte und Ziele festigen. 
+% Was soll predictet werden und welche Werte stehen überhaupt alle zur Verfügung im Produktiveinsatz
+% U. U. macht es Sinn mehrere Werte zu predicten oder Modelle zu nutzen die nicht immer alle Features benötigen. Überprüfen und ggf. in Dokument zur Diskussion stellen
 
 \end{document}
