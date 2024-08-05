@@ -19,14 +19,15 @@ listof=totoc,		% Abbildungs-/ Tabellenverzeichnis im Inhaltsverzeichnis darstell
 toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 ]{scrreprt}	% Koma-Script report-Klasse, fuer laengere Bachelorarbeiten alternativ auch: scrbook
 
+%To-Do: Felder bei Abgabe wieder richtig setzen
 
 \def \titel {Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende mithilfe eines Vorhersagemodells} 
 \def \arbeit {Fallstudie}
 \def \autor {<to be replaced>}%{Jasper Bremenkamp}
-\def \abschluss {M.Sc.}
-\def \studiengang {Data Science}
-\def \datumAbgabe {\today}
-\def \modul {Model Engineering}
+\def \abschluss {<to be replaced>}%{M.Sc.}
+\def \studiengang {<to be replaced>}%{Data Science}
+\def \datumAbgabe {<to be replaced>}%{\today}
+\def \modul {<to be replaced>}%{Model Engineering}
 \def \matrikelnr {<to be replaced>}%{92125193}
 \def \tutor {<to be replaced>}%{Markus Pak}
 
@@ -196,7 +197,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \begin{figure}[h]
         \centering
         \advance\leftskip--2cm
-        \includegraphics[width=0.50\textwidth]{assets/logo.pdf}
+        %\includegraphics[width=0.50\textwidth]{assets/logo.pdf} %To-Do: wieder einbauen
         \end{figure}
         \FloatBarrier
         
@@ -325,6 +326,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     Die effiziente Planung des Bereitschaftsdienstes für Einsatzfahrende stellt den Berliner Rotkreuz-Rettungsdienst vor erhebliche Herausforderungen. 
     Die derzeitige Planungslogik erweist sich als unzureichend, insbesondere bei kurzfristigen Krankenständen und unvorhersehbar hohen Notrufaufkommen. 
+    (\cite[Vgl.][S. 3, 4]{data_science_aufgabenstellung})
+
     Diese unvorhersehbaren Ereignisse führen regelmäßig zu Kapazitätsengpässen, die nur durch die kurzfristige Aktivierung zusätzlicher Einsatzfahrender ausgeglichen werden können. 
     Solche ad-hoc Lösungen sind jedoch oft ineffizient und können die Einsatzbereitschaft und Reaktionszeit negativ beeinflussen.
 
@@ -332,6 +335,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden auf Tagesbasis effizient abgeschätzt werden. 
     Ein besonderes Augenmerk liegt dabei auf der Identifikation saisonaler Muster, wie zum Beispiel die erhöhte Ausfallrate in den Wintermonaten. 
     Durch die Analyse historischer Daten zu Abwesenheiten und Notrufaufkommen sollen präzise Vorhersagen getroffen werden, um die Einsatzbereitschaft optimal zu gewährleisten.
+    (\cite[Vgl.][S. 3, 4]{data_science_aufgabenstellung})
     
     Ein datengetriebener Ansatz bietet hier signifikante Vorteile. 
     Durch die Nutzung von maschinellem Lernen können komplexe Muster und Zusammenhänge in den Daten erkannt werden, die mit herkömmlichen Methoden schwer zu identifizieren wären. 
@@ -347,7 +351,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Daraufhin folgt eine ausführliche Datenanalyse, die die Grundlage für die Modellierung bildet. 
     Es werden sowohl ein erstes Basismodell als auch ein präziseres Vorhersagemodell entwickelt und deren Performance evaluiert. 
     Besonderes Augenmerk wird dabei auf die Interpretierbarkeit der Modellresultate und eine detaillierte Fehleranalyse gelegt. 
-    Abschließend wird ein Vorschlag zur Integration des Modells in den Arbeitsalltag des Fachbereichs präsentiert und eine beispielhafte graphische Benutzeroberfläche vorgestellt. 
+    Abschließend wird ein Vorschlag zur Integration des Modells in den Arbeitsalltag des Fachbereichs präsentiert und eine beispielhafte grafische Benutzeroberfläche vorgestellt. 
     Die Arbeit schließt mit einer Zusammenfassung der Ergebnisse und Empfehlungen für zukünftige Arbeiten oder Verbesserungen.
     
     Durch die erfolgreiche Implementierung dieses Projekts könnte der Berliner Rotkreuz-Rettungsdienst einen bedeutenden Schritt in Richtung einer moderneren und effizienteren Bereitschaftsdienstplanung machen. 
@@ -373,6 +377,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \item \textbf{Umfangreiche Ressourcen}: Es gibt eine Fülle an Ressourcen, Fallstudien, Best Practices und Community-Support für CRISP-DM, was den Einstieg erleichtert und die Wahrscheinlichkeit eines erfolgreichen Projekts erhöht.
             \item \textbf{Erfahrung und Vertrautheit}: Viele Data-Science-Teams und Fachleute sind bereits mit CRISP-DM vertraut, was den Schulungsaufwand reduziert und die Implementierung beschleunigt.
         \end{itemize}
+        (\cite[Vgl.][]{crisp_vs_tdsp}) %To-Do: prüfen, ob es sich mit Inhalt ausreichen viel überschneidet
 
         Die CRISP-DM Methodik umfasst die folgenden sechs Phasen:
 
@@ -390,6 +395,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \item \textbf{Deployment}: Schließlich wird das Modell in den operativen Betrieb integriert. 
             Dies umfasst die Implementierung in eine graphische Benutzeroberfläche und die Schulung der Nutzer.
         \end{enumerate}
+        (\cite[Vgl.][S. 14]{shearer2000crisp})
 
     \section{Struktur des Git-Repositories}
 
@@ -509,7 +515,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         \subsection{Feature Engineering}
 
-            Ein wichtiger Teil der Datenvorbereitung war das Feature Engineering. 
+            Ein wichtiger Teil der Datenvorbereitung ist das Feature Engineering. 
             Hierbei wurden neue Merkmale erstellt, die das Vorhersagemodell verbessern können. 
             Basierend auf den Erkenntnissen der EDA wurden zeitliche Merkmale wie der Monat und der Wochentag aus dem Datum extrahiert. 
             Tabelle \ref{tab:new_features} zeigt die neuen Merkmale, die erstellt wurden.
@@ -575,8 +581,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Diese Visualisierungen und die gewonnenen Erkenntnisse aus der Datenanalyse und -vorbereitung bilden die Grundlage für die nachfolgende Modellierung und Evaluation des Vorhersagemodells.
 
-
-
 \chapter{Modellierung}
 
     In diesem Kapitel werden verschiedene Modellierungsansätze untersucht, um das beste Vorhersagemodell für die Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende zu finden. 
@@ -586,19 +590,35 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Modellierungsansätze}
 
-        Die folgenden zehn Modellierungsansätze werden untersucht:
+        Die Auswahl der zehn Modellierungsansätze erfolgte auf der Basis ihrer jeweiligen Stärken und ihrer Eignung für die gegebene Aufgabenstellung, die Effizienz und Genauigkeit in der Vorhersage der Anzahl der Einsatzfahrenden im Bereitschaftsdienst zu maximieren. 
+        Dabei wurde eine Mischung aus linearen Modellen, Ensemble-Methoden, nichtlinearen Ansätzen und modernen Algorithmen berücksichtigt, um eine umfassende Analyse zu gewährleisten. 
+        Im Folgenden wird die Auswahl der Modelle und die Gründe für deren Bevorzugung gegenüber anderen Modellen erläutert:
+
         \begin{enumerate}
-            \item \textbf{Lineare Regression}: Das einfachste und leicht zu interpretierende Modell.
-            \item \textbf{Lasso Regression}: Eine Variante der linearen Regression mit L1-Regularisierung, die irrelevant Merkmale eliminiert.
-            \item \textbf{Ridge Regression}: Eine Variante der linearen Regression mit L2-Regularisierung, die die Koeffizienten schrumpft und Überanpassung verhindert.
-            \item \textbf{Entscheidungsbaum}: Ein nichtlineares Modell, das einfache Interpretationen und Visualisierungen ermöglicht.
-            \item \textbf{Random Forest}: Ein Ensemble von Entscheidungsbäumen, das Varianz reduziert und die Vorhersageleistung verbessert.
-            \item \textbf{Gradient Boosting}: Ein weiteres Ensemble-Verfahren, das sukzessive schwache Modelle trainiert, um die Vorhersagegenauigkeit zu erhöhen.
-            \item \textbf{Support Vector Machine (SVM)}: Ein Modell, das optimale Trennhyperplane für die Daten findet, geeignet für nichtlineare Daten.
-            \item \textbf{K-Nearest Neighbors (KNN)}: Ein einfaches, instanzbasiertes Lernverfahren, das Vorhersagen basierend auf den nächsten Nachbarn macht.
-            \item \textbf{XGBoost}: Eine effiziente und flexible Implementierung des Gradient Boostings, die häufig in Wettbewerben verwendet wird.
-            \item \textbf{Neuronales Netz}: Ein mehrschichtiges Perzeptron, das komplexe Muster in den Daten erfassen kann.
+            \item \textbf{Lineare Regression}: Dieses Modell wurde als Baseline gewählt, da es einfach zu interpretieren ist und schnelle Einblicke in die Beziehungen zwischen den unabhängigen und abhängigen Variablen bietet. 
+            Es dient als Ausgangspunkt, um die Leistung komplexerer Modelle zu bewerten.
+            \item \textbf{Lasso Regression}: Die Lasso Regression wurde aufgrund ihrer Fähigkeit gewählt, irrelevant Merkmale zu eliminieren, indem sie eine L1-Regularisierung anwendet. 
+            Dies hilft, das Modell sparsamer zu gestalten und Überanpassungen zu vermeiden.
+            \item \textbf{Ridge Regression}: Ridge Regression ergänzt die Lasso Regression durch die Anwendung einer L2-Regularisierung, die alle Koeffizienten gleichmäßig schrumpft. 
+            Dies verhindert Überanpassung und kann bei hoch korrelierten Merkmalen hilfreich sein, was in realen Daten oft vorkommt.
+            \item \textbf{Entscheidungsbaum}: Der Entscheidungsbaum wurde aufgrund seiner Fähigkeit zur Darstellung nichtlinearer Beziehungen und seiner einfachen Interpretierbarkeit ausgewählt. 
+            Er bietet klare Regeln für Entscheidungen und kann komplexe Interaktionen zwischen den Merkmalen modellieren.
+            \item \textbf{Random Forest}: Diese Ensemble-Methode reduziert die Varianz einzelner Entscheidungsbäume und verbessert dadurch die Vorhersagegenauigkeit. 
+            Random Forest ist robust gegenüber Ausreißern und bietet eine gute Balance zwischen Bias und Varianz.
+            \item \textbf{Gradient Boosting}: Gradient Boosting war aufgrund seiner Fähigkeit, durch sequentielles Training schwacher Modelle die Vorhersagegenauigkeit sukzessive zu erhöhen, eine naheliegende Wahl. 
+            Es ist besonders effektiv bei der Reduzierung von Bias und wird häufig in prädiktiven Analysen verwendet.
+            \item \textbf{Support Vector Machine (SVM)}: SVMs sind bekannt für ihre Effektivität bei der Arbeit mit nichtlinearen Daten. 
+            Sie finden optimale Trennhyperplane und eignen sich für komplexe Datensätze mit klaren Klassenunterschieden.
+            \item \textbf{K-Nearest Neighbors (KNN)}: KNN wurde aufgrund seiner Einfachheit und seiner Fähigkeit, lokale Strukturen in den Daten zu erfassen, ausgewählt. 
+            Es bietet eine intuitive Methode zur Klassifikation und Regression durch die Betrachtung der nächsten Nachbarn.
+            \item \textbf{XGBoost}: XGBoost wurde gewählt, da es eine effiziente und leistungsstarke Implementierung des Gradient Boostings bietet. 
+            Es ist bekannt für seine hervorragende Leistung und Flexibilität, insbesondere bei der Handhabung großer und komplexer Datensätze.
+            \item \textbf{Neuronales Netz}: Neuronale Netze wurden aufgrund ihrer Fähigkeit, komplexe und nichtlineare Muster in den Daten zu erfassen, berücksichtigt. 
+            Ihre Flexibilität und die Möglichkeit, tiefe Architekturen zu nutzen, machen sie zu einer guten Wahl für anspruchsvolle prädiktive Aufgaben.
         \end{enumerate}
+
+        Diese Modelle wurden aufgrund ihrer jeweiligen Stärken, ihrer Fähigkeit zur Verarbeitung komplexer Datenstrukturen und ihrer breiten Anwendbarkeit in verschiedenen Domänen vorgezogen. 
+        Es wurde darauf geachtet, eine ausgewogene Auswahl an Modellen zu treffen, die unterschiedliche Ansätze zur Modellierung von Daten abdecken, um eine umfassende und differenzierte Analyse zu gewährleisten.
 
     \section{Training und Bewertung der Modelle}
 
@@ -784,7 +804,11 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 % Overall Abschluss To-Dos: 
 % Zahlenwerte nochmal prüfen, ob diese übereinstimmen
 % Dokument durchgehen und die Werte und Ziele festigen. 
-% Was soll predictet werden und welche Werte stehen überhaupt alle zur Verfügung im Produktiveinsatz
-% U. U. macht es Sinn mehrere Werte zu predicten oder Modelle zu nutzen die nicht immer alle Features benötigen. Überprüfen und ggf. in Dokument zur Diskussion stellen
+% Was soll predictet werden? AW: Anzahl der benötigten Einsatzfahrenden für den ganzen nächsten Monat (ab dem 15. des Vormonats an)
+% Welche Werte stehen überhaupt alle zur Verfügung im Produktiveinsatz? -> Durchgehen
+% U. U. macht es Sinn noch mehr Werte zu predicten oder Modelle zu nutzen die nicht immer alle Features benötigen. Überprüfen und ggf. in Dokument zur Diskussion stellen
+% zeitlicher Aspekt ausreichend berücksichtigt? (Stichwort: Planungsabschluss am 15. )
+
+%Dokument am besten von oben nach unten durchgehen und dabei direkt die Punkte checken und abarbeiten
 
 \end{document}
