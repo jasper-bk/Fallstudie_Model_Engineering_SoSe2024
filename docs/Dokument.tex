@@ -332,7 +332,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Solche ad-hoc Lösungen sind jedoch oft ineffizient und können die Einsatzbereitschaft und Reaktionszeit negativ beeinflussen.
 
     Das Ziel dieses Projekts ist es, die bestehende Planungslogik zu verbessern und die Bereitschaftsdienstplanung zu automatisieren. 
-    Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden auf Tagesbasis effizient abgeschätzt werden. 
+    Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden auf Tagesbasis effizient abgeschätzt werden. %To-Do: Verifizieren was genau vorhersagt werden muss und ggf hier anpassen. Anzahl der Kranken (n_suck). Anzahl der Einsätze (?), Anzahl der benötigten Bereitschaftsdiensthabenden (sby_need)?
     Ein besonderes Augenmerk liegt dabei auf der Identifikation saisonaler Muster, wie zum Beispiel die erhöhte Ausfallrate in den Wintermonaten. 
     Durch die Analyse historischer Daten zu Abwesenheiten und Notrufaufkommen sollen präzise Vorhersagen getroffen werden, um die Einsatzbereitschaft optimal zu gewährleisten.
     (\cite[Vgl.][S. 3, 4]{data_science_aufgabenstellung})
@@ -342,6 +342,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Dies ermöglicht eine proaktive und vorausschauende Planung, die sowohl die Zufriedenheit der Einsatzfahrenden als auch die Effizienz des Rettungsdienstes verbessert.
     
     Das Vorhersagemodell wird darauf abzielen, den Prozentsatz der aktivierten Einsatzfahrenden zu maximieren und die Tage mit zu wenigen Einsatzfahrenden zu minimieren. 
+    Ziel ist es mindestens 90\% aktive Bereitschaftsfahrende pro Tag zu haben und die Extrakapazitäten noch vor Ende des 15. vom Folgemonat eingeplant zu haben.
     Dies soll zu einer besseren Planbarkeit und einer effizienteren Ressourcennutzung führen. 
     Ein weiterer wichtiger Aspekt ist die Benutzerfreundlichkeit des Systems. 
     Das Modell soll in eine intuitive Benutzeroberfläche integriert werden, die den Planungsverantwortlichen die Handhabung erleichtert und ihnen erlaubt, schnell und flexibel auf Veränderungen zu reagieren.
@@ -368,6 +369,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Für dieses Projekt wird die CRISP-DM (Cross Industry Standard Process for Data Mining) Methodik verwendet, die sich als Industriestandard für Data-Mining-Projekte etabliert hat. 
         Die Wahl von CRISP-DM gegenüber der Microsoft Team Data Science Process (TDSP) Methode wurde aus mehreren Gründen getroffen:
 
+        % To-Do bei Platzmangel diesen Stichpunkt Block kürzen oder gänzlich ersetzen
         \begin{itemize}
             \item \textbf{Reife und Anerkennung}: CRISP-DM ist seit den 1990er Jahren etabliert und hat sich als Industriestandard bewährt. 
             Es ist gut dokumentiert und wird in verschiedenen Branchen erfolgreich angewendet.
@@ -397,12 +399,16 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         \end{enumerate}
         (\cite[Vgl.][S. 14]{shearer2000crisp})
 
+        CRISP-DM bietet eine klare, phasenbasierte Struktur bietet, die sich gut für klassische Data-Science-Projekte eignet.
+        TDSP stärker auf moderne, agile Praktiken und die Integration in bestehende Systeme fokussiert und würde daher stärker auf Iterationen, Automatisierung und die Einbindung von DevOps-Praktiken ausgerichtet sein.
+        Für die Dokumentstruktur und den Ablauf ist CRISP-DM auch deshalb die bessere Wahl und dessen Phasen finden sich im ganzen Dokument wieder.
+
     \section{Struktur des Git-Repositories}
 
         Ein gut strukturiertes Git-Repository ist entscheidend für die effiziente Zusammenarbeit im Projektteam und die Nachvollziehbarkeit der Entwicklungsschritte. 
         Die folgende Ordnerstruktur wird für dieses Projekt vorgeschlagen:
 
-        % Todo Zum Schluss, Richtung Abgabe die Struktur an den Ist-Zustand anpassen 
+        % To-do Zum Schluss, Richtung Abgabe die Struktur an den Ist-Zustand anpassen 
         \dirtree{%
         .1 /.
         .2 data.
@@ -659,7 +665,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \label{tab:model_performance}
             \end{table}
             
-
             Die besten Ergebnisse wurden von XGBoost und Gradient Boosting erzielt, mit MAE-Werten von 2.13 bzw. 2.15 und R2-Scores von 0.82. 
             Diese Modelle wurden daher für eine weitere Feinabstimmung in Betracht gezogen.
 
@@ -708,7 +713,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \section{Architektur und Implementierung}
 
         Die Implementierung basiert auf einem Flask-Web-Framework, das als leichtgewichtiger Web-Server fungiert. 
-        Das Modell und die erforderlichen Vorverarbeitungswerkzeuge werden als trainierte Artefakte gespeichert und bei Bedarf geladen. Das folgende Code-Snippet zeigt die Struktur des Servers:
+        Das Modell und die erforderlichen Vorverarbeitungswerkzeuge werden als trainierte Artefakte gespeichert und bei Bedarf geladen. 
+        Das folgende Code-Snippet zeigt die Struktur des Servers:
 
         % To-Do: Code-Schnipsel im Blick behalten und vor Abgabe sicherstellen, dass diese zum echten Code passen
         \begin{lstlisting}[language=Python, gobble=8, caption=Aufbau Prediction API]
@@ -742,9 +748,14 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \section{Benutzerinteraktion}
 
         Die Benutzer können über eine einfache Web-Oberfläche oder direkt über HTTP-Requests mit der API interagieren. 
-        Dabei werden relevante Informationen wie die Anzahl der Anrufe, der Wochentag und der Monat an die API gesendet, welche daraufhin eine Vorhersage für die Anzahl der Krankmeldungen liefert.
+        Dabei werden alle relevanten und zur Verfügung stehenden Informationen wie die Anzahl der Anrufe, der Wochentag und der Monat pro ausgewählten Tag an die API gesendet.
+        Die API liefert daraufhin eine Vorhersage für die Anzahl der benötigten Bereitschaftsdiensthabenden und damit wird z. B. beim Planungsprozess für den Folgemonat zusätzliche Kapazität zur Erreichung der 90\% an aktivierten Einsatzfahrenden eingeplant.
 
-        % To-Do: evtl auch in bestehendes Verwaltungssystem integrieren und dann warnen, wenn Engpässe "vermutet" bzw predictet werden
+        Durch die Anpassung bestehender Verwaltungssysteme kann die API auch problemlos dort integriert bzw. aufgerufen werden und beim Planen muss kein zusätzliches System nebenher eingesetzt werden.
+        So ließen sich im bestehenden Verwaltungssystem bei vorhergesagten Engpässen die Tage farblich markieren und vor Freigabe der Planung eine Warnung für die einzelnen Tage ausgeben, ohne das man jeden Tag einzeln in einer separaten Software abgleichen muss.
+
+        Langfristig könnte das System auch um zusätzliche Funktionen wie die automatische Anpassung des Modells an neue Daten und die Integration weiterer Datenquellen erweitert werden.
+        Das Zukommen Lassen neuer Daten ließe sich dabei auch über die API abwickeln.
 
     \section{Einbindung in den Arbeitsalltag}
 
@@ -755,17 +766,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \item \textbf{Monitoring und Anpassung}: Die Vorhersagen können regelmäßig überprüft und mit den tatsächlichen Ereignissen verglichen werden, um das Modell kontinuierlich zu verbessern.
         \end{itemize}
 
-    \section{Zukunftsperspektiven}
-
-        Um die Integration weiter zu verbessern, wird angestrebt, eine einfache Web-UI zu entwickeln, die eine benutzerfreundliche Interaktion mit der API ermöglicht. 
-        Langfristig könnte das System auch um zusätzliche Funktionen wie die automatische Anpassung des Modells an neue Daten und die Integration weiterer Datenquellen erweitert werden.
-
-        % To-Do: Auch hier wieder berücksichtigen, ob es nicht Sinn macht die API in eine bestehendes Verwaltungssystem anzubinden, um bei der Planung bereits vor Engpässen zu warnen
-
 \chapter{Fazit \& Ausblick}
 
     In dieser Arbeit wurde ein Vorhersagemodell zur Unterstützung der Einsatzplanung im Bereitschaftsdienst entwickelt. 
-    Ausgehend von einer detaillierten Datenanalyse wurde ein geeignetes Modell trainiert, das anhand historischer Daten Prognosen über die Anzahl der Krankmeldungen ermöglicht. 
+    Ausgehend von einer detaillierten Datenanalyse wurde ein geeignetes Modell trainiert, das anhand historischer Daten Prognosen über die Anzahl der benötigten Bereitschaftsdiensthabenden ermöglicht. 
     Dabei stellte sich das Gradient Boosting als der leistungsfähigste Algorithmus heraus, gefolgt von Random Forest und XGBoost. 
 
     Die Integration des Modells in den Arbeitsalltag wurde durch eine API realisiert, die eine einfache und effektive Nutzung der Vorhersagen ermöglicht. 
@@ -777,9 +781,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Die kontinuierliche Überwachung der Modellleistung und die Anpassung der Hyperparameter könnten die Genauigkeit und Robustheit des Modells verbessern. 
 
     Darüber hinaus könnte die Implementierung eines Systems zur Echtzeit-Datenerfassung und -vorhersage die Reaktionsfähigkeit auf unvorhergesehene Ereignisse steigern. 
-    Eine benutzerfreundliche Schnittstelle, etwa in Form einer Web-UI oder mobilen Anwendung, würde die Nutzung und Integration der Vorhersagen in den täglichen Arbeitsablauf erleichtern. 
+    Auch die Integration der API in bestehende Verwaltungssystem ist geplant, um die Nutzung der Vorhersagen in den täglichen Arbeitsablauf deutlich zu erleichtern. 
+    So ist sicher gestellt, dass alles an einem Platz ist und dass das Ziel -- die Planung von min. 90\% aktiven Bereitschaftsfahrenden pro Tag -- zum 15. des Vormonats abgeschlossen ist.
 
-    Schließlich könnte die Erweiterung der Vorhersagehorizonte und die Implementierung von Strategien zur langfristigen Personalplanung eine strategische Entscheidungsfindung unterstützen. 
+    Darüber hinaus kann das Vorhersagemodell die Implementierung von Strategien zur langfristigen Personalplanung unterstützen und eine strategische Entscheidungsfindung ermöglichen. 
     Diese Verbesserungen bieten spannende Möglichkeiten für zukünftige Entwicklungen und könnten das System zu einem unverzichtbaren Werkzeug in der Einsatzplanung und Ressourcenverwaltung machen. 
     Insgesamt bietet diese Arbeit eine solide Grundlage für weitere Forschung und Entwicklung in diesem Bereich.
 
