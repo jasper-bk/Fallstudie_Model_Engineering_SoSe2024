@@ -7,21 +7,21 @@ import requests
 
 
 # Funktion zur Vorhersage neuer Daten
-def predict_readiness(calls, day_of_week, month):
+def predict_readiness(data):
     model = joblib.load('app/models/readiness_model.pkl')
-    scaler = joblib.load('app/models/scaler.pkl')
+    #scaler = joblib.load('app/models/scaler.pkl')
 
 
     # Achtung bei mehr Features im Training-Set müssen diese hier auch vorhanden sein.
     # To-Do: Ggf. reevaluieren, ob man mehr oder andere Werte hinzunimmt und ob man alle Werte immer hat
-    new_data = np.array([[calls, day_of_week, month]])
+    new_data_df = pd.DataFrame([data])
 
     # Neue Daten standardisieren
     # Not working
-    #new_data_scaled = scaler.transform(new_data)
+    #new_data_scaled = scaler.transform(new_data_df)
     
     # Vorhersage
-    prediction = model.predict(new_data)
+    prediction = model.predict(new_data_df)
     return prediction[0]
 
 
@@ -32,24 +32,27 @@ app = Flask(__name__)
 @app.route('/predict', methods=['POST'])
 def predict():
     data = request.json
-
-    n_sick = data['n_sick']
-    calls = data['calls']
-    day_of_week = data['day_of_week']
-    month = data['month']
     
-    prediction = predict_readiness(n_sick, calls, day_of_week, month)
-    return jsonify({'prediction': prediction})
+    try:
+        prediction = predict_readiness(data)
+        return jsonify({'prediction': prediction})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 
 def test():
     # Beispielvorhersage
-    new_calls = 50
-    new_day_of_week = 2  # Mittwoch
-    new_month = 7  # Juli
+    data = {
+        'month' : 7, 
+        'n_duty' : 1500, 
+        'calls' : 3500, 
+        'day_of_week' : 2
+    }
 
-    prediction = predict_readiness(new_calls, new_day_of_week, new_month)
+    prediction = predict_readiness(data)
     print(f'Vorhergesagte Anzahl der Krankmeldungen: {prediction}')
+
+    app.run(debug=True)
 
 
 if __name__ == '__main__':

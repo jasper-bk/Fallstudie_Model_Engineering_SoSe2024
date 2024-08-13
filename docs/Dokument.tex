@@ -78,7 +78,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{placeins}
 \usepackage{dirtree}
 \usepackage{booktabs}
-
+\usepackage{makecell}
 
     %%%%%%% Neues Design %%%%%%%%%%%
 
@@ -332,7 +332,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Solche ad-hoc Lösungen sind jedoch oft ineffizient und können die Einsatzbereitschaft und Reaktionszeit negativ beeinflussen.
 
     Das Ziel dieses Projekts ist es, die bestehende Planungslogik zu verbessern und die Bereitschaftsdienstplanung zu automatisieren. 
-    Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden auf Tagesbasis effizient abgeschätzt werden. %To-Do: Verifizieren was genau vorhersagt werden muss und ggf hier anpassen. Anzahl der Kranken (n_suck). Anzahl der Einsätze (?), Anzahl der benötigten Bereitschaftsdiensthabenden (sby_need)?
+    Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden im Bereitschaftsdienst auf Tagesbasis effizient abgeschätzt werden. %To-Do: Verifizieren was genau vorhersagt werden muss und ggf hier anpassen. Anzahl der Kranken (n_suck). Anzahl der Einsätze (?), Anzahl der benötigten Bereitschaftsdiensthabenden (sby_need)?
     Ein besonderes Augenmerk liegt dabei auf der Identifikation saisonaler Muster, wie zum Beispiel die erhöhte Ausfallrate in den Wintermonaten. 
     Durch die Analyse historischer Daten zu Abwesenheiten und Notrufaufkommen sollen präzise Vorhersagen getroffen werden, um die Einsatzbereitschaft optimal zu gewährleisten.
     (\cite[Vgl.][S. 3, 4]{data_science_aufgabenstellung})
@@ -464,16 +464,19 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \hline
                 \textbf{Merkmal} & \textbf{Beschreibung} \\ \hline
                 date & Datum des Eintrags \\ \hline
-                n\_sick & Anzahl der Krankmeldungen \\ \hline
-                calls & Anzahl der Anrufe \\ \hline
-                n\_duty & Anzahl der Diensthabenden \\ \hline
-                n\_sby & Anzahl der Bereitschaftsdiensthabenden \\ \hline
-                sby\_need & Anzahl der benötigten Bereitschaftsdiensthabenden \\ \hline
-                drafted & Anzahl der rekrutierten Einsatzkräfte \\ \hline
+                n\_sick & Anzahl der Einsatzfahrer, die einen Krankenstand angemeldet haben \\ \hline
+                calls & Anzahl der Notrufe \\ \hline
+                n\_duty & Anzahl der Einsatzfahrer im Dienst \\ \hline
+                n\_sby & Anzahl der verfügbaren Ersatzfahrer \\ \hline
+                sby\_need &  Anzahl der Ersatzfahrer, die aktiviert werden \\ \hline
+                drafted & \makecell{Anzahl der zusätzlichen Einsatzfahrer, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrer im Bereitschaftsdienst nicht ausreicht} \\ \hline
                 \end{tabular}
+                \\
+                (\cite[Vgl.][S. 2, 3]{data_science_aufgabenstellung_zusatz})
                 \caption{Zusammenfassung der Datensätze}
                 \label{tab:data_summary}
             \end{table}
+
 
         \subsection{Verteilung der Merkmale}
 
@@ -509,8 +512,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Datenvorbereitung}
 
-        Nach der initialen Untersuchung und Analyse der Daten wurde die Datenvorbereitung durchgeführt. 
-        Dieser Schritt ist entscheidend, um die Daten in ein format zu bringen, das für die Modellierung geeignet ist.
+        Nach der initialen Untersuchung und Analyse der Daten wird die Datenvorbereitung durchgeführt. 
+        Dieser Schritt ist entscheidend, um die Daten in ein Format zu bringen, das für die Modellierung geeignet ist.
 
         \subsection{Umgang mit fehlenden Werten}
 
@@ -522,8 +525,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         \subsection{Feature Engineering}
 
             Ein wichtiger Teil der Datenvorbereitung ist das Feature Engineering. 
-            Hierbei wurden neue Merkmale erstellt, die das Vorhersagemodell verbessern können. 
-            Basierend auf den Erkenntnissen der EDA wurden zeitliche Merkmale wie der Monat und der Wochentag aus dem Datum extrahiert. 
+            Hierbei werden neue Merkmale erstellt, die das Vorhersagemodell verbessern können. 
+            Basierend auf den Erkenntnissen der EDA werden zeitliche Merkmale wie der Monat und der Wochentag aus dem Datum extrahiert. 
             Tabelle \ref{tab:new_features} zeigt die neuen Merkmale, die erstellt wurden.
 
             \begin{table}[H]
@@ -549,13 +552,16 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Baseline-Modell}
 
-        Bevor komplexere Modelle entwickelt wurden, wurde ein Baseline-Modell erstellt, um eine erste Vergleichsbasis zu haben. 
+        Bevor komplexere Modelle entwickelt werden, wird ein Baseline-Modell erstellt, um eine erste Vergleichsbasis zu haben. 
         Ein einfaches Baseline-Modell kann beispielsweise der Durchschnitt der Zielvariable oder ein einfacher linearer Regressor sein. 
-        Das Baseline-Modell in diesem Projekt war ein Durchschnittsmodell, das den mittleren Wert der Zielvariable (Anzahl der Krankmeldungen) für jede Vorhersage nutzte.
+
+
+        % To-Do: Modell auf andere Zielvariable umstellen. Noch nicht klar ob sby_need das richtige ist
+        Das Baseline-Modell in diesem Projekt ist ein Durchschnittsmodell, das den mittleren Wert der Zielvariable für jede Vorhersage nutzt.
         
         \subsection{Ergebnisse des Baseline-Modells}
         
-            Die Leistung des Baseline-Modells wurde mittels des Mean Absolute Error (MAE) bewertet. 
+            Die Leistung des Baseline-Modells wird mittels des Mean Absolute Error (MAE) bewertet. 
             Abbildung \ref{fig:baseline_performance} zeigt die Performance des Baseline-Modells im Vergleich zu den tatsächlichen Werten.
             
             \begin{figure}[H]
@@ -762,6 +768,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Um die Vorhersagen effektiv in den Arbeitsalltag zu integrieren, können verschiedene Strategien angewendet werden:
         \begin{itemize}
             \item \textbf{Planung des Dienstplans}: Basierend auf den Vorhersagen können die Einsatzkräfte besser auf mögliche Engpässe vorbereitet werden, indem zusätzliche Ressourcen eingeplant werden.
+            % To-Do: müsste dann unabhängig vorausgesagt werden % Evtl. machen auch mehrere Modelle Sinn
             \item \textbf{Proaktive Maßnahmen}: Bei einer hohen vorhergesagten Anzahl von Krankmeldungen können präventive Maßnahmen ergriffen werden, um die Einsatzbereitschaft sicherzustellen.
             \item \textbf{Monitoring und Anpassung}: Die Vorhersagen können regelmäßig überprüft und mit den tatsächlichen Ereignissen verglichen werden, um das Modell kontinuierlich zu verbessern.
         \end{itemize}
