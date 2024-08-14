@@ -342,7 +342,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Dies ermöglicht eine proaktive und vorausschauende Planung, die sowohl die Zufriedenheit der Einsatzfahrenden als auch die Effizienz des Rettungsdienstes verbessert.
     
     Das Vorhersagemodell wird darauf abzielen, den Prozentsatz der aktivierten Einsatzfahrenden zu maximieren und die Tage mit zu wenigen Einsatzfahrenden zu minimieren. 
-    Ziel ist es mindestens 90\% aktive Bereitschaftsfahrende pro Tag zu haben und die Extrakapazitäten noch vor Ende des 15. vom Folgemonat eingeplant zu haben.
+    Ziel ist es prozentual mehr aktive Bereitschaftsfahrende pro Tag zu haben und die Extrakapazitäten noch vor Ende des 15. vom Folgemonat eingeplant zu haben.
     Dies soll zu einer besseren Planbarkeit und einer effizienteren Ressourcennutzung führen. 
     Ein weiterer wichtiger Aspekt ist die Benutzerfreundlichkeit des Systems. 
     Das Modell soll in eine intuitive Benutzeroberfläche integriert werden, die den Planungsverantwortlichen die Handhabung erleichtert und ihnen erlaubt, schnell und flexibel auf Veränderungen zu reagieren.
@@ -469,7 +469,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 n\_duty & Anzahl der Einsatzfahrer im Dienst \\ \hline
                 n\_sby & Anzahl der verfügbaren Ersatzfahrer \\ \hline
                 sby\_need &  Anzahl der Ersatzfahrer, die aktiviert werden \\ \hline
-                drafted & \makecell{Anzahl der zusätzlichen Einsatzfahrer, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrer im Bereitschaftsdienst nicht ausreicht} \\ \hline
+                dafted & \makecell{Anzahl der zusätzlichen Einsatzfahrer, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrer im Bereitschaftsdienst nicht ausreicht} \\ \hline
                 \end{tabular}
                 \\
                 (\cite[Vgl.][S. 2, 3]{data_science_aufgabenstellung_zusatz})
@@ -526,8 +526,11 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Ein wichtiger Teil der Datenvorbereitung ist das Feature Engineering. 
             Hierbei werden neue Merkmale erstellt, die das Vorhersagemodell verbessern können. 
-            Basierend auf den Erkenntnissen der EDA werden zeitliche Merkmale wie der Monat und der Wochentag aus dem Datum extrahiert. 
+            Basierend auf den Erkenntnissen der EDA werden u. a. zeitliche Merkmale wie der Monat und der Wochentag aus dem Datum extrahiert. 
             Tabelle \ref{tab:new_features} zeigt die neuen Merkmale, die erstellt wurden.
+
+
+            %To-Do: Quotienten Notrufe/Einsatzfahrende die diesen bearbeiten
 
             \begin{table}[H]
                 \centering
@@ -536,6 +539,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \textbf{Neues Merkmal} & \textbf{Beschreibung} \\ \hline
                 month & Monat des Jahres \\ \hline
                 day\_of\_week & Wochentag \\ \hline
+                sby\_used\_percent  & \makecell{Prozentsatz an eingesetzten Ersatzfahrern, die geplant worden sind: $\frac{sby\_need}{n\_sby}$ \\ Anmerkung: Bei über 100\% gilt: dafted $>$ 0 } \\ \hline
+                calls\_per\_duty & Notrufe pro Fahrer: $\frac{calls}{n\_duty}$ \\ \hline
+                call\_stress & Notfallbelastung: $\frac{calls}{n\_duty+sby\_need}$ \\ \hline
                 \end{tabular}
                 \caption{Erstellte neue Merkmale}
                 \label{tab:new_features}
@@ -755,7 +761,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Die Benutzer können über eine einfache Web-Oberfläche oder direkt über HTTP-Requests mit der API interagieren. 
         Dabei werden alle relevanten und zur Verfügung stehenden Informationen wie die Anzahl der Anrufe, der Wochentag und der Monat pro ausgewählten Tag an die API gesendet.
-        Die API liefert daraufhin eine Vorhersage für die Anzahl der benötigten Bereitschaftsdiensthabenden und damit wird z. B. beim Planungsprozess für den Folgemonat zusätzliche Kapazität zur Erreichung der 90\% an aktivierten Einsatzfahrenden eingeplant.
+        Die API liefert daraufhin eine Vorhersage für die Anzahl der benötigten Bereitschaftsdiensthabenden und damit wird z. B. beim Planungsprozess für den Folgemonat zusätzliche Kapazität zur Erreichung der höheren Ausnutzung an aktivierten Einsatzfahrenden eingeplant.
 
         Durch die Anpassung bestehender Verwaltungssysteme kann die API auch problemlos dort integriert bzw. aufgerufen werden und beim Planen muss kein zusätzliches System nebenher eingesetzt werden.
         So ließen sich im bestehenden Verwaltungssystem bei vorhergesagten Engpässen die Tage farblich markieren und vor Freigabe der Planung eine Warnung für die einzelnen Tage ausgeben, ohne das man jeden Tag einzeln in einer separaten Software abgleichen muss.
@@ -789,7 +795,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     Darüber hinaus könnte die Implementierung eines Systems zur Echtzeit-Datenerfassung und -vorhersage die Reaktionsfähigkeit auf unvorhergesehene Ereignisse steigern. 
     Auch die Integration der API in bestehende Verwaltungssystem ist geplant, um die Nutzung der Vorhersagen in den täglichen Arbeitsablauf deutlich zu erleichtern. 
-    So ist sicher gestellt, dass alles an einem Platz ist und dass das Ziel -- die Planung von min. 90\% aktiven Bereitschaftsfahrenden pro Tag -- zum 15. des Vormonats abgeschlossen ist.
+    So ist sicher gestellt, dass alles an einem Platz ist und dass das Ziel -- die Planung von prozentual mehr aktiven Bereitschaftsfahrenden pro Tag ohne Engpässe -- zum 15. des Vormonats abgeschlossen ist.
 
     Darüber hinaus kann das Vorhersagemodell die Implementierung von Strategien zur langfristigen Personalplanung unterstützen und eine strategische Entscheidungsfindung ermöglichen. 
     Diese Verbesserungen bieten spannende Möglichkeiten für zukünftige Entwicklungen und könnten das System zu einem unverzichtbaren Werkzeug in der Einsatzplanung und Ressourcenverwaltung machen. 
