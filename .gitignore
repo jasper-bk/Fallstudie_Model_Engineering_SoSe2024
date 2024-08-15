@@ -305,3 +305,6 @@ TSWLatexianTemp*
 #Custom entries
 notes.txt
 .ipynb_checkpoints
+
+
+/app/models/*
