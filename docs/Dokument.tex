@@ -456,7 +456,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Zunächst wurden die Daten auf ihre Grundstruktur hin untersucht. 
             Dabei wurden Informationen wie die Anzahl der Datensätze, die Struktur der Datensätze und das Vorhandensein von fehlenden Werten erfasst. 
-            Die wichtigsten Merkmale der Daten sind in Tabelle \ref{tab:data_summary} zusammengefasst.
+            Die Merkmale der Daten sind in Tabelle \ref{tab:data_summary} zusammengefasst.
 
             \begin{table}[H]
                 \centering
@@ -469,7 +469,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 n\_duty & Anzahl der Einsatzfahrer im Dienst \\ \hline
                 n\_sby & Anzahl der verfügbaren Ersatzfahrer \\ \hline
                 sby\_need &  Anzahl der Ersatzfahrer, die aktiviert werden \\ \hline
-                dafted & \makecell{Anzahl der zusätzlichen Einsatzfahrer, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrer im Bereitschaftsdienst nicht ausreicht} \\ \hline
+                dafted & \makecell{Anzahl der zusätzlichen Einsatzfahrer, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrer im Bereitschaftsdienst nicht ausreicht. \\
+                Anmerkung: Spaltenname fehlt offenbar der Buchstabe \enquote{r} an dritter Stelle.} \\ \hline
                 \end{tabular}
                 \\
                 (\cite[Vgl.][S. 2, 3]{data_science_aufgabenstellung_zusatz})
@@ -477,8 +478,24 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \label{tab:data_summary}
             \end{table}
 
+            In der Grafik \ref{fig:data_insepection} ist eine Darstellung aller Spalten des Datensatzes zu sehen.
 
-        \subsection{Verteilung der Merkmale}
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=1\textwidth]{assets/data_inspection.png}
+                \caption{Darstellung aller Spalten im Original}
+                \label{fig:data_insepection}
+            \end{figure}
+
+            Die Spalte \enquote{sby\_need} gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrern zu setzen, wie sie in Spalte \enquote{n\_sby} zu sehen ist.
+
+            Beim Inspizieren der Daten fällt außerdem auf, dass die Spalte \enquote{dafted} keinen Mehrwert gegenüber der Spalte \enquote{sby\_need} bietet, da es sich lediglich um die Differenz größer Null der Spalte \enquote{sby\_need} und \enquote{n\_sby} handelt.
+            Zusätzlich anzumerken ist, dass die Spalte \enquote{n\_duty} ihren Wert Anfang eines fast jeden Jahres um 100 Personen erhöht, außer am Anfang des Jahres 2019, da erhöht sich die Zahl des Personals nicht.
+            Außerdem ist bei den Spalten \enquote{sby\_need}, \enquote{dafted} und \enquote{calls} eine starke Saisonalität zu erkennen, bei der es im Winter weniger Anrufe gibt und weniger Personal benötigt wird als im restlichen Jahr.
+
+        %%%%%%%%%%% Bis hierhin überarbeitet %%%%%%%%%%
+
+        \subsection{Verteilung der Merkmale} % evtl streichen oder durch anderes Kapitel ersetzen
 
             Die Verteilungen der wichtigsten Merkmale wurden mittels Histogrammen und Dichteplots visualisiert. 
             Diese Visualisierungen halfen dabei, die Verteilung der Daten und das Vorhandensein von Ausreißern zu verstehen. 
