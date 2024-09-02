@@ -453,6 +453,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Für dieses Projekt wurden die Daten in mehreren Schritten untersucht und analysiert.
 
         \subsection{Dateninspektion}
+            \label{sec:dateninspektion}
 
             Zunächst wurden die Daten auf ihre Grundstruktur hin untersucht. 
             Dabei wurden Informationen wie die Anzahl der Datensätze, die Struktur der Datensätze und das Vorhandensein von fehlenden Werten erfasst. 
@@ -483,49 +484,44 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \begin{figure}[H]
                 \centering
                 \includegraphics[width=1\textwidth]{assets/data_inspection.png}
-                \caption{Darstellung aller Spalten im Original}
+                \caption{Darstellung aller Spalten im Originaldatensatz}
                 \label{fig:data_insepection}
             \end{figure}
 
             Die Spalte \enquote{sby\_need} gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrern zu setzen, wie sie in Spalte \enquote{n\_sby} zu sehen ist.
 
             Beim Inspizieren der Daten fällt außerdem auf, dass die Spalte \enquote{dafted} keinen Mehrwert gegenüber der Spalte \enquote{sby\_need} bietet, da es sich lediglich um die Differenz größer Null der Spalte \enquote{sby\_need} und \enquote{n\_sby} handelt.
+            Die Spalte \enquote{dafted} wird deswegen im weiteren Verlauf nicht genauer analysiert.
             Zusätzlich anzumerken ist, dass die Spalte \enquote{n\_duty} ihren Wert Anfang eines fast jeden Jahres um 100 Personen erhöht, außer am Anfang des Jahres 2019, da erhöht sich die Zahl des Personals nicht.
-            Außerdem ist bei den Spalten \enquote{sby\_need}, \enquote{dafted} und \enquote{calls} eine starke Saisonalität zu erkennen, bei der es im Winter weniger Anrufe gibt und weniger Personal benötigt wird als im restlichen Jahr.
-
-        %%%%%%%%%%% Bis hierhin überarbeitet %%%%%%%%%%
-
-        \subsection{Verteilung der Merkmale} % evtl streichen oder durch anderes Kapitel ersetzen
-
-            Die Verteilungen der wichtigsten Merkmale wurden mittels Histogrammen und Dichteplots visualisiert. 
-            Diese Visualisierungen halfen dabei, die Verteilung der Daten und das Vorhandensein von Ausreißern zu verstehen. 
-            Abbildungen \ref{fig:n_sick_dist} und \ref{fig:calls_dist} zeigen die Verteilungen der Merkmale \textit{n\_sick} und \textit{calls}.
-
-            \begin{figure}[H]
-                \centering
-                \includegraphics[width=0.8\textwidth]{assets/n_sick_dist.png}
-                \caption{Verteilung der Anzahl der Krankmeldungen (n\_sick)}
-                \label{fig:n_sick_dist}
-            \end{figure}
-
-            \begin{figure}[H]
-                \centering
-                \includegraphics[width=0.8\textwidth]{assets/calls_dist.png}
-                \caption{Verteilung der Anzahl der Anrufe (calls)}
-                \label{fig:calls_dist}
-            \end{figure}
+            Außerdem ist bei den Spalten \enquote{sby\_need} (sowie \enquote{dafted}) und \enquote{calls} eine starke Saisonalität zu erkennen, bei der es im Winter weniger Anrufe gibt und weniger Personal benötigt wird als im restlichen Jahr.
 
         \subsection{Korrelationen}
+            \label{sec:korrelationen}
 
             Die Korrelationen zwischen den verschiedenen Merkmalen wurden mittels einer Korrelationsmatrix untersucht. 
-            Abbildung \ref{fig:corr_matrix} zeigt die Korrelationsmatrix der Merkmale.
+            Dafür wurde bereits früh die neue numerische Spalte \enquote{unix\_ts\_date} für die Zeit hinzugefügt, welches das die Spalte \enquote{date} als Unix Timestamp numerisch darstellt.
+            Die \enquote{date} wird als Index verwendet und taucht in der Korrelationsmatrix nicht auf, aber verhält sich genau so wie \enquote{unix\_ts\_date}.
+            Details dazu im späteren Kapitel \ref{sec:feature_engineering}.
+
+            Die nachfolgende Abbildung \ref{fig:corr_matrix} zeigt die Korrelationsmatrix der Merkmale über den ganzen Datensatz.
 
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=0.8\textwidth]{assets/corr_matrix.png}
+                \includegraphics[width=0.8\textwidth]{assets/corr_matrix_all.png}
                 \caption{Korrelationsmatrix der Merkmale}
                 \label{fig:corr_matrix}
             \end{figure}
+
+            Hier lassen sich folgende Korrelationen erkennen:
+            \begin{itemize}
+                \item \enquote{sby\_need} hat zu \enquote{calls} einen starken Zusammenhang und beide haben einen schwächeren Zusammenhang zu \enquote{unix\_ts\_date}, wobei \enquote{calls} jedoch stärker damit korreliert
+                \item \enquote{n\_duty} und \enquote{unix\_ts\_date} haben einen sehr starken Zusammenhang (wie bereits im Kapitel \ref{sec:dateninspektion} bemerkt)
+                \item \enquote{n\_sick} hat nur einen sehr geringen Zusammenhang zu \enquote{sby\_need}, aber einen moderaten Zusammenhang zu \enquote{n\_duty} und \enquote{unix\_ts\_date}. 
+            \end{itemize}
+
+            Wird der Datensatz auf den Zeitraum von einem Jahr reduziert, nimmt die Korrelation zur Zeit weiter ab und bei der Spalte \enquote{n\_duty} entfällt aufgrund des konstanten Wertes über ein Jahr gleich komplett die Korrelation.
+            Die Korrelationsmatrix dafür befindet sich im Anhang. % To-Do: Grafik im Anhang hinzufügen
+
 
     \section{Datenvorbereitung}
 
@@ -536,31 +532,53 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             %To-Do: Nochmal zum Schluss prüfen, ob das hier passt
 
-            Fehlende Werte liegen nicht vor.
-            Falls dennoch welche wären, würden sie entfernt, um die Integrität der Daten zu gewährleisten.
+            Fehlende Werte zwischen den Tagen liegen nicht vor.
+            Es gibt keinen Handlungsbedarf.
 
         \subsection{Feature Engineering}
+            \label{sec:feature_engineering}
 
             Ein wichtiger Teil der Datenvorbereitung ist das Feature Engineering. 
             Hierbei werden neue Merkmale erstellt, die das Vorhersagemodell verbessern können. 
-            Basierend auf den Erkenntnissen der EDA werden u. a. zeitliche Merkmale wie der Monat und der Wochentag aus dem Datum extrahiert. 
-            Tabelle \ref{tab:new_features} zeigt die neuen Merkmale, die erstellt wurden.
 
+            Wie bereits im Kapitel \ref{sec:korrelationen} vorweg genommen, wurde das numerische Feature \enquote{unix\_ts\_date} für die Zeit hinzugefügt, welches die Spalte \enquote{date} als Unix Timestamp numerisch darstellt.
+            
+            Es wurden im Rahmen des Feature Engineering einige Versuche unternommen sinnvolle Features hinzuzufügen.
+            Es wurden zeitliche Merkmale wie das Jahr, der Monat, der Wochentag, die Kalendwoche und der Tag des Jahres aus dem Datum extrahiert und analysiert.
+            Bei Korrelationsanalysen und in der späteren Modellierung haben sich diese Features nicht wertvoller als die Spalte \enquote{unix\_ts\_date} herausgestellt und wurden daraufhin verworfen.
 
-            %To-Do: Quotienten Notrufe/Einsatzfahrende die diesen bearbeiten
+            Es wurden auch Versuche unternommen boolsche Werte (sog. Flags) hinzuzufügen.
+            Darunter folgende Features: \enquote{ist ein Feiertag} und \enquote{ist Wochenende}. 
+            Das Feature \enquote{ist ein Feiertag} wurde nur für das Bundesland Berlin über die API \url{https://feiertage-api.de/} extern zugeführt.
+            Allerdings haben sich auch diese Features als nicht wertvoll herausgestellt und wurden daraufhin wieder verworfen.
+
+            Weitere externe Features welche hinzugefügt wurden, sind die Durchschnittstemperatur, die Höchstemperatur und die niedrigste Temperatur in Berlin.
+            Auch hier haben sich die Feature als nicht wertvoll herausgestellt und wurden daraufhin ebenfalls verworfen. % To-Do: Auf jeden Fall nochmal überprüfen und ggf. anpassen
+            Details zu den verworfenen Features finden sich im Anhang. %To-Do: Hierfür Grafiken im Anhang hinzufügen und Link schaffen
+
+            Für die weitere Analyse wurden neue Spalten aus den bereits vorhanden Features erstellt und beibehalten.
+            Auch wenn diese in der späteren Modellierung keine Rolle mehr gespielt haben.
+            Details dazu in späteren Kapiteln. %To-Do: Ref hinzufügen
+
+            Tabelle \ref{tab:new_features} zeigt die neuen Spalten, die erstellt wurden.
 
             \begin{table}[H]
                 \centering
                 \begin{tabular}{|l|l|}
                 \hline
                 \textbf{Neues Merkmal} & \textbf{Beschreibung} \\ \hline
-                month & Monat des Jahres \\ \hline
-                day\_of\_week & Wochentag \\ \hline
-                sby\_used\_percent  & \makecell{Prozentsatz an eingesetzten Ersatzfahrern, die geplant worden sind: $\frac{sby\_need}{n\_sby}$ \\ Anmerkung: Bei über 100\% gilt: dafted $>$ 0 } \\ \hline
-                calls\_per\_duty & Notrufe pro Fahrer: $\frac{calls}{n\_duty}$ \\ \hline
-                call\_stress & Notfallbelastung: $\frac{calls}{n\_duty+sby\_need}$ \\ \hline
+                unix\_ts\_date & Datum in numerischer Form als Unix Zeistempel \\ \hline
+                sby\_used\_percent  & \makecell{Prozentsatz an eingesetzten Ersatzfahrern, die geplant worden sind: $\frac{sby\_need}{n\_sby}$ \\\\
+                \includegraphics[width=0.5\textwidth]{assets/plot_sby_used_percent.png}      
+                \\ Anmerkung: Bei über 100\% gilt: dafted $>$ 0 } \\ \hline
+                call\_stress & \makecell{ Notfallbelastung: $\frac{calls}{n\_duty+sby\_need}$    \\\\
+                \includegraphics[width=0.5\textwidth]{assets/plot_call_stress.png}   
+                \\ Beobachtung: \enquote{sby\_need} lässt sich mit folgender Formel ungefähr berechnen: \\ 
+                $\frac{calls}{4.8}-n\_sby$
+                \\ Somit lässt sich für die spätere Modellierung ggf. auch die Spalte \enquote{calls} \\ als Zielspalte für eine ungefähre Vorhersage heranziehen.
+                }\\ \hline
                 \end{tabular}
-                \caption{Erstellte neue Merkmale}
+                \caption{Neu erstellte Spalten}
                 \label{tab:new_features}
             \end{table}
 
@@ -573,48 +591,60 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Dies ermöglicht eine objektive Evaluierung des Modells. 
             Die Aufteilung erfolgte zufällig, wobei 80\% der Daten für das Training und 20\% für die Testphase verwendet werden.
 
+            Die Daten werden dabei nicht gemischt, sondern so getrennt, dass die 80 und 20 Prozent im Zeitstrahl weiterhin zusammenhängen.
+            Ein Mischen hat sich bei der Evaluierung der Modell-Leistung als nachteilhaft herausgestellt.
+            Details dazu im späteren Kapitel. %To-Do: Ref hinzufügen
+
     \section{Baseline-Modell}
+
+        % mögliches To-Do: evtl noch ein einfaches Baseline-Modell einbauen, dann ließse sich auch das Subkapitel wieder einbinden
 
         Bevor komplexere Modelle entwickelt werden, wird ein Baseline-Modell erstellt, um eine erste Vergleichsbasis zu haben. 
         Ein einfaches Baseline-Modell kann beispielsweise der Durchschnitt der Zielvariable oder ein einfacher linearer Regressor sein. 
 
-
         % To-Do: Modell auf andere Zielvariable umstellen. Noch nicht klar ob sby_need das richtige ist
         Das Baseline-Modell in diesem Projekt ist ein Durchschnittsmodell, das den mittleren Wert der Zielvariable für jede Vorhersage nutzt.
         
-        \subsection{Ergebnisse des Baseline-Modells}
+        Die Leistung des Baseline-Modells wird mittels des Mean Absolute Error (MAE) und dem Bestimmtgeitsmaß ($R^2$-Score) bewertet. 
+        Abbildung \ref{fig:baseline_performance} zeigt die Performance des Baseline-Modells im Vergleich zu den tatsächlichen Werten.
         
-            Die Leistung des Baseline-Modells wird mittels des Mean Absolute Error (MAE) bewertet. 
-            Abbildung \ref{fig:baseline_performance} zeigt die Performance des Baseline-Modells im Vergleich zu den tatsächlichen Werten.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=1\textwidth]{assets/baseline_performance.png}
+            \caption{Performance des Baseline-Modells}
+            \label{fig:baseline_performance}
+        \end{figure}
+
+        Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \enquote{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
+        
+        Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}. %To-Do: Wert aktualisieren, wenn verändert
+        Diese Werte dient als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
+
+        Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrern empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
+        Allerdings verdeutlicht es nochmal gut, dass eine Dynamik bei der Planung der Ersatzfahrer auf jeden Fall erforderlich ist, da es im Durchschnitt bereits viele Überbesetzungen gibt, aber für bestimmte Tage auch starke Unterbestzungen.
+        Sprich die aktuelle Planung ist mehrfacher Hinsicht suboptimal und ein Mehrwert kann durch dynamische Vorhersage geschaffen werden.
             
-            \begin{figure}[H]
-                \centering
-                \includegraphics[width=1\textwidth]{assets/baseline_performance.png}
-                \caption{Performance des Baseline-Modells}
-                \label{fig:baseline_performance}
-            \end{figure}
-            
-            Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{11.86}. %To-Do: Wert aktualisieren, wenn verändert
-            Dieser Wert dient als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
-            
 
-    \section{Visualisierung der Ergebnisse}
+    % \subsection{Visualisierung der Ergebnisse} % Braucht man hier vermutlich auch nicht
 
-        Um die Ergebnisse der Datenanalyse und -vorbereitung anschaulich darzustellen, wurden verschiedene Visualisierungen erstellt. 
-        Diese halfen dabei, Muster und Zusammenhänge in den Daten besser zu verstehen und die Ergebnisse der Datenvorbereitung zu kommunizieren.
+    %     Um die Ergebnisse der Datenanalyse und -vorbereitung anschaulich darzustellen, wurden verschiedene Visualisierungen erstellt. 
+    %     Diese halfen dabei, Muster und Zusammenhänge in den Daten besser zu verstehen und die Ergebnisse der Datenvorbereitung zu kommunizieren.
 
-        \subsection{Feature Importance}
+    %     \subsection{Feature Importance}
 
-            Die Bedeutung der einzelnen Merkmale für das Vorhersagemodell wurde mittels Feature Importance Scores visualisiert. Abbildung \ref{fig:feature_importance} zeigt die Wichtigkeit der Merkmale für das Vorhersagemodell.
+    %         Die Bedeutung der einzelnen Merkmale für das Vorhersagemodell wurde mittels Feature Importance Scores visualisiert. Abbildung \ref{fig:feature_importance} zeigt die Wichtigkeit der Merkmale für das Vorhersagemodell.
 
-            \begin{figure}[H]
-                \centering
-                \includegraphics[width=0.8\textwidth]{assets/feature_importance.png}
-                \caption{Wichtigkeit der Merkmale für das Vorhersagemodell}
-                \label{fig:feature_importance}
-            \end{figure}
+    %         \begin{figure}[H]
+    %             \centering
+    %             \includegraphics[width=0.8\textwidth]{assets/feature_importance.png}
+    %             \caption{Wichtigkeit der Merkmale für das Vorhersagemodell}
+    %             \label{fig:feature_importance}
+    %         \end{figure}
 
-            Diese Visualisierungen und die gewonnenen Erkenntnisse aus der Datenanalyse und -vorbereitung bilden die Grundlage für die nachfolgende Modellierung und Evaluation des Vorhersagemodells.
+    %         Diese Visualisierungen und die gewonnenen Erkenntnisse aus der Datenanalyse und -vorbereitung bilden die Grundlage für die nachfolgende Modellierung und Evaluation des Vorhersagemodells.
+
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Bis hierhin angepasst %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Modellierung}
 
