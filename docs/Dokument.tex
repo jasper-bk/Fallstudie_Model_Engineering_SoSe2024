@@ -541,19 +541,28 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Ein wichtiger Teil der Datenvorbereitung ist das Feature Engineering. 
             Hierbei werden neue Merkmale erstellt, die das Vorhersagemodell verbessern können. 
 
-            Wie bereits im Kapitel \ref{sec:korrelationen} vorweg genommen, wurde das numerische Feature \enquote{unix\_ts\_date} für die Zeit hinzugefügt, welches die Spalte \enquote{date} als Unix Timestamp numerisch darstellt.
-            
             Es wurden im Rahmen des Feature Engineering einige Versuche unternommen sinnvolle Features hinzuzufügen.
-            Es wurden zeitliche Merkmale wie das Jahr, der Monat, der Wochentag, die Kalendwoche und der Tag des Jahres aus dem Datum extrahiert und analysiert.
-            Bei Korrelationsanalysen und in der späteren Modellierung haben sich diese Features nicht wertvoller als die Spalte \enquote{unix\_ts\_date} herausgestellt und wurden daraufhin verworfen.
+            In der späteren Modellierung haben manche Modelle mehr von den Features profitiert und andere sind mit nur einem Feature ausgekommen.
+            Um den Rahmen der Fallstudie nicht zu sprengen, werden in diesem Abschnitt die Versuche in ihrer Durchführung beschrieben, aber es werden nicht der ganze Verlauf und die Zwischenergebnisse gezeigt.
+
+            Wie bereits im Kapitel \ref{sec:korrelationen} vorweg genommen, wurde das numerische Feature \enquote{unix\_ts\_date} für die Zeit hinzugefügt, welches die Spalte \enquote{date} als Unix Timestamp numerisch darstellt.
+            Es wurden außerdem zeitliche Merkmale wie das Jahr, der Monat, der Wochentag, die Kalenderwoche und der Tag des Jahres aus dem Datum extrahiert und analysiert.
+            Bei der engeren Auswahl der späteren Modellierung haben sich diese Features nicht wertvoller als die Spalte \enquote{unix\_ts\_date} herausgestellt und wurden daraufhin wieder verworfen.
 
             Es wurden auch Versuche unternommen boolsche Werte (sog. Flags) hinzuzufügen.
-            Darunter folgende Features: \enquote{ist ein Feiertag} und \enquote{ist Wochenende}. 
-            Das Feature \enquote{ist ein Feiertag} wurde nur für das Bundesland Berlin über die API \url{https://feiertage-api.de/} extern zugeführt.
+            Darunter folgende sinngemäße Features: \enquote{ist ein Feiertag?} und \enquote{ist Wochenende?}. 
+            Das Feature \enquote{ist Wochenende?} wurde über den Wochentag extrahiert und das Feature \enquote{ist ein Feiertag?} wurde für das Bundesland Berlin über die API \enquote{\url{https://feiertage-api.de/}} extern zugeführt.
             Allerdings haben sich auch diese Features als nicht wertvoll herausgestellt und wurden daraufhin wieder verworfen.
 
+            Um noch mehr Merkmale zu erhalten, die eine genaurere Vorhersage erlauben, wurden im späteren Verlauf noch Lag-Features und gleitende Durchschnitte für die wichtigsten Spalten in den Datensatz integriert. 
+            Diese Features sollten zeitliche Abhängigkeiten und Trends in den Daten erfassen, um die Vorhersagegenauigkeit zu verbessern. 
+            Allerdings zeigten die Ergebnisse in der später folgenden Modellierung, dass diese zusätzlichen Features nicht zu einer Verbesserung der Modellleistung führten, da die Werte starken Abweichungen mit jedem Tag unterliegen.
+            Stattdessen verschlechterten sie die Vorhersageergebnisse. 
+            Aus diesem Grund wurden die Lag-Features und gleitenden Durchschnitte ebenfalls wieder verworfen.
+
             Weitere externe Features welche hinzugefügt wurden, sind die Durchschnittstemperatur, die Höchstemperatur und die niedrigste Temperatur in Berlin.
-            Auch hier haben sich die Feature als nicht wertvoll herausgestellt und wurden daraufhin ebenfalls verworfen. % To-Do: Auf jeden Fall nochmal überprüfen und ggf. anpassen
+            Auch hier haben sich die Merkmal als nicht wertvoll herausgestellt und wurden daraufhin ebenfalls verworfen.
+            Zudem stellt sich bei einer Nutzung dieser Features die Frage, ob die Werte des Wetterberichts ausreichend genau sind, um mit dessen Hilfe dann genaue Ergebnisse vorherzusagen. % To-Do: Auf jeden Fall nochmal überprüfen und ggf. anpassen
             Details zu den verworfenen Features finden sich im Anhang. %To-Do: Hierfür Grafiken im Anhang hinzufügen und Link schaffen
 
             Für die weitere Analyse wurden neue Spalten aus den bereits vorhanden Features erstellt und beibehalten.
@@ -589,11 +598,22 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Für die Modellierung werden die Daten in Trainings- und Testdaten aufgeteilt. 
             Dies ermöglicht eine objektive Evaluierung des Modells. 
-            Die Aufteilung erfolgte zufällig, wobei 80\% der Daten für das Training und 20\% für die Testphase verwendet werden.
+            Die Aufteilung erfolgte mit 80\% der Daten für das Training und 20\% für die Testphase.
 
             Die Daten werden dabei nicht gemischt, sondern so getrennt, dass die 80 und 20 Prozent im Zeitstrahl weiterhin zusammenhängen.
             Ein Mischen hat sich bei der Evaluierung der Modell-Leistung als nachteilhaft herausgestellt.
             Details dazu im späteren Kapitel. %To-Do: Ref hinzufügen
+
+            %To-Do: falls es noch mehr Features geben sollte, diese ergänzen bzw den Text adaptieren
+
+            Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \enquote{sby\_need} wird dabei als Zielvariable (Target) festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
+            Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. Die Spalte \enquote{sby\_need} wird aus dem Feature-Datensatz entfernt, da sie die Zielvariable darstellt, deren Vorhersage im Fokus steht.
+
+            Zusätzlich werden alle Features aus dem Datensatz entfernt, die im Produktionsbetrieb nicht verfügbar sein können. 
+            Dies betrifft nahezu alle Merkmale, da die meisten Informationen erst im Nachhinein oder zeitnah vorliegen. 
+            Als einzige Ausnahme bleibt das Datum bestehen, da es im Produktionsbetrieb vorab bekannt ist und daher als relevantes Feature erhalten bleibt.
+
+            Der finale Feature-Datensatz enthält somit ausschließlich das Datum in Form der Spalte \enquote{unix\_ts\_date}, während die Spalte \enquote{sby\_need} als Zielvariable fungiert.
 
     \section{Baseline-Modell}
 
@@ -644,24 +664,23 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     %         Diese Visualisierungen und die gewonnenen Erkenntnisse aus der Datenanalyse und -vorbereitung bilden die Grundlage für die nachfolgende Modellierung und Evaluation des Vorhersagemodells.
 
 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Bis hierhin angepasst %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \chapter{Modellierung}
 
     In diesem Kapitel werden verschiedene Modellierungsansätze untersucht, um das beste Vorhersagemodell für die Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende zu finden. 
-    Insgesamt wurden zehn verschiedene Modellierungsansätze verwendet, die jeweils spezifische Vorteile bieten. 
-    Diese Ansätze umfassen lineare und nichtlineare Modelle, Entscheidungsbäume, Ensemble-Methoden, und neuronale Netze. 
+    Im Rahmen der Fallstudien-Bearbeitung wurden insgesamt verschiedenste Modelle und Ansätze verwendet, die jeweils spezifische Vorteile und Eigenschaften mitbringen. 
+    Diese Ansätze umfassen lineare und nichtlineare Modelle, Entscheidungsbäume, Ensemble-Methoden, neuronale Netze und Zeitreihenanalyse-Algorithmen wie z. B. SARIMAX. 
     Die Wahl dieser Ansätze basiert auf ihrer allgemeinen Verfügbarkeit und ihrer bewährten Leistung in vergleichbaren Vorhersageproblemen.
+    Um den Rahmen der Fallstudie nicht zu sprengen und das Kernproblem nicht aus den Augen zu verlieren, wird in diesem Kapitel nur auf die besten Modellansätze eingegangen.
+
+    %%%%%%%%%%%%%%%%%%% bis hierhin aktualisiert %%%%%%%%%%%%%%%%%%% 
 
     \section{Modellierungsansätze}
 
-        Die Auswahl der zehn Modellierungsansätze erfolgte auf der Basis ihrer jeweiligen Stärken und ihrer Eignung für die gegebene Aufgabenstellung, die Effizienz und Genauigkeit in der Vorhersage der Anzahl der Einsatzfahrenden im Bereitschaftsdienst zu maximieren. 
+        Die Auswahl der Modellierungsansätze erfolgte auf der Basis ihrer jeweiligen Stärken und ihrer Eignung für die gegebene Aufgabenstellung, die Effizienz und Genauigkeit in der Vorhersage der Anzahl der Einsatzfahrenden im Bereitschaftsdienst zu maximieren. 
         Dabei wurde eine Mischung aus linearen Modellen, Ensemble-Methoden, nichtlinearen Ansätzen und modernen Algorithmen berücksichtigt, um eine umfassende Analyse zu gewährleisten. 
         Im Folgenden wird die Auswahl der Modelle und die Gründe für deren Bevorzugung gegenüber anderen Modellen erläutert:
 
         \begin{enumerate}
-            \item \textbf{Lineare Regression}: Dieses Modell wurde als Baseline gewählt, da es einfach zu interpretieren ist und schnelle Einblicke in die Beziehungen zwischen den unabhängigen und abhängigen Variablen bietet. 
-            Es dient als Ausgangspunkt, um die Leistung komplexerer Modelle zu bewerten.
             \item \textbf{Lasso Regression}: Die Lasso Regression wurde aufgrund ihrer Fähigkeit gewählt, irrelevant Merkmale zu eliminieren, indem sie eine L1-Regularisierung anwendet. 
             Dies hilft, das Modell sparsamer zu gestalten und Überanpassungen zu vermeiden.
             \item \textbf{Ridge Regression}: Ridge Regression ergänzt die Lasso Regression durch die Anwendung einer L2-Regularisierung, die alle Koeffizienten gleichmäßig schrumpft. 
