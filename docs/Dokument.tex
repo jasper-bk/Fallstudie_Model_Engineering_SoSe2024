@@ -79,6 +79,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{dirtree}
 \usepackage{booktabs}
 \usepackage{makecell}
+\usepackage{amsmath}
 
     %%%%%%% Neues Design %%%%%%%%%%%
 
@@ -488,19 +489,19 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \label{fig:data_insepection}
             \end{figure}
 
-            Die Spalte \enquote{sby\_need} gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrern zu setzen, wie sie in Spalte \enquote{n\_sby} zu sehen ist.
+            Die Spalte \texttt{sby\_need} gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrern zu setzen, wie sie in Spalte \texttt{n\_sby} zu sehen ist.
 
-            Beim Inspizieren der Daten fällt außerdem auf, dass die Spalte \enquote{dafted} keinen Mehrwert gegenüber der Spalte \enquote{sby\_need} bietet, da es sich lediglich um die Differenz größer Null der Spalte \enquote{sby\_need} und \enquote{n\_sby} handelt.
-            Die Spalte \enquote{dafted} wird deswegen im weiteren Verlauf nicht genauer analysiert.
-            Zusätzlich anzumerken ist, dass die Spalte \enquote{n\_duty} ihren Wert Anfang eines fast jeden Jahres um 100 Personen erhöht, außer am Anfang des Jahres 2019, da erhöht sich die Zahl des Personals nicht.
-            Außerdem ist bei den Spalten \enquote{sby\_need} (sowie \enquote{dafted}) und \enquote{calls} eine starke Saisonalität zu erkennen, bei der es im Winter weniger Anrufe gibt und weniger Personal benötigt wird als im restlichen Jahr.
+            Beim Inspizieren der Daten fällt außerdem auf, dass die Spalte \texttt{dafted} keinen Mehrwert gegenüber der Spalte \texttt{sby\_need} bietet, da es sich lediglich um die Differenz größer Null der Spalte \texttt{sby\_need} und \texttt{n\_sby} handelt.
+            Die Spalte \texttt{dafted} wird deswegen im weiteren Verlauf nicht genauer analysiert.
+            Zusätzlich anzumerken ist, dass die Spalte \texttt{n\_duty} ihren Wert Anfang eines fast jeden Jahres um 100 Personen erhöht, außer am Anfang des Jahres 2019, da erhöht sich die Zahl des Personals nicht.
+            Außerdem ist bei den Spalten \texttt{sby\_need} (sowie \texttt{dafted}) und \texttt{calls} eine starke Saisonalität zu erkennen, bei der es im Winter weniger Anrufe gibt und weniger Personal benötigt wird als im restlichen Jahr.
 
         \subsection{Korrelationen}
             \label{sec:korrelationen}
 
             Die Korrelationen zwischen den verschiedenen Merkmalen wurden mittels einer Korrelationsmatrix untersucht. 
-            Dafür wurde bereits früh die neue numerische Spalte \enquote{unix\_ts\_date} für die Zeit hinzugefügt, welches das die Spalte \enquote{date} als Unix Timestamp numerisch darstellt.
-            Die \enquote{date} wird als Index verwendet und taucht in der Korrelationsmatrix nicht auf, aber verhält sich genau so wie \enquote{unix\_ts\_date}.
+            Dafür wurde bereits früh die neue numerische Spalte \texttt{unix\_ts\_date} für die Zeit hinzugefügt, welches das die Spalte \texttt{date} als Unix Timestamp numerisch darstellt.
+            Die \texttt{date} wird als Index verwendet und taucht in der Korrelationsmatrix nicht auf, aber verhält sich genau so wie \texttt{unix\_ts\_date}.
             Details dazu im späteren Kapitel \ref{sec:feature_engineering}.
 
             Die nachfolgende Abbildung \ref{fig:corr_matrix} zeigt die Korrelationsmatrix der Merkmale über den ganzen Datensatz.
@@ -514,12 +515,12 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Hier lassen sich folgende Korrelationen erkennen:
             \begin{itemize}
-                \item \enquote{sby\_need} hat zu \enquote{calls} einen starken Zusammenhang und beide haben einen schwächeren Zusammenhang zu \enquote{unix\_ts\_date}, wobei \enquote{calls} jedoch stärker damit korreliert
-                \item \enquote{n\_duty} und \enquote{unix\_ts\_date} haben einen sehr starken Zusammenhang (wie bereits im Kapitel \ref{sec:dateninspektion} bemerkt)
-                \item \enquote{n\_sick} hat nur einen sehr geringen Zusammenhang zu \enquote{sby\_need}, aber einen moderaten Zusammenhang zu \enquote{n\_duty} und \enquote{unix\_ts\_date}. 
+                \item \texttt{sby\_need} hat zu \texttt{calls} einen starken Zusammenhang und beide haben einen schwächeren Zusammenhang zu \texttt{unix\_ts\_date}, wobei \texttt{calls} jedoch stärker damit korreliert
+                \item \texttt{n\_duty} und \texttt{unix\_ts\_date} haben einen sehr starken Zusammenhang (wie bereits im Kapitel \ref{sec:dateninspektion} bemerkt)
+                \item \texttt{n\_sick} hat nur einen sehr geringen Zusammenhang zu \texttt{sby\_need}, aber einen moderaten Zusammenhang zu \texttt{n\_duty} und \texttt{unix\_ts\_date}. 
             \end{itemize}
 
-            Wird der Datensatz auf den Zeitraum von einem Jahr reduziert, nimmt die Korrelation zur Zeit weiter ab und bei der Spalte \enquote{n\_duty} entfällt aufgrund des konstanten Wertes über ein Jahr gleich komplett die Korrelation.
+            Wird der Datensatz auf den Zeitraum von einem Jahr reduziert, nimmt die Korrelation zur Zeit weiter ab und bei der Spalte \texttt{n\_duty} entfällt aufgrund des konstanten Wertes über ein Jahr gleich komplett die Korrelation.
             Die Korrelationsmatrix dafür befindet sich im Anhang. % To-Do: Grafik im Anhang hinzufügen
 
 
@@ -545,13 +546,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             In der späteren Modellierung haben manche Modelle mehr von den Features profitiert und andere sind mit nur einem Feature ausgekommen.
             Um den Rahmen der Fallstudie nicht zu sprengen, werden in diesem Abschnitt die Versuche in ihrer Durchführung beschrieben, aber es werden nicht der ganze Verlauf und die Zwischenergebnisse gezeigt.
 
-            Wie bereits im Kapitel \ref{sec:korrelationen} vorweg genommen, wurde das numerische Feature \enquote{unix\_ts\_date} für die Zeit hinzugefügt, welches die Spalte \enquote{date} als Unix Timestamp numerisch darstellt.
+            Wie bereits im Kapitel \ref{sec:korrelationen} vorweg genommen, wurde das numerische Feature \texttt{unix\_ts\_date} für die Zeit hinzugefügt, welches die Spalte \texttt{date} als Unix Timestamp numerisch darstellt.
             Es wurden außerdem zeitliche Merkmale wie das Jahr, der Monat, der Wochentag, die Kalenderwoche und der Tag des Jahres aus dem Datum extrahiert und analysiert.
-            Bei der engeren Auswahl der späteren Modellierung haben sich diese Features nicht wertvoller als die Spalte \enquote{unix\_ts\_date} herausgestellt und wurden daraufhin wieder verworfen.
+            Bei der engeren Auswahl der späteren Modellierung haben sich diese Features nicht wertvoller als die Spalte \texttt{unix\_ts\_date} herausgestellt und wurden daraufhin wieder verworfen.
 
             Es wurden auch Versuche unternommen boolsche Werte (sog. Flags) hinzuzufügen.
-            Darunter folgende sinngemäße Features: \enquote{ist ein Feiertag?} und \enquote{ist Wochenende?}. 
-            Das Feature \enquote{ist Wochenende?} wurde über den Wochentag extrahiert und das Feature \enquote{ist ein Feiertag?} wurde für das Bundesland Berlin über die API \enquote{\url{https://feiertage-api.de/}} extern zugeführt.
+            Darunter folgende sinngemäße Features: \texttt{\enquote{ist ein Feiertag?}} und \texttt{\enquote{ist Wochenende?}}. 
+            Das Feature \texttt{\enquote{ist Wochenende?}} wurde über den Wochentag extrahiert und das Feature \texttt{\enquote{ist ein Feiertag?}} wurde für das Bundesland Berlin über die API \texttt{\url{https://feiertage-api.de/}} extern zugeführt.
             Allerdings haben sich auch diese Features als nicht wertvoll herausgestellt und wurden daraufhin wieder verworfen.
 
             Um noch mehr Merkmale zu erhalten, die eine genaurere Vorhersage erlauben, wurden im späteren Verlauf noch Lag-Features und gleitende Durchschnitte für die wichtigsten Spalten in den Datensatz integriert. 
@@ -584,7 +585,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \includegraphics[width=0.5\textwidth]{assets/plot_call_stress.png}   
                 \\ Beobachtung: \enquote{sby\_need} lässt sich mit folgender Formel ungefähr berechnen: \\ 
                 $\frac{calls}{4.8}-n\_sby$
-                \\ Somit lässt sich für die spätere Modellierung ggf. auch die Spalte \enquote{calls} \\ als Zielspalte für eine ungefähre Vorhersage heranziehen.
+                \\ Somit lässt sich für die spätere Modellierung ggf. auch die Spalte \texttt{calls} \\ als Zielspalte für eine ungefähre Vorhersage heranziehen.
                 }\\ \hline
                 \end{tabular}
                 \caption{Neu erstellte Spalten}
@@ -606,14 +607,14 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             %To-Do: falls es noch mehr Features geben sollte, diese ergänzen bzw den Text adaptieren
 
-            Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \enquote{sby\_need} wird dabei als Zielvariable (Target) festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
-            Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. Die Spalte \enquote{sby\_need} wird aus dem Feature-Datensatz entfernt, da sie die Zielvariable darstellt, deren Vorhersage im Fokus steht.
+            Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \texttt{sby\_need} wird dabei als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
+            Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. Die Spalte \texttt{sby\_need} wird aus dem Feature-Datensatz entfernt, da sie die Zielvariable darstellt, deren Vorhersage im Fokus steht.
 
             Zusätzlich werden alle Features aus dem Datensatz entfernt, die im Produktionsbetrieb nicht verfügbar sein können. 
             Dies betrifft nahezu alle Merkmale, da die meisten Informationen erst im Nachhinein oder zeitnah vorliegen. 
             Als einzige Ausnahme bleibt das Datum bestehen, da es im Produktionsbetrieb vorab bekannt ist und daher als relevantes Feature erhalten bleibt.
 
-            Der finale Feature-Datensatz enthält somit ausschließlich das Datum in Form der Spalte \enquote{unix\_ts\_date}, während die Spalte \enquote{sby\_need} als Zielvariable fungiert.
+            Der finale Feature-Datensatz enthält somit ausschließlich das Datum in Form der Spalte \texttt{unix\_ts\_date}, während die Spalte \texttt{sby\_need} als Zielvariable fungiert.
 
     \section{Baseline-Modell}
 
@@ -635,7 +636,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \label{fig:baseline_performance}
         \end{figure}
 
-        Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \enquote{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
+        Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \texttt{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
         
         Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}. %To-Do: Wert aktualisieren, wenn verändert
         Diese Werte dient als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
@@ -672,49 +673,80 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Die Wahl dieser Ansätze basiert auf ihrer allgemeinen Verfügbarkeit und ihrer bewährten Leistung in vergleichbaren Vorhersageproblemen.
     Um den Rahmen der Fallstudie nicht zu sprengen und das Kernproblem nicht aus den Augen zu verlieren, wird in diesem Kapitel nur auf die besten Modellansätze eingegangen.
 
-    %%%%%%%%%%%%%%%%%%% bis hierhin aktualisiert %%%%%%%%%%%%%%%%%%% 
+    \subsection{Modellierungsansätze}
 
-    \section{Modellierungsansätze}
-
-        Die Auswahl der Modellierungsansätze erfolgte auf der Basis ihrer jeweiligen Stärken und ihrer Eignung für die gegebene Aufgabenstellung, die Effizienz und Genauigkeit in der Vorhersage der Anzahl der Einsatzfahrenden im Bereitschaftsdienst zu maximieren. 
-        Dabei wurde eine Mischung aus linearen Modellen, Ensemble-Methoden, nichtlinearen Ansätzen und modernen Algorithmen berücksichtigt, um eine umfassende Analyse zu gewährleisten. 
-        Im Folgenden wird die Auswahl der Modelle und die Gründe für deren Bevorzugung gegenüber anderen Modellen erläutert:
-
-        \begin{enumerate}
-            \item \textbf{Lasso Regression}: Die Lasso Regression wurde aufgrund ihrer Fähigkeit gewählt, irrelevant Merkmale zu eliminieren, indem sie eine L1-Regularisierung anwendet. 
-            Dies hilft, das Modell sparsamer zu gestalten und Überanpassungen zu vermeiden.
-            \item \textbf{Ridge Regression}: Ridge Regression ergänzt die Lasso Regression durch die Anwendung einer L2-Regularisierung, die alle Koeffizienten gleichmäßig schrumpft. 
-            Dies verhindert Überanpassung und kann bei hoch korrelierten Merkmalen hilfreich sein, was in realen Daten oft vorkommt.
-            \item \textbf{Entscheidungsbaum}: Der Entscheidungsbaum wurde aufgrund seiner Fähigkeit zur Darstellung nichtlinearer Beziehungen und seiner einfachen Interpretierbarkeit ausgewählt. 
-            Er bietet klare Regeln für Entscheidungen und kann komplexe Interaktionen zwischen den Merkmalen modellieren.
-            \item \textbf{Random Forest}: Diese Ensemble-Methode reduziert die Varianz einzelner Entscheidungsbäume und verbessert dadurch die Vorhersagegenauigkeit. 
-            Random Forest ist robust gegenüber Ausreißern und bietet eine gute Balance zwischen Bias und Varianz.
-            \item \textbf{Gradient Boosting}: Gradient Boosting war aufgrund seiner Fähigkeit, durch sequentielles Training schwacher Modelle die Vorhersagegenauigkeit sukzessive zu erhöhen, eine naheliegende Wahl. 
-            Es ist besonders effektiv bei der Reduzierung von Bias und wird häufig in prädiktiven Analysen verwendet.
-            \item \textbf{Support Vector Machine (SVM)}: SVMs sind bekannt für ihre Effektivität bei der Arbeit mit nichtlinearen Daten. 
-            Sie finden optimale Trennhyperplane und eignen sich für komplexe Datensätze mit klaren Klassenunterschieden.
-            \item \textbf{K-Nearest Neighbors (KNN)}: KNN wurde aufgrund seiner Einfachheit und seiner Fähigkeit, lokale Strukturen in den Daten zu erfassen, ausgewählt. 
-            Es bietet eine intuitive Methode zur Klassifikation und Regression durch die Betrachtung der nächsten Nachbarn.
-            \item \textbf{XGBoost}: XGBoost wurde gewählt, da es eine effiziente und leistungsstarke Implementierung des Gradient Boostings bietet. 
-            Es ist bekannt für seine hervorragende Leistung und Flexibilität, insbesondere bei der Handhabung großer und komplexer Datensätze.
-            \item \textbf{Neuronales Netz}: Neuronale Netze wurden aufgrund ihrer Fähigkeit, komplexe und nichtlineare Muster in den Daten zu erfassen, berücksichtigt. 
-            Ihre Flexibilität und die Möglichkeit, tiefe Architekturen zu nutzen, machen sie zu einer guten Wahl für anspruchsvolle prädiktive Aufgaben.
-        \end{enumerate}
-
-        Diese Modelle wurden aufgrund ihrer jeweiligen Stärken, ihrer Fähigkeit zur Verarbeitung komplexer Datenstrukturen und ihrer breiten Anwendbarkeit in verschiedenen Domänen vorgezogen. 
-        Es wurde darauf geachtet, eine ausgewogene Auswahl an Modellen zu treffen, die unterschiedliche Ansätze zur Modellierung von Daten abdecken, um eine umfassende und differenzierte Analyse zu gewährleisten.
+    Zu Beginn der Modellierung wurden verschiedene Ansätze getestet, die eine breite Palette von Modellen und Features umfassten. 
+    Es wurden Versuche unternommen, zusätzliche Merkmale in die Modellierung einzubeziehen und dabei klassische Modelle wie lineare Regression, Entscheidungsbäume sowie Ensemble-Methoden wie Random Forest und Gradient Boosting einzusetzen. Allerdings erwiesen sich die Ergebnisse dieser Modelle als schlechter oder zumindest nicht besser im Vergleich zu Modellen, die sich stärker auf die zeitliche Komponente der Daten konzentrierten. 
+    Zudem erhöhten diese Modelle die Komplexität und die Abhängigkeiten erheblich, ohne dabei einen signifikanten Mehrwert zu bieten. 
+    Um den Rahmen dieser Fallstudie nicht zu sprengen, werden die verworfenen Zwischen-Ergebnisse der anderen Modelle nicht im Detail behandelt.
+    
+    Im Verlauf der Bearbeitung und durch die Erkenntnisse aus der Datenanalyse zeigte sich, dass die zeitliche Abfolge als eine der wenig verfügbaren Informationen zum Zeitpunkt der Vorhersage den größten Einfluss auf die Zielvariable hat. 
+    Andere Features, wie die Anzahl der Notrufe würden einen signifikanten Beitrag zur Vorhersagegenauigkeit leisten, stehen aber zum Zeitpunkt der Vorhersage im produktiven Einsatz nicht zur Verfügung.
+    Daher fiel die engere Auswahl auf Algorithmen, die speziell für die Analyse von Zeitreihen entwickelt wurden.
+    
+    Die Zeitreihe wurde durch die Spalte \texttt{unix\_ts\_date} repräsentiert, und das Ziel bestand darin, die zukünftige Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) vorherzusagen. 
+    Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und TDNN (Time-Delay Neural Network).
+    
+    \begin{itemize}
+        \item \textbf{LSTM (Long Short-Term Memory)}: LSTM-Netzwerke sind eine spezielle Form von rekurrenten neuronalen Netzen, die dafür bekannt sind, langanhaltende Abhängigkeiten in Zeitreihen effektiv zu modellieren. Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrer.
+    
+        \item \textbf{GRU (Gated Recurrent Unit)}: GRU ist eine vereinfachte Variante des LSTM, die jedoch ähnliche Fähigkeiten zur Modellierung von zeitlichen Abhängigkeiten bietet, bei gleichzeitig geringerer Komplexität und schnellerer Trainingszeit. GRU-Modelle zeigen in der Praxis oft vergleichbare Vorhersagegenauigkeiten wie LSTM, was sie ebenfalls zu einem aussichtsreichen Kandidaten für die Modellierung macht.
+    
+        \item \textbf{TDNN (Time-Delay Neural Network)}: TDNNs sind neuronale Netzwerke, die speziell für die Verarbeitung von Zeitreihen entwickelt wurden. Sie nutzen verzögerte Eingaben, um Muster in sequentiellen Daten zu erkennen, ohne die Notwendigkeit eines expliziten Gedächtnisses, wie es bei LSTM oder GRU der Fall ist. TDNNs eignen sich besonders gut, wenn es um die Vorhersage basierend auf einer festen Anzahl vergangener Zeitpunkte geht.
+    \end{itemize}
+    
+    Diese Algorithmen wurden aufgrund ihrer Fähigkeit ausgewählt, komplexe zeitliche Abhängigkeiten in den Daten zu modellieren und präzise Vorhersagen für die Zukunft zu treffen. 
+    Die Modelle wurden so entwickelt, dass sie die Spalte \texttt{unix\_ts\_date} als Input verwenden, um die zukünftigen Werte der Spalte \texttt{sby\_need} vorherzusagen.
 
     \section{Training und Bewertung der Modelle}
+                
+        Im Rahmen der Modellierung wurde ein besonderer Fokus auf die Bewertung der Vorhersagegenauigkeit gelegt, um sicherzustellen, dass die Modelle nicht nur allgemein gute Ergebnisse liefern, sondern auch speziell für den Anwendungsfall der Einsatzplanung optimiert sind. 
+        Neben den klassischen Regressionsmetriken wie dem Mean Absolute Error (MAE), dem Mean Squared Error (MSE) und dem \(R^2\)-Score, die zur Beurteilung der allgemeinen Modellgüte verwendet wurden, kamen auch spezielle Zusatzmetriken zum Einsatz, die für die spezifischen Anforderungen der Personalplanung entwickelt wurden.
 
-        Jedes Modell wurde auf den Trainingsdaten trainiert und anhand der Testdaten bewertet. 
-        Die folgenden Metriken wurden verwendet, um die Leistung der Modelle zu bewerten:
+        Diese speziellen Metriken wurden entwickelt, um die Effizienz der Modelle bei der Vorhersage der Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) zu bewerten. 
+        Hierbei liegt der Fokus darauf, Unterbesetzung (zu wenige Fahrer im Dienst) und Überbesetzung (zu viele Fahrer im Dienst) zu minimieren, um sowohl die Einsatzbereitschaft zu gewährleisten als auch die Ressourcen optimal zu nutzen.
+
+        Die spezifischen Zusatzmetriken wurden mithilfe einer benutzerdefinierten Funktion berechnet, die verschiedene Aspekte der Vorhersagegenauigkeit quantifiziert, die speziell auf den Anwendungsfall der Personalplanung zugeschnitten sind.
 
         \begin{itemize}
-            \item \textbf{Mean Absolute Error (MAE)}: Ein Maß für den durchschnittlichen absoluten Fehler der Vorhersagen.
-            \item \textbf{Mean Squared Error (MSE)}: Ein Maß für den durchschnittlichen quadratischen Fehler der Vorhersagen.
-            \item \textbf{Root Mean Squared Error (RMSE)}: Die Quadratwurzel des MSE, die die gleichen Einheiten wie die Zielvariable hat.
-            \item \textbf{R2-Score}: Ein Maß dafür, wie gut die Vorhersagen die tatsächlichen Werte erklären.
+            \item \textbf{Anteil an Tagen mit Unterbesetzung (\%)}: Diese Metrik gibt den Prozentsatz der Tage an, an denen weniger Ersatzfahrer vorhergesagt wurden, als tatsächlich benötigt wurden.
+            \item \textbf{Anteil an Tagen mit Überbesetzung (\%)}: Diese Metrik gibt den Prozentsatz der Tage an, an denen mehr Ersatzfahrer vorhergesagt wurden, als tatsächlich benötigt wurden.
+            \item \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)}: Diese Metrik zeigt den Prozentsatz der Tage an, an denen die Vorhersage exakt mit dem tatsächlichen Bedarf übereinstimmte.
+            \item \textbf{Durchschnittliche Überbesetzung}: Der durchschnittliche Unterschied zwischen der vorhergesagten und der tatsächlichen Anzahl der benötigten Ersatzfahrer an Tagen mit Überbesetzung.
+            \item \textbf{Durchschnittliche Unterbesetzung}: Der durchschnittliche Unterschied zwischen der tatsächlichen und der vorhergesagten Anzahl der benötigten Ersatzfahrer an Tagen mit Unterbesetzung.
+            \item \textbf{Median Überbesetzung}: Der Median der Überbesetzungen an Tagen, an denen zu viele Ersatzfahrer vorhergesagt wurden.
+            \item \textbf{Median Unterbesetzung}: Der Median der Unterbesetzungen an Tagen, an denen zu wenige Ersatzfahrer vorhergesagt wurden.
         \end{itemize}
+
+        Durch die Verwendung dieser spezialisierten Metriken in Kombination mit den klassischen Regressionsmetriken können die Modelle nicht nur hinsichtlich ihrer allgemeinen Vorhersagegüte, sondern auch in Bezug auf ihre Eignung für die spezifischen Anforderungen der Einsatzplanung bewertet werden. 
+        Dies ermöglichte es, die Modelle zu optimieren und die besten Modelle für die Vorhersage des zukünftigen Ersatzfahrerbedarfs auszuwählen.
+
+        Bei dem perfekten Modell würde die Zusatzmetrik \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)} 100\% haben.
+        Das perfekte Modell gibt es nicht, es muss also abgewägt werden, wie hoch die anderen Zusatzmetriken ausfallen sollen.
+        Der Anteil an Unterbesetzung sollte möglichst gering sein, aber die Anzahl der Überbesetzungen auch nicht viel zu hoch.
+
+        Ohne Vorhersage mit den noch statisch 90 eingeplanten Ersatzfahrern lassen sich auch die Metriken berechnen und wir erhalten die Werte in Tabelle \ref{tab:custom_metrics_90_sby}.
+
+        \begin{table}[h!]
+            \centering
+            \begin{tabular}{|l|l|}
+            \hline
+            \textbf{Metrik} & \textbf{Wert} \\ \hline
+            Anteil an Tagen mit Unterbesetzung (\%) & \textit{14.85\%} \\ \hline
+            Anteil an Tagen mit Überbesetzung (\%) & \textit{84.89\%} \\ \hline
+            Anteil an Tagen mit perfekter Vorhersage (\%) & \textit{0.26\%} \\ \hline
+            Durchschnittliche Überbesetzung & \textit{84.36} \\ \hline
+            Durchschnittliche Unterbesetzung & \textit{110.05} \\ \hline
+            Median Überbesetzung & \textit{90} \\ \hline
+            Median Unterbesetzung & \textit{86} \\ \hline
+            \end{tabular}
+            \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrer}
+            \label{tab:custom_metrics_90_sby}
+        \end{table}
+
+        %%%%%%%%%%%%%%%%%%% bis hierhin aktualisiert %%%%%%%%%%%%%%%%%%% 
+
+        % Ziele ableiten etc
 
         \subsection{Ergebnisse}
 
