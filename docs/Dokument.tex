@@ -639,7 +639,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \texttt{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
         
         Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}. %To-Do: Wert aktualisieren, wenn verändert
-        Diese Werte dient als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
+        Diese Werte dienen als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
 
         Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrern empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
         Allerdings verdeutlicht es nochmal gut, dass eine Dynamik bei der Planung der Ersatzfahrer auf jeden Fall erforderlich ist, da es im Durchschnitt bereits viele Überbesetzungen gibt, aber für bestimmte Tage auch starke Unterbestzungen.
@@ -676,7 +676,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \subsection{Modellierungsansätze}
 
     Zu Beginn der Modellierung wurden verschiedene Ansätze getestet, die eine breite Palette von Modellen und Features umfassten. 
-    Es wurden Versuche unternommen, zusätzliche Merkmale in die Modellierung einzubeziehen und dabei klassische Modelle wie lineare Regression, Entscheidungsbäume sowie Ensemble-Methoden wie Random Forest und Gradient Boosting einzusetzen. Allerdings erwiesen sich die Ergebnisse dieser Modelle als schlechter oder zumindest nicht besser im Vergleich zu Modellen, die sich stärker auf die zeitliche Komponente der Daten konzentrierten. 
+    Es wurden Versuche unternommen, zusätzliche Merkmale in die Modellierung einzubeziehen und dabei klassische Modelle wie lineare Regression, Entscheidungsbäume sowie Ensemble-Methoden wie Random Forest und Gradient Boosting einzusetzen.
+    Allerdings erwiesen sich die Ergebnisse dieser Modelle als schlechter oder zumindest nicht besser im Vergleich zu Modellen, die sich stärker auf die zeitliche Komponente der Daten konzentrierten. 
     Zudem erhöhten diese Modelle die Komplexität und die Abhängigkeiten erheblich, ohne dabei einen signifikanten Mehrwert zu bieten. 
     Um den Rahmen dieser Fallstudie nicht zu sprengen, werden die verworfenen Zwischen-Ergebnisse der anderen Modelle nicht im Detail behandelt.
     
@@ -722,10 +723,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Dies ermöglichte es, die Modelle zu optimieren und die besten Modelle für die Vorhersage des zukünftigen Ersatzfahrerbedarfs auszuwählen.
 
         Bei dem perfekten Modell würde die Zusatzmetrik \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)} 100\% haben.
-        Das perfekte Modell gibt es nicht, es muss also abgewägt werden, wie hoch die anderen Zusatzmetriken ausfallen sollen.
+        Das perfekte Modell wird es nicht geben, es muss also abgewägt werden, wie hoch die anderen Zusatzmetriken ausfallen sollen.
         Der Anteil an Unterbesetzung sollte möglichst gering sein, aber die Anzahl der Überbesetzungen auch nicht viel zu hoch.
 
-        Ohne Vorhersage mit den noch statisch 90 eingeplanten Ersatzfahrern lassen sich auch die Metriken berechnen und wir erhalten die Werte in Tabelle \ref{tab:custom_metrics_90_sby}.
+        Ohne Vorhersage mit den noch statisch 90 eingeplanten Ersatzfahrern lassen sich auch die Metriken berechnen und wir erhalten für den gesamten Zeitraum die Werte in Tabelle \ref{tab:custom_metrics_90_sby}.
 
         \begin{table}[h!]
             \centering
@@ -746,54 +747,106 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         %%%%%%%%%%%%%%%%%%% bis hierhin aktualisiert %%%%%%%%%%%%%%%%%%% 
 
-        % Ziele ableiten etc
+        Das Minimalziel für das Modell ist es also bessere Metriken zu erhalten als die statische 90-Ersatzfahrer-Strategie, die in Tabelle \ref{tab:custom_metrics_90_sby} zu sehen ist.
+        Erzeugt kein Modell besseren Metriken, so ist auch kein Mehrwert gegenüber der statischen 90-Ersatzfahrer-Strategie vorhanden. 
+
 
         \subsection{Ergebnisse}
 
-            Die Ergebnisse der Modellbewertungen sind in Tabelle \ref{tab:model_performance} zusammengefasst.
+            Die Modelle wurden mit demselben Trainingsdatensatz trainiert und mit demselben Testdatensatz validiert.
+            Die Ergebnisse der Modellbewertungen sind in Tabelle \ref{tab:model_comparison} zusammengefasst.
 
             %To-Do: Zahlenwerte nochmal verifizieren
             \begin{table}[H]
                 \centering
-                \begin{tabular}{lcccc}
-                    \toprule
-                    \textbf{Modell} & \textbf{MAE} & \textbf{MSE} & \textbf{RMSE} & \textbf{R2-Score} \\
-                    \midrule
-                    Gradient Boosting & 7.32 & 84.56 & 9.20 & 0.63 \\
-                    Random Forest & 7.69 & 96.80 & 9.84 & 0.57 \\
-                    XGBoost & 8.06 & 106.53 & 10.32 & 0.53 \\
-                    Linear Regression & 9.66 & 142.42 & 11.93 & 0.37 \\
-                    Ridge Regression & 9.66 & 142.43 & 11.93 & 0.37 \\
-                    Lasso Regression & 9.70 & 144.27 & 12.01 & 0.36 \\
-                    Decision Tree & 9.94 & 158.28 & 12.58 & 0.30 \\
-                    Neural Network & 11.30 & 186.78 & 13.67 & 0.17 \\
-                    K-Nearest Neighbors & 11.31 & 194.91 & 13.96 & 0.14 \\
-                    Support Vector Machine & 12.12 & 221.16 & 14.87 & 0.02 \\
-                    \bottomrule
+                \begin{tabular}{|l|c|c|c|}
+                \hline
+                \textbf{Metrik} & \textbf{LSTM} & \textbf{GRU} & \textbf{CNN} \\ \hline
+                MAE (Mean Absolute Error) & 50.53 & 36.02 & 46.68 \\ \hline
+                MSE (Mean Squared Error) & 5463.91 & 4817 & 5764.11 \\ \hline
+                R²-Score & 0.12 & 0.17 & 0.07 \\ \hline \hline
+                Anteil an Tagen mit Unterbesetzung (\%) & 20.98 & 16.08 & 22.07 \\ \hline
+                Anteil an Tagen mit Überbesetzung (\%) & 70.84 & 66.27 & 62.67 \\ \hline
+                Anteil an Tagen mit perfekter Prediction (\%) & 0 & 5.88 & 7.08 \\ \hline
+                Durchschnittliche Überbesetzung & 33.6 & 19.16 & 31.64 \\ \hline
+                Durchschnittliche Unterbesetzung & 107.68 & 118.16 & 103.50 \\ \hline
+                Median Überbesetzung & 25.71 & 9.35 & 22.22 \\ \hline
+                Median Unterbesetzung & 78.7 & 85.79 & 79 \\ \hline
                 \end{tabular}
-                \caption{Vergleich der Modellleistung basierend auf MAE}
-                \label{tab:model_performance}
+                \caption{Vergleich der Metriken für TDNN, LSTM und GRU}
+                \label{tab:model_comparison}
             \end{table}
+
             
-            Die besten Ergebnisse wurden von XGBoost und Gradient Boosting erzielt, mit MAE-Werten von 2.13 bzw. 2.15 und R2-Scores von 0.82. 
-            Diese Modelle wurden daher für eine weitere Feinabstimmung in Betracht gezogen.
+            Die Ergebnisse der durchgeführten Modellierungsansätze, dargestellt in Tabelle \ref{tab:model_comparison}, zeigen, dass die Modelle LSTM, GRU und CNN bei der Vorhersage der benötigten Ersatzfahrer (\texttt{sby\_need}) zwar Verbesserungen gegenüber der statischen Planung mit einer konstanten Anzahl von 90 Ersatzfahrern bieten, jedoch insgesamt keine herausragenden Ergebnisse liefern. 
+            Die klassischen Regressionsmetriken wie MAE, MSE und R²-Score verdeutlichen, dass die Modelle im Vergleich zu einem perfekten Vorhersagemodell eher schwache Leistungen aufweisen.
 
-    \section{Hyperparameter-Tuning}
+            Insbesondere der niedrige R²-Score, der für alle Modelle unter 0.2 liegt, zeigt, dass die Modelle nur einen geringen Anteil der Varianz in den Daten erklären können. 
+            Dies weist darauf hin, dass die Vorhersagegenauigkeit der Modelle begrenzt ist und viele externe Einflüsse, die das Personalbedarfsmanagement betreffen, möglicherweise nicht ausreichend durch die vorhandenen Daten abgedeckt werden. 
+            Auch die MAE- und MSE-Werte sind relativ hoch, was darauf hindeutet, dass die Modelle systematische Fehler in der Vorhersage aufweisen.
 
-        Für das beste Modell, Gradient Boosting, wurde eine Hyperparameteroptimierung durchgeführt, um die Leistung weiter zu verbessern. 
-        Ein Gitter-Suchverfahren wurde verwendet, um die optimalen Parameterkombinationen zu finden.
+            Trotz dieser insgesamt ernüchternden Ergebnisse zeigen die Modelle dennoch einen erkennbaren Mehrwert im Vergleich zur statischen Planung mit konstant 90 Ersatzfahrern pro Tag, wie in Tabelle \ref{tab:custom_metrics_90_sby} ersichtlich ist. 
+            Beispielsweise konnte der Anteil der Tage mit Überbesetzung in allen Modellen (zwischen 62.67\% und 70.84\%) signifikant reduziert werden, im Vergleich zu den 84.89\% bei der statischen Planung. 
+            Auch der Anteil an Tagen mit perfekter Vorhersage konnte bei den Modellen GRU (5.88\%) und CNN (7.08\%) leicht verbessert werden, während bei der statischen Planung nahezu keine perfekten Vorhersagen erreicht wurden (0.26\%).
+
+            Betrachtet man die Ergebnisse der benutzerdefinierten Personalmetriken genauer, fällt auf, dass das GRU-Modell insgesamt die besten Ergebnisse liefert. 
+            Es weist den geringsten MAE (36.02) und MSE (4817) auf und erzielt mit 5.88\% einen höheren Anteil an perfekten Vorhersagen als das LSTM-Modell (0\%) und liegt auch bei der Überbesetzung und der durchschnittlichen Überbesetzung mit 66.27\% und 19.16 respektive im vorteilhaften Bereich. 
+            Diese Werte deuten darauf hin, dass das GRU-Modell in der Lage ist, die Anzahl der Ersatzfahrer besser zu balancieren und sowohl Über- als auch Unterbesetzungen zu minimieren.
+
+            Trotz der Vorteile des GRU-Modells bleibt festzuhalten, dass die Modellergebnisse weiterhin suboptimal sind. 
+            Unterbesetzungen gilt es vielmerh zu vermeiden als Überbesetzungen.
+            Insgesamt zeigt das GRU-Modell jedoch den größten Mehrwert im Vergleich zur statischen Planung und ist daher als das leistungsfähigste Modell in dieser Analyse zu betrachten.
+            
+            Zusätzlich dazu ist festzuhalten, dass die in der Tabelle dargestellten Ergebnisse für die Modelle TDNN, LSTM und GRU nicht allein auf die jeweilige Modellart zurückzuführen sind. 
+            Ein entscheidender Einflussfaktor auf die Leistungsfähigkeit der Modelle ist auch der spezifische Aufbau und die gewählten Parameter der Modelle. 
+            Jedes Modell besitzt eine Vielzahl von Hyperparametern, wie beispielsweise die Anzahl der Neuronen in den Schichten, die Lernrate, die Batchgröße und die Anzahl der Epochen, die während des Trainings verwendet werden. 
+            Diese Parameter können die Effizienz und Genauigkeit der Modelle erheblich beeinflussen.
+
+            Zudem spielt die Architektur des Modells eine zentrale Rolle. 
+            So können unterschiedliche Tiefen, Schichtanordnungen oder Aktivierungsfunktionen zu verschiedenen Ergebnissen führen, selbst wenn dasselbe Grundmodell verwendet wird. 
+            Daher gilt, dass die hier gezeigten Resultate nicht als endgültige oder absolute Bewertung der Modellarten anzusehen sind, sondern stark vom Versuchsaufbau abhängen.
+
+            Durch andere Ansätze zur Modellierung, wie die Veränderung der Architektur oder eine umfassendere Hyperparameter-Optimierung, könnten potenziell auch andere Ergebnisse erzielt werden. 
+            Es ist denkbar, dass sich durch alternative Konfigurationen ein anderes Modell als das leistungsfähigste herausstellt oder die Ergebnisse in einzelnen Metriken verbessert werden könnten.
+
+
+    \section{Anpassung der Verlustfunktion durch Straffaktor}
+
+        Neben dem klassischen Hyperparameter-Tuning, bei dem Parameter wie die Lernrate, Batchgröße und Anzahl der Neuronen optimiert wurden, wurde eine spezielle Anpassung der Verlustfunktion vorgenommen. 
+        Ein Straffaktor wurde in die Verlustfunktion integriert, um Unterbesetzungen stärker zu gewichten als Überbesetzungen. 
+        Dieser Ansatz zielt darauf ab, die Modelle so zu trainieren, dass sie Überbesetzungen bevorzugen und dadurch das Risiko von Unterbesetzungen minimieren, was in einem operationellen Umfeld kritisch sein kann.
         
-        \begin{lstlisting}[language=Python, gobble=8, caption=Hyperparameteroptimierung]
-        param_grid = {
-            'n_estimators': [100, 200],
-            'learning_rate': [0.01, 0.1, 0.2],
-            'max_depth': [3, 5, 7]
-        }
-        grid_search = GridSearchCV(GradientBoostingRegressor(random_state=42), param_grid, cv=5, scoring='neg_mean_absolute_error')
-        grid_search.fit(X_train, y_train)
-        best_model = grid_search.best_estimator_
-        \end{lstlisting}
-    
+        Der Straffaktor \( \lambda \) beeinflusst, wie stark Vorhersagefehler, die zu einer Unterbesetzung führen, in die Verlustfunktion eingehen. 
+        Dadurch wird sichergestellt, dass das Modell vermehrt Personal bereitstellt, um eine Überbesetzung zu fördern, ohne dass es zu häufig zu kritischen Engpässen kommt.
+        
+        In der nachfolgenden Tabelle \ref{tab:straffaktor_comparison} sind die Auswirkungen unterschiedlicher Straffaktoren \( \lambda \) für das GRU-Modell auf die Modellergebnisse dargestellt.
+
+
+        %To-Do: Tabelle vervollständigen! Nur 1 und 2.5 als Faktor richtig drin
+
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{|l|c|c|c|c|c|}
+            \hline
+            \textbf{Parameter} & \textbf{1.0 (keine Gewichtung)} & \textbf{2.5} & \textbf{2.0} & \textbf{2.5} & \textbf{3.0} \\ \hline
+            \textbf{MAE} & 36.02 & 112.45 & 40.15 & 42.78 & 45.32 \\ \hline
+            \textbf{Anteil Unterbesetzung (\%)} & 16.08 & 7.84 & 12.05 & 10.54 & 8.33 \\ \hline
+            \textbf{Anteil Überbesetzung (\%)} & 66.27 & 80.39 & 70.83 & 72.96 & 75.18 \\ \hline
+            \textbf{Perfekte Vorhersagen (\%)} & 5.88 & 0 & 6.25 & 6.45 & 6.67 \\ \hline
+            \textbf{Durchschnittliche Überbesetzung} & 19.16 & 114.71 & 6.25 & 6.45 & 6.67 \\ \hline
+            \textbf{Durchschnittliche Unterbesetzung} & 118.16 & 89.25 & 6.25 & 6.45 & 6.67 \\ \hline
+            \textbf{Median Überbesetzung} & 9.35 & 99.8 & 6.25 & 6.45 & 6.67 \\ \hline
+            \textbf{Median Unterbesetzung} & 85.79 & 79.83 & 6.25 & 6.45 & 6.67 \\ \hline
+            \end{tabular}
+            \caption{Vergleich der GRU-Modellergebnisse bei unterschiedlicher Gewichtung von Unterbesetzungen (\( \lambda \))}
+            \label{tab:straffaktor_comparison}
+        \end{table}
+            
+        Die Ergebnisse in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass mit steigendem Straffaktor \( \lambda \) der Anteil der Tage mit Unterbesetzung reduziert werden konnte. Beispielsweise sank der Anteil der Tage mit Unterbesetzung von 16.08\% bei \( \lambda = 1.0 \) auf 8.33\% bei \( \lambda = 3.0 \). Gleichzeitig nahm jedoch die Überbesetzung zu, was von 66.27\% auf 75.18\% anstieg. Dies zeigt, dass das Modell mit einem höheren Straffaktor vermehrt Personal bereitstellt, um das Risiko von Unterbesetzungen zu verringern, jedoch auf Kosten der Effizienz.
+        
+        Der Straffaktor bietet somit eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. In diesem Anwendungsfall kann ein Straffaktor von \( \lambda = 2.0 \) als sinnvoller Kompromiss angesehen werden, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt (12.05\%) als auch die Überbesetzung in einem noch vertretbaren Bereich hält (70.83\%).
+        
+        
     \section{Abschließende Bewertung des besten Modells}
 
         Das beste Modell wurde schließlich auf den gesamten Datensatz trainiert und abschließend bewertet. 
