@@ -316,8 +316,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \clearpage
 
 %Tabellenverzeichnis
-%\cleardoublepage
-%\listoftables
+\cleardoublepage
+\listoftables
+\clearpage
 
 \chapter{Einleitung}
 \pagenumbering{arabic}
@@ -430,13 +431,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         \begin{itemize}
             \item \textbf{data}: Dieser Ordner enthält alle Daten, die im Projekt verwendet werden. 
-            Der Unterordner \textit{raw} speichert die unbearbeiteten Rohdaten, während im Unterordner \textit{processed} die für die Modellierung vorbereiteten Daten abgelegt werden.
+            Der Unterordner \texttt{raw} speichert die unbearbeiteten Rohdaten, während im Unterordner \texttt{processed} die für die Modellierung vorbereiteten Daten abgelegt werden.
             \item \textbf{notebooks}: Hier werden Jupyter-Notebooks für die Datenexploration und Modellierung gespeichert. 
-            Der Unterordner \textit{exploration} enthält Notebooks zur ersten Datenanalyse, und der Unterordner \textit{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle.
+            Der Unterordner \texttt{exploration} enthält Notebooks zur ersten Datenanalyse, und der Unterordner \texttt{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle.
             \item \textbf{app}: In diesem Ordner sind die Skripte zur Datenvorbereitung, Modellierung und Evaluation gespeichert. %To-Do: Aktuell halten
-            Die Skripte im Unterordner \textit{data\_preparation} kümmern sich um die Datenbereinigung und -transformation, während im Unterordner \textit{models} die Modelltrainingsskripte und im Unterordner \textit{evaluation} die Evaluationsskripte abgelegt werden.
+            Die Skripte im Unterordner \texttt{data\_preparation} kümmern sich um die Datenbereinigung und -transformation, während im Unterordner \texttt{models} die Modelltrainingsskripte und im Unterordner \texttt{evaluation} die Evaluationsskripte abgelegt werden.
             \item \textbf{reports}: Dieser Ordner enthält alle Berichte, Abbildungen und Tabellen, die im Laufe des Projekts erstellt werden. 
-            Der Unterordner \textit{figures} speichert Grafiken und Diagramme, während der Unterordner \textit{tables} die erstellten Tabellen enthält.
+            Der Unterordner \texttt{figures} speichert Grafiken und Diagramme, während der Unterordner \texttt{tables} die erstellten Tabellen enthält.
             \item \textbf{docs}: Hier werden alle Projektdokumentationen abgelegt. 
             Dies umfasst Projektpläne, Anforderungsdokumente und andere relevante Dokumente.
         \end{itemize}
@@ -607,14 +608,18 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             %To-Do: falls es noch mehr Features geben sollte, diese ergänzen bzw den Text adaptieren
 
-            Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \texttt{sby\_need} wird dabei als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
-            Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. Die Spalte \texttt{sby\_need} wird aus dem Feature-Datensatz entfernt, da sie die Zielvariable darstellt, deren Vorhersage im Fokus steht.
+            Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \texttt{sby\_need} als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
+            Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ausreichend genau berechnen lässt: $\frac{calls}{4.8}-n\_sby$.
+            Zudem steht die Spalte \texttt{calls} zum Zeitpunkt der Vorhersage nicht zu Verfügung und kann ohnehin nicht im Feature-Datensatz genutzt werden.
 
-            Zusätzlich werden alle Features aus dem Datensatz entfernt, die im Produktionsbetrieb nicht verfügbar sein können. 
+            Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. 
+            Die beiden Zielvariable \texttt{sby\_need} und \texttt{calls} werden dann aus dem Feature-Datensatz entfernt, da sie die Zielvariablen darstellen, deren Vorhersage im Fokus steht.
+
+            Zusätzlich werden alle anderen Features zwangsweise aus dem Feature-Datensatz entfernt, die im Produktionsbetrieb nicht verfügbar sein können. 
             Dies betrifft nahezu alle Merkmale, da die meisten Informationen erst im Nachhinein oder zeitnah vorliegen. 
             Als einzige Ausnahme bleibt das Datum bestehen, da es im Produktionsbetrieb vorab bekannt ist und daher als relevantes Feature erhalten bleibt.
 
-            Der finale Feature-Datensatz enthält somit ausschließlich das Datum in Form der Spalte \texttt{unix\_ts\_date}, während die Spalte \texttt{sby\_need} als Zielvariable fungiert.
+            Der finale Feature-Datensatz enthält somit ausschließlich das Datum in Form der Spalte \texttt{unix\_ts\_date}, während die Spalten \texttt{sby\_need} und \texttt{calls} als Zielvariablen fungieren.
 
     \section{Baseline-Modell}
 
@@ -624,7 +629,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Ein einfaches Baseline-Modell kann beispielsweise der Durchschnitt der Zielvariable oder ein einfacher linearer Regressor sein. 
 
         % To-Do: Modell auf andere Zielvariable umstellen. Noch nicht klar ob sby_need das richtige ist
-        Das Baseline-Modell in diesem Projekt ist ein Durchschnittsmodell, das den mittleren Wert der Zielvariable für jede Vorhersage nutzt.
+        Das Baseline-Modell ist in diesem Fall ein Durchschnittsmodell für die Spalte \texttt{sby\_need}, das den mittleren Wert der schlussendlich gesuchten Zielvariable für jede Vorhersage nutzt.
         
         Die Leistung des Baseline-Modells wird mittels des Mean Absolute Error (MAE) und dem Bestimmtgeitsmaß ($R^2$-Score) bewertet. 
         Abbildung \ref{fig:baseline_performance} zeigt die Performance des Baseline-Modells im Vergleich zu den tatsächlichen Werten.
@@ -668,41 +673,43 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \chapter{Modellierung}
 
     In diesem Kapitel werden verschiedene Modellierungsansätze untersucht, um das beste Vorhersagemodell für die Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende zu finden. 
-    Im Rahmen der Fallstudien-Bearbeitung wurden insgesamt verschiedenste Modelle und Ansätze verwendet, die jeweils spezifische Vorteile und Eigenschaften mitbringen. 
+    Insgesamt wurden im Rahmen der Fallstudien-Bearbeitung verschiedenste Modelle und Ansätze verwendet, die jeweils spezifische Vorteile und Eigenschaften mitbringen. 
     Diese Ansätze umfassen lineare und nichtlineare Modelle, Entscheidungsbäume, Ensemble-Methoden, neuronale Netze und Zeitreihenanalyse-Algorithmen wie z. B. SARIMAX. 
     Die Wahl dieser Ansätze basiert auf ihrer allgemeinen Verfügbarkeit und ihrer bewährten Leistung in vergleichbaren Vorhersageproblemen.
     Um den Rahmen der Fallstudie nicht zu sprengen und das Kernproblem nicht aus den Augen zu verlieren, wird in diesem Kapitel nur auf die besten Modellansätze eingegangen.
 
-    \subsection{Modellierungsansätze}
+    \section{Modellierungsansätze}
 
-    Zu Beginn der Modellierung wurden verschiedene Ansätze getestet, die eine breite Palette von Modellen und Features umfassten. 
-    Es wurden Versuche unternommen, zusätzliche Merkmale in die Modellierung einzubeziehen und dabei klassische Modelle wie lineare Regression, Entscheidungsbäume sowie Ensemble-Methoden wie Random Forest und Gradient Boosting einzusetzen.
-    Allerdings erwiesen sich die Ergebnisse dieser Modelle als schlechter oder zumindest nicht besser im Vergleich zu Modellen, die sich stärker auf die zeitliche Komponente der Daten konzentrierten. 
-    Zudem erhöhten diese Modelle die Komplexität und die Abhängigkeiten erheblich, ohne dabei einen signifikanten Mehrwert zu bieten. 
-    Um den Rahmen dieser Fallstudie nicht zu sprengen, werden die verworfenen Zwischen-Ergebnisse der anderen Modelle nicht im Detail behandelt.
-    
-    Im Verlauf der Bearbeitung und durch die Erkenntnisse aus der Datenanalyse zeigte sich, dass die zeitliche Abfolge als eine der wenig verfügbaren Informationen zum Zeitpunkt der Vorhersage den größten Einfluss auf die Zielvariable hat. 
-    Andere Features, wie die Anzahl der Notrufe würden einen signifikanten Beitrag zur Vorhersagegenauigkeit leisten, stehen aber zum Zeitpunkt der Vorhersage im produktiven Einsatz nicht zur Verfügung.
-    Daher fiel die engere Auswahl auf Algorithmen, die speziell für die Analyse von Zeitreihen entwickelt wurden.
-    
-    Die Zeitreihe wurde durch die Spalte \texttt{unix\_ts\_date} repräsentiert, und das Ziel bestand darin, die zukünftige Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) vorherzusagen. 
-    Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und TDNN (Time-Delay Neural Network).
-    
-    \begin{itemize}
-        \item \textbf{LSTM (Long Short-Term Memory)}: LSTM-Netzwerke sind eine spezielle Form von rekurrenten neuronalen Netzen, die dafür bekannt sind, langanhaltende Abhängigkeiten in Zeitreihen effektiv zu modellieren. Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrer.
-    
-        \item \textbf{GRU (Gated Recurrent Unit)}: GRU ist eine vereinfachte Variante des LSTM, die jedoch ähnliche Fähigkeiten zur Modellierung von zeitlichen Abhängigkeiten bietet, bei gleichzeitig geringerer Komplexität und schnellerer Trainingszeit. GRU-Modelle zeigen in der Praxis oft vergleichbare Vorhersagegenauigkeiten wie LSTM, was sie ebenfalls zu einem aussichtsreichen Kandidaten für die Modellierung macht.
-    
-        \item \textbf{TDNN (Time-Delay Neural Network)}: TDNNs sind neuronale Netzwerke, die speziell für die Verarbeitung von Zeitreihen entwickelt wurden. Sie nutzen verzögerte Eingaben, um Muster in sequentiellen Daten zu erkennen, ohne die Notwendigkeit eines expliziten Gedächtnisses, wie es bei LSTM oder GRU der Fall ist. TDNNs eignen sich besonders gut, wenn es um die Vorhersage basierend auf einer festen Anzahl vergangener Zeitpunkte geht.
-    \end{itemize}
-    
-    Diese Algorithmen wurden aufgrund ihrer Fähigkeit ausgewählt, komplexe zeitliche Abhängigkeiten in den Daten zu modellieren und präzise Vorhersagen für die Zukunft zu treffen. 
-    Die Modelle wurden so entwickelt, dass sie die Spalte \texttt{unix\_ts\_date} als Input verwenden, um die zukünftigen Werte der Spalte \texttt{sby\_need} vorherzusagen.
+        Zu Beginn der Modellierung wurden verschiedene Ansätze getestet, die eine breite Palette von Modellen und Features umfassten. 
+        Es wurden Versuche unternommen, zusätzliche Merkmale in die Modellierung einzubeziehen und dabei klassische Modelle wie lineare Regression, Entscheidungsbäume sowie Ensemble-Methoden wie Random Forest und Gradient Boosting einzusetzen.
+        Allerdings erwiesen sich die Ergebnisse dieser Modelle als schlechter oder zumindest nicht besser im Vergleich zu Modellen, die sich stärker auf die zeitliche Komponente der Daten konzentrierten. 
+        Zudem erhöhten diese Modelle die Komplexität und die Abhängigkeiten erheblich, ohne dabei einen signifikanten Mehrwert zu bieten. 
+        Um den Rahmen dieser Fallstudie nicht zu sprengen, werden die verworfenen Zwischen-Ergebnisse der anderen Modelle nicht im Detail behandelt.
+        
+        Im Verlauf der Bearbeitung und durch die Erkenntnisse aus der Datenanalyse zeigte sich, dass die zeitliche Abfolge als eine der wenig verfügbaren Informationen zum Zeitpunkt der Vorhersage den größten Einfluss auf die Zielvariable hat. 
+        Andere Features -- wie die Anzahl der Notrufe -- würden einen signifikanten Beitrag zur Vorhersagegenauigkeit leisten, stehen aber zum Zeitpunkt der Vorhersage im produktiven Einsatz nicht zur Verfügung.
+        Daher fiel die engere Auswahl auf Algorithmen, die speziell für die Analyse von Zeitreihen entwickelt wurden.
+        
+        Die Zeitreihe wird durch die Spalte \texttt{unix\_ts\_date} repräsentiert, und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) vorherzusagen. 
+        Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und TDNN (Time-Delay Neural Network).
+        
+        \begin{itemize}
+            \item \textbf{LSTM (Long Short-Term Memory)}: LSTM-Netzwerke sind eine spezielle Form von rekurrenten neuronalen Netzen, die dafür bekannt sind, langanhaltende Abhängigkeiten in Zeitreihen effektiv zu modellieren. Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrer.
+        
+            \item \textbf{GRU (Gated Recurrent Unit)}: GRU ist eine vereinfachte Variante des LSTM, die jedoch ähnliche Fähigkeiten zur Modellierung von zeitlichen Abhängigkeiten bietet, bei gleichzeitig geringerer Komplexität und schnellerer Trainingszeit. GRU-Modelle zeigen in der Praxis oft vergleichbare Vorhersagegenauigkeiten wie LSTM, was sie ebenfalls zu einem aussichtsreichen Kandidaten für die Modellierung macht.
+        
+            \item \textbf{TDNN (Time-Delay Neural Network)}: TDNNs sind neuronale Netzwerke, die speziell für die Verarbeitung von Zeitreihen entwickelt wurden. Sie nutzen verzögerte Eingaben, um Muster in sequentiellen Daten zu erkennen, ohne die Notwendigkeit eines expliziten Gedächtnisses, wie es bei LSTM oder GRU der Fall ist. TDNNs eignen sich besonders gut, wenn es um die Vorhersage basierend auf einer festen Anzahl vergangener Zeitpunkte geht.
+        \end{itemize}
+        
+        Diese Algorithmen wurden aufgrund ihrer Fähigkeit ausgewählt, komplexe zeitliche Abhängigkeiten in den Daten zu modellieren und präzise Vorhersagen für die Zukunft zu treffen. 
+        Die Modelle wurden so entwickelt, dass sie die Spalte \texttt{unix\_ts\_date} als Input verwenden, um die zukünftigen Werte der Spalte \texttt{calls} vorherzusagen.
+        Über die Spalte \texttt{calls} lässt sich die Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) dann berechnen.
+        Ansätze bei denen \texttt{sby\_need} direkt vorhersagt wird, haben sich im Rahmen der Bearbeitung als weniger genau herausgestellt.
 
     \section{Training und Bewertung der Modelle}
                 
         Im Rahmen der Modellierung wurde ein besonderer Fokus auf die Bewertung der Vorhersagegenauigkeit gelegt, um sicherzustellen, dass die Modelle nicht nur allgemein gute Ergebnisse liefern, sondern auch speziell für den Anwendungsfall der Einsatzplanung optimiert sind. 
-        Neben den klassischen Regressionsmetriken wie dem Mean Absolute Error (MAE), dem Mean Squared Error (MSE) und dem \(R^2\)-Score, die zur Beurteilung der allgemeinen Modellgüte verwendet wurden, kamen auch spezielle Zusatzmetriken zum Einsatz, die für die spezifischen Anforderungen der Personalplanung entwickelt wurden.
+        Neben den klassischen Regressionsmetriken wie dem Mean Absolute Error (MAE), dem Root Mean Squared Error (RMSE) und dem \(R^2\)-Score, die zur Beurteilung der allgemeinen Modellgüte verwendet wurden, kamen auch spezielle Zusatzmetriken zum Einsatz, die für die spezifischen Anforderungen der Personalplanung entwickelt wurden.
 
         Diese speziellen Metriken wurden entwickelt, um die Effizienz der Modelle bei der Vorhersage der Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) zu bewerten. 
         Hierbei liegt der Fokus darauf, Unterbesetzung (zu wenige Fahrer im Dienst) und Überbesetzung (zu viele Fahrer im Dienst) zu minimieren, um sowohl die Einsatzbereitschaft zu gewährleisten als auch die Ressourcen optimal zu nutzen.
@@ -745,8 +752,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \label{tab:custom_metrics_90_sby}
         \end{table}
 
-        %%%%%%%%%%%%%%%%%%% bis hierhin aktualisiert %%%%%%%%%%%%%%%%%%% 
-
         Das Minimalziel für das Modell ist es also bessere Metriken zu erhalten als die statische 90-Ersatzfahrer-Strategie, die in Tabelle \ref{tab:custom_metrics_90_sby} zu sehen ist.
         Erzeugt kein Modell besseren Metriken, so ist auch kein Mehrwert gegenüber der statischen 90-Ersatzfahrer-Strategie vorhanden. 
 
@@ -755,6 +760,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Die Modelle wurden mit demselben Trainingsdatensatz trainiert und mit demselben Testdatensatz validiert.
             Die Ergebnisse der Modellbewertungen sind in Tabelle \ref{tab:model_comparison} zusammengefasst.
+            Bei den Ergebnissen ist zu beachten, dass die allgemeinen Metriken sich auf die Spalte \texttt{calls} beziehen und die anderen Metriken nur auf die Spalte \texttt{sby\_need}.
+            Bei den Ergebnissen für \texttt{sby\_need} ist außerdem anzumerken, dass Ergebnisse kleiner Null automatisch auf Null gesetzt werden, da es nicht weniger als keinen Ersatzfahrer geben kann.
+            Dieser Umstand sorgt dafür, dass sich die Ergebnissen gerade bei den perfekten Vorhersagen verbessern können, da es automatisch mehr Treffer für Null als Vorhersage gleich Null als echten Wert gibt.
 
             %To-Do: Zahlenwerte nochmal verifizieren
             \begin{table}[H]
@@ -762,42 +770,43 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \begin{tabular}{|l|c|c|c|}
                 \hline
                 \textbf{Metrik} & \textbf{LSTM} & \textbf{GRU} & \textbf{CNN} \\ \hline
-                MAE (Mean Absolute Error) & 50.53 & 36.02 & 46.68 \\ \hline
-                MSE (Mean Squared Error) & 5463.91 & 4817 & 5764.11 \\ \hline
-                R²-Score & 0.12 & 0.17 & 0.07 \\ \hline \hline
-                Anteil an Tagen mit Unterbesetzung (\%) & 20.98 & 16.08 & 22.07 \\ \hline
-                Anteil an Tagen mit Überbesetzung (\%) & 70.84 & 66.27 & 62.67 \\ \hline
-                Anteil an Tagen mit perfekter Prediction (\%) & 0 & 5.88 & 7.08 \\ \hline
-                Durchschnittliche Überbesetzung & 33.6 & 19.16 & 31.64 \\ \hline
-                Durchschnittliche Unterbesetzung & 107.68 & 118.16 & 103.50 \\ \hline
-                Median Überbesetzung & 25.71 & 9.35 & 22.22 \\ \hline
-                Median Unterbesetzung & 78.7 & 85.79 & 79 \\ \hline
+                MAE (Mean Absolute Error) (bezogen auf \texttt{calls}) & 946.1 & 949.57 & 931.63 \\ \hline
+                RMSE (Root Mean Squared Error) (bezogen auf \texttt{calls}) & 946 & 1135.48 & 1099.75 \\ \hline
+                R²-Score (bezogen auf \texttt{calls}) & 0.26 & 0.24 & 0.29 \\ \hline \hline
+                Anteil an Tagen mit Unterbesetzung (\%) & 21.33 & 22.22 & 21.77 \\ \hline
+                Anteil an Tagen mit Überbesetzung (\%) & 6.22 & 0 & 4.44 \\ \hline
+                Anteil an Tagen mit perfekter Vorhersage (\%) & 72.44 & 77.77 & 73.88 \\ \hline
+                Durchschnittliche Überbesetzung & 32.39 & N/A & 24.79 \\ \hline
+                Durchschnittliche Unterbesetzung & 128.89 & 137.31 & 127.39 \\ \hline
+                Median Überbesetzung & 20.72 & N/A & 29.34 \\ \hline
+                Median Unterbesetzung & 96.45 & 114.82 & 92 \\ \hline
                 \end{tabular}
                 \caption{Vergleich der Metriken für TDNN, LSTM und GRU}
                 \label{tab:model_comparison}
             \end{table}
 
             
-            Die Ergebnisse der durchgeführten Modellierungsansätze, dargestellt in Tabelle \ref{tab:model_comparison}, zeigen, dass die Modelle LSTM, GRU und CNN bei der Vorhersage der benötigten Ersatzfahrer (\texttt{sby\_need}) zwar Verbesserungen gegenüber der statischen Planung mit einer konstanten Anzahl von 90 Ersatzfahrern bieten, jedoch insgesamt keine herausragenden Ergebnisse liefern. 
-            Die klassischen Regressionsmetriken wie MAE, MSE und R²-Score verdeutlichen, dass die Modelle im Vergleich zu einem perfekten Vorhersagemodell eher schwache Leistungen aufweisen.
+            Die Ergebnisse der durchgeführten Modellierungsansätze, dargestellt in Tabelle \ref{tab:model_comparison}, zeigen, dass die Modelle LSTM, GRU und CNN bei der Vorhersage einen höheren Anteil geplanten Tage gegenüber der statischen Planung mit einer konstanten Anzahl von 90 Ersatzfahrern bieten, jedoch insgesamt keine herausragenden Ergebnisse liefern, da die Vorhersagen überwiegend 0 geworden sind.
+            Das entspricht zwar der Mehrheit der Tage, ist aber nicht Sinn der Planung von Ersatzfahrern.
 
-            Insbesondere der niedrige R²-Score, der für alle Modelle unter 0.2 liegt, zeigt, dass die Modelle nur einen geringen Anteil der Varianz in den Daten erklären können. 
+            Auch die klassischen Regressionsmetriken wie MAE, RMSE und R²-Score verdeutlichen, dass die Modelle eher schwache Leistungen aufweisen.
+
+            Insbesondere der niedrige R²-Score, der für alle Modelle um 0.25 liegt, zeigt, dass die Modelle nur einen relativ niedrigen Anteil der Varianz in den Daten erklären können. 
             Dies weist darauf hin, dass die Vorhersagegenauigkeit der Modelle begrenzt ist und viele externe Einflüsse, die das Personalbedarfsmanagement betreffen, möglicherweise nicht ausreichend durch die vorhandenen Daten abgedeckt werden. 
-            Auch die MAE- und MSE-Werte sind relativ hoch, was darauf hindeutet, dass die Modelle systematische Fehler in der Vorhersage aufweisen.
+            Auch die MAE- und RMSE-Werte sind relativ hoch, was darauf hindeutet, dass die Modelle systematische Fehler in der Vorhersage aufweisen.
 
-            Trotz dieser insgesamt ernüchternden Ergebnisse zeigen die Modelle dennoch einen erkennbaren Mehrwert im Vergleich zur statischen Planung mit konstant 90 Ersatzfahrern pro Tag, wie in Tabelle \ref{tab:custom_metrics_90_sby} ersichtlich ist. 
-            Beispielsweise konnte der Anteil der Tage mit Überbesetzung in allen Modellen (zwischen 62.67\% und 70.84\%) signifikant reduziert werden, im Vergleich zu den 84.89\% bei der statischen Planung. 
-            Auch der Anteil an Tagen mit perfekter Vorhersage konnte bei den Modellen GRU (5.88\%) und CNN (7.08\%) leicht verbessert werden, während bei der statischen Planung nahezu keine perfekten Vorhersagen erreicht wurden (0.26\%).
+            Trotz dieser insgesamt ernüchternden Ergebnisse zeigen die Modelle dennoch Potential im Vergleich zur statischen Planung mit konstant 90 Ersatzfahrern pro Tag, wie in Tabelle \ref{tab:custom_metrics_90_sby} ersichtlich ist. 
+            Das Potential wird vor allem bei der Vorhersage der Notrufe (\texttt{calls}) ersichtlich und dadurch, dass die allermeisten Tage \enquote{perfekt} vorhergesagt wurden.
 
-            Betrachtet man die Ergebnisse der benutzerdefinierten Personalmetriken genauer, fällt auf, dass das GRU-Modell insgesamt die besten Ergebnisse liefert. 
-            Es weist den geringsten MAE (36.02) und MSE (4817) auf und erzielt mit 5.88\% einen höheren Anteil an perfekten Vorhersagen als das LSTM-Modell (0\%) und liegt auch bei der Überbesetzung und der durchschnittlichen Überbesetzung mit 66.27\% und 19.16 respektive im vorteilhaften Bereich. 
-            Diese Werte deuten darauf hin, dass das GRU-Modell in der Lage ist, die Anzahl der Ersatzfahrer besser zu balancieren und sowohl Über- als auch Unterbesetzungen zu minimieren.
+            Betrachtet man die Ergebnisse der benutzerdefinierten Personalmetriken genauer, fällt auf, dass das GRU-Modell hinsichtlich der perfekten Vorhersagen gerinfügig bessere Ergebnisse liefert. 
+            % Es weist den geringsten MAE (36.02) und RMSE (4817) auf und erzielt mit 5.88\% einen höheren Anteil an perfekten Vorhersagen als das LSTM-Modell (0\%) und liegt auch bei der Überbesetzung und der durchschnittlichen Überbesetzung mit 66.27\% und 19.16 respektive im vorteilhaften Bereich. 
+            % Diese Werte deuten darauf hin, dass das GRU-Modell in der Lage ist, die Anzahl der Ersatzfahrer besser zu balancieren und sowohl Über- als auch Unterbesetzungen zu minimieren.
 
-            Trotz der Vorteile des GRU-Modells bleibt festzuhalten, dass die Modellergebnisse weiterhin suboptimal sind. 
-            Unterbesetzungen gilt es vielmerh zu vermeiden als Überbesetzungen.
-            Insgesamt zeigt das GRU-Modell jedoch den größten Mehrwert im Vergleich zur statischen Planung und ist daher als das leistungsfähigste Modell in dieser Analyse zu betrachten.
+            % Trotz der Vorteile des GRU-Modells bleibt festzuhalten, dass die Modellergebnisse weiterhin suboptimal sind. 
+            % Unterbesetzungen gilt es vielmerh zu vermeiden als Überbesetzungen.
+            % Insgesamt zeigt das GRU-Modell jedoch den größten Mehrwert im Vergleich zur statischen Planung und ist daher als das leistungsfähigste Modell in dieser Analyse zu betrachten.
             
-            Zusätzlich dazu ist festzuhalten, dass die in der Tabelle dargestellten Ergebnisse für die Modelle TDNN, LSTM und GRU nicht allein auf die jeweilige Modellart zurückzuführen sind. 
+            Zusätzlich ist festzuhalten, dass die in der Tabelle dargestellten Ergebnisse für die Modelle TDNN, LSTM und GRU nicht allein auf die jeweilige Modellart zurückzuführen sind. 
             Ein entscheidender Einflussfaktor auf die Leistungsfähigkeit der Modelle ist auch der spezifische Aufbau und die gewählten Parameter der Modelle. 
             Jedes Modell besitzt eine Vielzahl von Hyperparametern, wie beispielsweise die Anzahl der Neuronen in den Schichten, die Lernrate, die Batchgröße und die Anzahl der Epochen, die während des Trainings verwendet werden. 
             Diese Parameter können die Effizienz und Genauigkeit der Modelle erheblich beeinflussen.
@@ -826,44 +835,41 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         \begin{table}[H]
             \centering
-            \begin{tabular}{|l|c|c|c|c|c|}
+            \begin{tabular}{|l|c|c|c|c|}
             \hline
-            \textbf{Parameter} & \textbf{1.0 (keine Gewichtung)} & \textbf{2.5} & \textbf{2.0} & \textbf{2.5} & \textbf{3.0} \\ \hline
-            \textbf{MAE} & 36.02 & 112.45 & 40.15 & 42.78 & 45.32 \\ \hline
-            \textbf{Anteil Unterbesetzung (\%)} & 16.08 & 7.84 & 12.05 & 10.54 & 8.33 \\ \hline
-            \textbf{Anteil Überbesetzung (\%)} & 66.27 & 80.39 & 70.83 & 72.96 & 75.18 \\ \hline
-            \textbf{Perfekte Vorhersagen (\%)} & 5.88 & 0 & 6.25 & 6.45 & 6.67 \\ \hline
-            \textbf{Durchschnittliche Überbesetzung} & 19.16 & 114.71 & 6.25 & 6.45 & 6.67 \\ \hline
-            \textbf{Durchschnittliche Unterbesetzung} & 118.16 & 89.25 & 6.25 & 6.45 & 6.67 \\ \hline
-            \textbf{Median Überbesetzung} & 9.35 & 99.8 & 6.25 & 6.45 & 6.67 \\ \hline
-            \textbf{Median Unterbesetzung} & 85.79 & 79.83 & 6.25 & 6.45 & 6.67 \\ \hline
+            \textbf{Parameter} & \textbf{1.0 (keine Gewichtung)} & \textbf{25} & \textbf{50} & \textbf{100} \\ \hline
+            \textbf{Anteil Unterbesetzung (\%)} & 22.22 & 8.89 & 3.56 & 4.00 \\ \hline
+            \textbf{Anteil Überbesetzung (\%)} & 0 & 61.33 & 84.00 & 81.78 \\ \hline
+            \textbf{Perfekte Vorhersagen (\%)} & 77.77 & 29.78 & 12.44 & 14.22 \\ \hline
+            \textbf{Durchschnittliche Überbesetzung} & N/A & 119.21 & 167.35 & 155.50 \\ \hline
+            \textbf{Durchschnittliche Unterbesetzung} & 137.31 & 91.25 & 90.09 & 97.83 \\ \hline
+            \textbf{Median Überbesetzung} & N/A & 116.53 & 164.17 & 149.22 \\ \hline
+            \textbf{Median Unterbesetzung} & 114.82 & 63.35 & 63.52 & 48.74 \\ \hline
             \end{tabular}
             \caption{Vergleich der GRU-Modellergebnisse bei unterschiedlicher Gewichtung von Unterbesetzungen (\( \lambda \))}
             \label{tab:straffaktor_comparison}
         \end{table}
+        
+        Die Ergebnisse in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass mit steigendem Straffaktor \( \lambda \) der Anteil der Tage mit Unterbesetzung reduziert wird konnte. 
+        Nachteil eines steigendem Straffaktor ist jedoch die zunehmende Überbesetzung.
+        Dies zeigt, dass das Modell mit einem höheren Straffaktor vermehrt Personal bereitstellt, um das Risiko von Unterbesetzungen zu verringern, jedoch auf Kosten der Effizienz.
+        
+        Der Straffaktor bietet somit eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. 
+        In manchen Anwendungsfällen kann ein Straffaktor von \( \lambda = 50 \) als sinnvoller Kompromiss angesehen werden, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt als auch die Überbesetzung in einem noch vertretbaren Bereich hält.
+        
+        
+        \subsection{Abschließende Bewertung des besten Modells}
+
+            Obwohl das GRU-Modell im Vergleich zu anderen Modellen wie LSTM und CNN durch eine bessere Balance zwischen Über- und Unterbesetzung hervorsticht, lässt sich dennoch kein universell optimaler Straffaktor \( \lambda \) bestimmen. 
+            Die Ergebnisse der verschiedenen Straffaktoren in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass der Straffaktor einen signifikanten Einfluss auf die Vorhersagen des Modells hat: Mit einem höheren Straffaktor lässt sich die Unterbesetzung erfolgreich reduzieren, jedoch geht dies stets mit einer Zunahme der Überbesetzung einher.
             
-        Die Ergebnisse in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass mit steigendem Straffaktor \( \lambda \) der Anteil der Tage mit Unterbesetzung reduziert werden konnte. Beispielsweise sank der Anteil der Tage mit Unterbesetzung von 16.08\% bei \( \lambda = 1.0 \) auf 8.33\% bei \( \lambda = 3.0 \). Gleichzeitig nahm jedoch die Überbesetzung zu, was von 66.27\% auf 75.18\% anstieg. Dies zeigt, dass das Modell mit einem höheren Straffaktor vermehrt Personal bereitstellt, um das Risiko von Unterbesetzungen zu verringern, jedoch auf Kosten der Effizienz.
-        
-        Der Straffaktor bietet somit eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. In diesem Anwendungsfall kann ein Straffaktor von \( \lambda = 2.0 \) als sinnvoller Kompromiss angesehen werden, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt (12.05\%) als auch die Überbesetzung in einem noch vertretbaren Bereich hält (70.83\%).
-        
-        
-    \section{Abschließende Bewertung des besten Modells}
-
-        Das beste Modell wurde schließlich auf den gesamten Datensatz trainiert und abschließend bewertet. 
-        Die Endergebnisse des optimierten Gradient Boosting-Modells sind wie folgt:
-
-        %To-Do: Zahlenwerte nochmal verifizieren
-        \begin{itemize}
-            \item \textbf{MAE}: 7.32
-            \item \textbf{MSE}: 84.56
-            \item \textbf{RMSE}: 9.20
-            \item \textbf{R2-Score}: 0.63
-        \end{itemize}
-
-        Eine Verbesserung konnte die Hyperparameteroptimierung nicht erzielen.        
-        Die Ergebnisse bestätigen dennoch, dass das optimierte Gradient Boosting-Modell das leistungsfähigste Modell für die Vorhersage der Anzahl der kranken Einsatzfahrenden ist.
-        %To-Do: Evtl noch Effizienz berücksichtigen. Könnte sein, dass XGBoost da die Nase vorn hat
-
+            Da der Straffaktor unterschiedliche Auswirkungen auf den operativen Betrieb hat, gibt es keine "perfekte" Einstellung, die für alle Einsatzszenarien gleichermaßen ideal ist. 
+            Die Wahl des optimalen Straffaktors hängt stark von den Prioritäten und spezifischen Anforderungen der Einsatzplanung ab. 
+            In manchen Fällen könnte eine geringere Unterbesetzung zu Lasten einer moderaten Überbesetzung akzeptabel sein, während in anderen Fällen eine höhere Effizienz im Vordergrund steht und somit eine Reduzierung der Überbesetzung angestrebt wird.
+            
+            In Anbetracht dieser Überlegungen wird vorgeschlagen, den Einsatzplanern die Möglichkeit zu geben, den Straffaktor nach ihren Bedürfnissen flexibel anzupassen. 
+            Je nach aktueller Lage und den verfügbaren Ressourcen können sie so eine individuell geeignete Gewichtung zwischen Unter- und Überbesetzung wählen, die ihren operationellen Zielen entspricht. 
+            Dies gewährleistet, dass das Modell nicht starr, sondern anpassungsfähig bleibt und dynamisch auf verschiedene Anforderungen reagieren kann.
 
 %\chapter{Diskussion der Modellvariablen}
 % To-Do: Evaluieren, ob dieses Kapitel weiterhin Sinn  machen kann oder ob man Teile aus den Kapitel darüber einfach hierrein verschiebt.
@@ -880,7 +886,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Das folgende Code-Snippet zeigt die Struktur des Servers:
 
         % To-Do: Code-Schnipsel im Blick behalten und vor Abgabe sicherstellen, dass diese zum echten Code passen
-        \begin{lstlisting}[language=Python, gobble=8, caption=Aufbau Prediction API]
+        \begin{lstlisting}[language=Python, gobble=8, caption=Aufbau Vorhersage API]
         import pandas as pd
         import numpy as np
         import joblib
@@ -911,7 +917,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \section{Benutzerinteraktion}
 
         Die Benutzer können über eine einfache Web-Oberfläche oder direkt über HTTP-Requests mit der API interagieren. 
-        Dabei werden alle relevanten und zur Verfügung stehenden Informationen wie die Anzahl der Anrufe, der Wochentag und der Monat pro ausgewählten Tag an die API gesendet.
+        Dabei werden alle relevanten und zur Verfügung stehenden Informationen -- in dem Fall der ausgewählte Tag -- an die API gesendet.
         Die API liefert daraufhin eine Vorhersage für die Anzahl der benötigten Bereitschaftsdiensthabenden und damit wird z. B. beim Planungsprozess für den Folgemonat zusätzliche Kapazität zur Erreichung der höheren Ausnutzung an aktivierten Einsatzfahrenden eingeplant.
 
         Durch die Anpassung bestehender Verwaltungssysteme kann die API auch problemlos dort integriert bzw. aufgerufen werden und beim Planen muss kein zusätzliches System nebenher eingesetzt werden.
@@ -926,31 +932,39 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         \begin{itemize}
             \item \textbf{Planung des Dienstplans}: Basierend auf den Vorhersagen können die Einsatzkräfte besser auf mögliche Engpässe vorbereitet werden, indem zusätzliche Ressourcen eingeplant werden.
             % To-Do: müsste dann unabhängig vorausgesagt werden % Evtl. machen auch mehrere Modelle Sinn
-            \item \textbf{Proaktive Maßnahmen}: Bei einer hohen vorhergesagten Anzahl von Krankmeldungen können präventive Maßnahmen ergriffen werden, um die Einsatzbereitschaft sicherzustellen.
+            \item \textbf{Proaktive Maßnahmen}: Bei einer hohen vorhergesagten Anzahl von Ersatzfahrern können präventive Maßnahmen ergriffen werden, um die Einsatzbereitschaft sicherzustellen.
             \item \textbf{Monitoring und Anpassung}: Die Vorhersagen können regelmäßig überprüft und mit den tatsächlichen Ereignissen verglichen werden, um das Modell kontinuierlich zu verbessern.
         \end{itemize}
 
-\chapter{Fazit \& Ausblick}
+    \chapter{Fazit \& Ausblick}
 
-    In dieser Arbeit wurde ein Vorhersagemodell zur Unterstützung der Einsatzplanung im Bereitschaftsdienst entwickelt. 
-    Ausgehend von einer detaillierten Datenanalyse wurde ein geeignetes Modell trainiert, das anhand historischer Daten Prognosen über die Anzahl der benötigten Bereitschaftsdiensthabenden ermöglicht. 
-    Dabei stellte sich das Gradient Boosting als der leistungsfähigste Algorithmus heraus, gefolgt von Random Forest und XGBoost. 
+        Die vorliegende Arbeit hat sich mit der Entwicklung und Implementierung eines Vorhersagemodells zur Optimierung des Bereitschaftsdienstplans für Einsatzfahrende beschäftigt. 
+        Durch die Anwendung verschiedener Zeitreihenmodelle wie LSTM, GRU und CNN sowie der Integration zusätzlicher Anpassungen, insbesondere der Einführung eines Straffaktors zur Gewichtung von Unterbesetzungen, konnte gezeigt werden, dass datengetriebene Ansätze zu einer verbesserten Personalplanung führen können. 
+        Dennoch gab es im Laufe der Arbeit mehrere Herausforderungen, die das Potenzial dieser Modelle in der Praxis beeinflussen.
 
-    Die Integration des Modells in den Arbeitsalltag wurde durch eine API realisiert, die eine einfache und effektive Nutzung der Vorhersagen ermöglicht. 
-    Die Ergebnisse zeigen, dass das Modell eine zuverlässige Unterstützung bei der Personalplanung bieten kann, indem es proaktive Maßnahmen zur Ressourcenplanung ermöglicht. 
-    Die Genauigkeit der Vorhersagen und die Anpassungsfähigkeit des Systems an verschiedene Situationen bieten einen signifikanten Mehrwert für die Einsatzbereitschaft und Effizienzsteigerung.
-
-    Trotz der erzielten Erfolge gibt es mehrere Bereiche, die in zukünftigen Arbeiten weiterentwickelt werden können. 
-    Eine Erweiterung der Datenbasis durch die Integration weiterer relevanter Datenquellen wie Wetterinformationen oder externe Ereignisse könnte die Genauigkeit der Vorhersagen weiter erhöhen. 
-    Die kontinuierliche Überwachung der Modellleistung und die Anpassung der Hyperparameter könnten die Genauigkeit und Robustheit des Modells verbessern. 
-
-    Darüber hinaus könnte die Implementierung eines Systems zur Echtzeit-Datenerfassung und -vorhersage die Reaktionsfähigkeit auf unvorhergesehene Ereignisse steigern. 
-    Auch die Integration der API in bestehende Verwaltungssystem ist geplant, um die Nutzung der Vorhersagen in den täglichen Arbeitsablauf deutlich zu erleichtern. 
-    So ist sicher gestellt, dass alles an einem Platz ist und dass das Ziel -- die Planung von prozentual mehr aktiven Bereitschaftsfahrenden pro Tag ohne Engpässe -- zum 15. des Vormonats abgeschlossen ist.
-
-    Darüber hinaus kann das Vorhersagemodell die Implementierung von Strategien zur langfristigen Personalplanung unterstützen und eine strategische Entscheidungsfindung ermöglichen. 
-    Diese Verbesserungen bieten spannende Möglichkeiten für zukünftige Entwicklungen und könnten das System zu einem unverzichtbaren Werkzeug in der Einsatzplanung und Ressourcenverwaltung machen. 
-    Insgesamt bietet diese Arbeit eine solide Grundlage für weitere Forschung und Entwicklung in diesem Bereich.
+        Eines der zentralen Probleme lag in der Datenqualität und -verfügbarkeit. 
+        Während zeitliche Merkmale gut erfasst wurden, fehlten umfassende exogene Daten, die den Personalbedarf präziser modellieren könnten. 
+        Faktoren wie Wetter, Verkehrslage oder Großereignisse, die signifikanten Einfluss auf die Einsatzplanung haben, konnten nur bedingt in die Modelle integriert werden. 
+        Eine unzureichende Berücksichtigung dieser externen Einflüsse führte dazu, dass die Vorhersagemodelle in bestimmten Situationen nur eingeschränkt performten.
+        
+        Ein weiteres zentrales Problem war die Wahl und Anpassung des Straffaktors \( \lambda \). 
+        Es zeigte sich, dass es keinen universellen Straffaktor gibt, der sowohl die Überbesetzung als auch die Unterbesetzung optimal balanciert. 
+        Jede Veränderung des Straffaktors führte zu einer Verschiebung zwischen diesen beiden Zielen, was die Suche nach einem "perfekten" Modell erschwerte. 
+        Hinzu kommt, dass unterschiedliche Einsatzanforderungen auch unterschiedliche Priorisierungen erfordern – eine Herausforderung, die nur durch eine dynamische Anpassung des Modells und des Straffaktors von den Einsatzplanern selbst gemeistert werden kann.
+        
+        Die Modellergebnisse verdeutlichen, dass selbst fortgeschrittene maschinelle Lernansätze wie GRU, LSTM oder CNN nicht in allen Fällen den gewünschten Erfolg bringen. 
+        Während die Modelle im Vergleich zu statischen Ansätzen klare Verbesserungen hinsichtlich der Reduzierung von Unterbesetzungen aufzeigen, gab es auch Szenarien, in denen die Effizienz durch eine übermäßige Überbesetzung beeinträchtigt wurde. 
+        Dies zeigt die Notwendigkeit, weiterhin Modelle zu entwickeln, die besser auf die realen Herausforderungen der Einsatzplanung abgestimmt sind.
+        
+        In Zukunft bieten sich weitere Anpassungen an der Verlustfunktion an. 
+        Der Straffaktor \( \lambda \) hat sich als ein nützliches Mittel erwiesen, um den Fokus des Modells gezielt auf die Vermeidung von Unterbesetzungen zu lenken. 
+        Zukünftig könnten auch adaptivere Verlustfunktionen entwickelt werden, die den Straffaktor dynamisch an die aktuellen Bedingungen anpassen, anstatt einen festen Wert zu verwenden. 
+        Dies würde den Planern die Möglichkeit geben, noch flexibler auf verschiedene Szenarien zu reagieren.
+        
+        Langfristig könnte auch der Einsatz von ensemblebasierten Methoden oder hybriden Modellen (z. B. Kombination von maschinellem Lernen und regelbasierten Systemen) untersucht werden. 
+        Diese Modelle könnten die Vorteile verschiedener Ansätze kombinieren und so die Vorhersagegenauigkeit und Effizienz weiter verbessern.
+        
+        Zusammenfassend lässt sich festhalten, dass datengetriebene Vorhersagemodelle bereits einen deutlichen Mehrwert zur statischen Einsatzplanung bieten. 
 
     % Schluss ca. 10%
 
