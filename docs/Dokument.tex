@@ -585,7 +585,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 call\_stress & \makecell{ Notfallbelastung: $\frac{calls}{n\_duty+sby\_need}$    \\\\
                 \includegraphics[width=0.5\textwidth]{assets/plot_call_stress.png}   
                 \\ Beobachtung: \enquote{sby\_need} lässt sich mit folgender Formel ungefähr berechnen: \\ 
-                $\frac{calls}{4.8}-n\_sby$
+                $\frac{calls}{4.7}-n\_sby$
                 \\ Somit lässt sich für die spätere Modellierung ggf. auch die Spalte \texttt{calls} \\ als Zielspalte für eine ungefähre Vorhersage heranziehen.
                 }\\ \hline
                 \end{tabular}
@@ -609,7 +609,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             %To-Do: falls es noch mehr Features geben sollte, diese ergänzen bzw den Text adaptieren
 
             Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \texttt{sby\_need} als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
-            Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ausreichend genau berechnen lässt: $\frac{calls}{4.8}-n\_sby$.
+            Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ausreichend genau berechnen lässt: $\frac{calls}{4.7}-n\_sby$.
             Zudem steht die Spalte \texttt{calls} zum Zeitpunkt der Vorhersage nicht zu Verfügung und kann ohnehin nicht im Feature-Datensatz genutzt werden.
 
             Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. 
@@ -751,6 +751,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrer}
             \label{tab:custom_metrics_90_sby}
         \end{table}
+
+        %Tabelle nochmal aktualisieren
 
         Das Minimalziel für das Modell ist es also bessere Metriken zu erhalten als die statische 90-Ersatzfahrer-Strategie, die in Tabelle \ref{tab:custom_metrics_90_sby} zu sehen ist.
         Erzeugt kein Modell besseren Metriken, so ist auch kein Mehrwert gegenüber der statischen 90-Ersatzfahrer-Strategie vorhanden. 
@@ -987,10 +989,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 % Overall Abschluss To-Dos: 
 % Zahlenwerte nochmal prüfen, ob diese übereinstimmen
 % Dokument durchgehen und die Werte und Ziele festigen. 
-% Was soll predictet werden? AW: Anzahl der benötigten Einsatzfahrenden für den ganzen nächsten Monat (ab dem 15. des Vormonats an)
-% Welche Werte stehen überhaupt alle zur Verfügung im Produktiveinsatz? -> Durchgehen
-% U. U. macht es Sinn noch mehr Werte zu predicten oder Modelle zu nutzen die nicht immer alle Features benötigen. Überprüfen und ggf. in Dokument zur Diskussion stellen
-% zeitlicher Aspekt ausreichend berücksichtigt? (Stichwort: Planungsabschluss am 15. )
+% Der API-Server muss noch funktional gemacht werden.
+% Einbinden von mehr Grafiken: Vor allem bei der Modellierung
+% Feature Engineering Abschnitt im Dokument nochmal klein, falls die extrahierten Features wirklich zum Schluss bleiben 
+% Quellen für Code hinzufügen
 
 %Dokument am besten von oben nach unten durchgehen und dabei direkt die Punkte checken und abarbeiten
 
