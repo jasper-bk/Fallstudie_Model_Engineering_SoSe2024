@@ -310,3 +310,4 @@ notes.txt
 /app/models/*
 
 .venv
+__pycache__/
