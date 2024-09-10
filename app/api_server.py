@@ -50,8 +50,6 @@ def predict_calls(dates):
     df_features.set_index('date', inplace=True)
     df_features = df_features.asfreq('d')
 
-    
-
     # Erstelle historische Sequenz für Modell
     model_wrapper.historical_data_for_sequence = create_historic_sequences(df_features.index.min())
     
@@ -72,7 +70,6 @@ def route_predict_calls():
     # Berechne die Vorhersage
     prediction = predict_calls(dates)
     
-    # Nur die Vorhersage für den letzten Zeitpunkt zurückgeben
     return jsonify({'calls-prediction': prediction})
 
 @app.route('/predict-sby-need', methods=['POST'])
@@ -81,7 +78,6 @@ def route_predict_sby_need():
     
     date_list = list(data.keys())
     
-    # Berechne die Vorhersage
     prediction = predict_calls(date_list)
 
     result = {}
@@ -92,8 +88,6 @@ def route_predict_sby_need():
         if key in data:
             result[key] = max(0, math.floor(prediction[key] / calls_divisor) - data[key]["n_duty"])
 
-    
-    # Nur die Vorhersage für den letzten Zeitpunkt zurückgeben
     return jsonify({'sby-need-prediction': result})
 
 if __name__ == '__main__':

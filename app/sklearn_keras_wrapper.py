@@ -209,3 +209,16 @@ class CNNModelWrapper(BaseModelWrapper):
         model.add(Dense(1))
         model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss=CustomLoss(self.regularization_for_underestimation))
         return model
+
+
+class TDNNModelWrapper(BaseModelWrapper):
+    def _build_model(self):
+        model = Sequential()
+        model.add(Conv1D(filters=64, kernel_size=3, activation='relu', input_shape=(self.seq_length, self.num_features)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(50, activation='relu'))
+        model.add(Dropout(0.2))
+        model.add(Dense(1))
+        model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss=CustomLoss(self.regularization_for_underestimation))
+        return model
