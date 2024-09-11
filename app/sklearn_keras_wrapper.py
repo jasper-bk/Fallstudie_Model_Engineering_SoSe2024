@@ -4,14 +4,15 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import r2_score
-from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dense, Bidirectional, Dropout, Conv1D, MaxPooling1D, Flatten, GRU
+from keras.models import Sequential, load_model, Model
+from keras.layers import LSTM, Dense, Bidirectional, Dropout, Conv1D, MaxPooling1D, Flatten, GRU, MultiHeadAttention, LayerNormalization, GlobalAveragePooling1D
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from keras.optimizers import Adam
 import joblib
 from keras.saving import register_keras_serializable
 from keras.callbacks import EarlyStopping
+from tensorflow.keras import layers, models
 
 @register_keras_serializable()
 class CustomLoss:
@@ -173,6 +174,10 @@ class BaseModelWrapper:
         wrapper.model = load_model(filepath + '_model.keras', custom_objects={'CustomLoss': CustomLoss(wrapper.regularization_for_underestimation)})
         return wrapper
 
+    # Nice-To-Have To-Dos:
+    # Plotten der gebauten Modelle
+    # Überprüfen ob Transformer auch problemlos gespeichert werden
+
 class LSTMModelWrapper(BaseModelWrapper):
     def _build_model(self):
         model = Sequential()
@@ -210,7 +215,6 @@ class CNNModelWrapper(BaseModelWrapper):
         model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss=CustomLoss(self.regularization_for_underestimation))
         return model
 
-
 class TDNNModelWrapper(BaseModelWrapper):
     def _build_model(self):
         model = Sequential()
@@ -221,4 +225,72 @@ class TDNNModelWrapper(BaseModelWrapper):
         model.add(Dropout(0.2))
         model.add(Dense(1))
         model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss=CustomLoss(self.regularization_for_underestimation))
+        return model
+
+class TransformerModelWrapper(BaseModelWrapper):
+    def __init__(self, num_transformer_blocks=1, embed_dim=64, num_heads=8, ff_dim=512, **kwargs): 
+        super().__init__(**kwargs)
+
+        self.num_transformer_blocks = num_transformer_blocks
+        self.embed_dim = embed_dim # Dimension der Einbettung
+        self.num_heads = num_heads # Anzahl der Attention-Köpfe
+        self.ff_dim = ff_dim # Größe der Feedforward-Schicht
+
+    def _build_model(self):
+        class TransformerBlock(layers.Layer):
+            def __init__(self, embed_dim, num_heads, ff_dim, rate=0.1):
+                super(TransformerBlock, self).__init__()
+                self.att = MultiHeadAttention(num_heads=num_heads, key_dim=embed_dim)
+                self.ffn = models.Sequential(
+                    [layers.Dense(ff_dim, activation="relu"), layers.Dense(embed_dim)]
+                )
+                self.layernorm1 = LayerNormalization(epsilon=1e-6)
+                self.layernorm2 = LayerNormalization(epsilon=1e-6)
+                self.dropout1 = layers.Dropout(rate)
+                self.dropout2 = layers.Dropout(rate)
+
+            def call(self, inputs, training):
+                attn_output = self.att(inputs, inputs)
+                attn_output = self.dropout1(attn_output, training=training)
+                out1 = self.layernorm1(inputs + attn_output)
+                ffn_output = self.ffn(out1)
+                ffn_output = self.dropout2(ffn_output, training=training)
+                return self.layernorm2(out1 + ffn_output)
+
+        class TokenAndPositionEmbedding(layers.Layer):
+            def __init__(self, seq_length, embed_dim):
+                super(TokenAndPositionEmbedding, self).__init__()
+                self.token_emb = layers.Dense(embed_dim)
+                self.pos_emb = layers.Embedding(input_dim=seq_length, output_dim=embed_dim)
+
+            def call(self, x):
+                maxlen = tf.shape(x)[-2]
+                positions = tf.range(start=0, limit=maxlen, delta=1)
+                positions = self.pos_emb(positions)
+                embedded_tokens = self.token_emb(x)
+                return embedded_tokens + positions
+        
+        # Input-Schicht
+        inputs = layers.Input(shape=(self.seq_length, self.num_features))
+        
+        # Token and Position Embedding
+        embedding_layer = TokenAndPositionEmbedding(self.seq_length, self.embed_dim)
+        x = embedding_layer(inputs)
+        
+        # Anzahl der Blöcke auch als Hyper-Parameter einbauen
+        for _ in range(self.num_transformer_blocks):  # 4 Transformer-Blöcke anstelle von nur einem
+            transformer_block = TransformerBlock(self.embed_dim, self.num_heads, self.ff_dim)
+            x = transformer_block(x, training=True)
+        
+        # GlobalAveragePooling und Dense-Schichten
+        x = GlobalAveragePooling1D()(x)
+        x = layers.Dropout(self.dropout_rate)(x)
+        x = layers.Dense(20, activation="relu")(x)
+        x = layers.Dropout(self.dropout_rate)(x)
+        outputs = layers.Dense(1)(x)
+        
+        # Modell kompilieren
+        model = Model(inputs=inputs, outputs=outputs)
+        model.compile(optimizer=Adam(learning_rate=self.learning_rate), loss=CustomLoss(self.regularization_for_underestimation))
+        
         return model
