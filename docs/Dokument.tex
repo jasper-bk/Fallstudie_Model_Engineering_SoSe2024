@@ -634,6 +634,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Die Leistung des Baseline-Modells wird mittels des Mean Absolute Error (MAE) und dem Bestimmtgeitsmaß ($R^2$-Score) bewertet. 
         Abbildung \ref{fig:baseline_performance} zeigt die Performance des Baseline-Modells im Vergleich zu den tatsächlichen Werten.
         
+        % Werte fallen mit unkorrigiertem sby_need anders aus. R2 ist dann z. B. ungleich 0
         \begin{figure}[H]
             \centering
             \includegraphics[width=1\textwidth]{assets/baseline_performance.png}
@@ -643,7 +644,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \texttt{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
         
-        Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}. %To-Do: Wert aktualisieren, wenn verändert
+        Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{48.86} und einen $R^2$-Score von Null. %To-Do: Wert aktualisieren, wenn verändert
         Diese Werte dienen als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
 
         Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrern empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
@@ -691,15 +692,16 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Daher fiel die engere Auswahl auf Algorithmen, die speziell für die Analyse von Zeitreihen entwickelt wurden.
         
         Die Zeitreihe wird durch die Spalte \texttt{unix\_ts\_date} repräsentiert, und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) vorherzusagen. 
-        Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und TDNN (Time-Delay Neural Network).
+        Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und CNN (Convolutional Neural Network).
         
         \begin{itemize}
             \item \textbf{LSTM (Long Short-Term Memory)}: LSTM-Netzwerke sind eine spezielle Form von rekurrenten neuronalen Netzen, die dafür bekannt sind, langanhaltende Abhängigkeiten in Zeitreihen effektiv zu modellieren. Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrer.
         
             \item \textbf{GRU (Gated Recurrent Unit)}: GRU ist eine vereinfachte Variante des LSTM, die jedoch ähnliche Fähigkeiten zur Modellierung von zeitlichen Abhängigkeiten bietet, bei gleichzeitig geringerer Komplexität und schnellerer Trainingszeit. GRU-Modelle zeigen in der Praxis oft vergleichbare Vorhersagegenauigkeiten wie LSTM, was sie ebenfalls zu einem aussichtsreichen Kandidaten für die Modellierung macht.
         
-            \item \textbf{TDNN (Time-Delay Neural Network)}: TDNNs sind neuronale Netzwerke, die speziell für die Verarbeitung von Zeitreihen entwickelt wurden. Sie nutzen verzögerte Eingaben, um Muster in sequentiellen Daten zu erkennen, ohne die Notwendigkeit eines expliziten Gedächtnisses, wie es bei LSTM oder GRU der Fall ist. TDNNs eignen sich besonders gut, wenn es um die Vorhersage basierend auf einer festen Anzahl vergangener Zeitpunkte geht.
-        \end{itemize}
+            \item \textbf{CNN (Convolutional Neural Network)}: CNNs sind neuronale Netzwerke, die ursprünglich für die Verarbeitung von Bilddaten entwickelt wurden, aber auch erfolgreich auf Zeitreihen angewendet werden können. Sie nutzen Faltungsschichten, um lokale Muster in den Daten zu erkennen, und sind besonders effektiv bei der Extraktion von Merkmalen aus sequentiellen Daten. CNNs eignen sich gut für die Vorhersage, wenn es darum geht, komplexe Muster in den Daten zu identifizieren.
+        \end{itemize}     
+        %To-Do: Quelle   
         
         Diese Algorithmen wurden aufgrund ihrer Fähigkeit ausgewählt, komplexe zeitliche Abhängigkeiten in den Daten zu modellieren und präzise Vorhersagen für die Zukunft zu treffen. 
         Die Modelle wurden so entwickelt, dass sie die Spalte \texttt{unix\_ts\_date} als Input verwenden, um die zukünftigen Werte der Spalte \texttt{calls} vorherzusagen.
@@ -724,6 +726,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \item \textbf{Durchschnittliche Unterbesetzung}: Der durchschnittliche Unterschied zwischen der tatsächlichen und der vorhergesagten Anzahl der benötigten Ersatzfahrer an Tagen mit Unterbesetzung.
             \item \textbf{Median Überbesetzung}: Der Median der Überbesetzungen an Tagen, an denen zu viele Ersatzfahrer vorhergesagt wurden.
             \item \textbf{Median Unterbesetzung}: Der Median der Unterbesetzungen an Tagen, an denen zu wenige Ersatzfahrer vorhergesagt wurden.
+            \item \textbf{Tagesdurchschnitt Ersatzfahrer für Planung}: Der Durchschnitt der geplanten Ersatzfahrer über alle Tage im Zeitraum.
+            \item \textbf{Differenz Tagesdurchschnitt Ersatzfahrer zu Realität:} Die Differenz vom wirklich benötigten Tagesdurchschnitt zum geplanten Tagesdurchschnitt.
         \end{itemize}
 
         Durch die Verwendung dieser spezialisierten Metriken in Kombination mit den klassischen Regressionsmetriken können die Modelle nicht nur hinsichtlich ihrer allgemeinen Vorhersagegüte, sondern auch in Bezug auf ihre Eignung für die spezifischen Anforderungen der Einsatzplanung bewertet werden. 
@@ -735,22 +739,47 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Ohne Vorhersage mit den noch statisch 90 eingeplanten Ersatzfahrern lassen sich auch die Metriken berechnen und wir erhalten für den gesamten Zeitraum die Werte in Tabelle \ref{tab:custom_metrics_90_sby}.
 
+        % Tabelle für unkorrigiertes sby_need ab Jahr 2019
+
+        % \begin{table}[h!]
+        %     \centering
+        %     \begin{tabular}{|l|l|}
+        %     \hline
+        %     \textbf{Metrik} & \textbf{Wert} \\ \hline
+        %     Anteil an Tagen mit Unterbesetzung (\%) & \textit{14.85\%} \\ \hline
+        %     Anteil an Tagen mit Überbesetzung (\%) & \textit{84.89\%} \\ \hline
+        %     Anteil an Tagen mit perfekter Vorhersage (\%) & \textit{0.26\%} \\ \hline
+        %     Durchschnittliche Überbesetzung & \textit{84.36} \\ \hline
+        %     Durchschnittliche Unterbesetzung & \textit{110.05} \\ \hline
+        %     Median Überbesetzung & \textit{90} \\ \hline
+        %     Median Unterbesetzung & \textit{86} \\ \hline
+        %     Tagesdurchschnitt Ersatzfahrer für Planung & 90 \\ \hline
+        %     Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & 55.28 \\ \hline
+        %     \end{tabular}
+        %     \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrer}
+        %     \label{tab:custom_metrics_90_sby}
+        % \end{table}
+
+        % Tabelle für korrigiertes sby_need ab Jahr 2019
         \begin{table}[h!]
             \centering
             \begin{tabular}{|l|l|}
             \hline
             \textbf{Metrik} & \textbf{Wert} \\ \hline
-            Anteil an Tagen mit Unterbesetzung (\%) & \textit{14.85\%} \\ \hline
-            Anteil an Tagen mit Überbesetzung (\%) & \textit{84.89\%} \\ \hline
+            Anteil an Tagen mit Unterbesetzung (\%) & \textit{13.11\%} \\ \hline
+            Anteil an Tagen mit Überbesetzung (\%) & \textit{86.63\%} \\ \hline
             Anteil an Tagen mit perfekter Vorhersage (\%) & \textit{0.26\%} \\ \hline
-            Durchschnittliche Überbesetzung & \textit{84.36} \\ \hline
-            Durchschnittliche Unterbesetzung & \textit{110.05} \\ \hline
-            Median Überbesetzung & \textit{90} \\ \hline
-            Median Unterbesetzung & \textit{86} \\ \hline
+            Durchschnittliche Überbesetzung & \textit{84.45} \\ \hline
+            Durchschnittliche Unterbesetzung & \textit{101.77} \\ \hline
+            Median Überbesetzung & \textit{90.0} \\ \hline
+            Median Unterbesetzung & \textit{85.0} \\ \hline
+            Tagesdurchschnitt Ersatzfahrer für Planung & 90.0 \\ \hline
+            Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & 59.82 \\ \hline
             \end{tabular}
             \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrer}
             \label{tab:custom_metrics_90_sby}
         \end{table}
+        
 
         %Tabelle nochmal aktualisieren
 
@@ -762,9 +791,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Die Modelle wurden mit demselben Trainingsdatensatz trainiert und mit demselben Testdatensatz validiert.
             Die Ergebnisse der Modellbewertungen sind in Tabelle \ref{tab:model_comparison} zusammengefasst.
-            Bei den Ergebnissen ist zu beachten, dass die allgemeinen Metriken sich auf die Spalte \texttt{calls} beziehen und die anderen Metriken nur auf die Spalte \texttt{sby\_need}.
+            Bei den Ergebnissen ist zu beachten, dass die allgemeinen Metriken sich auf die Spalte \texttt{calls} beziehen und die speziellen Metriken nur auf die Spalte \texttt{sby\_need}.
             Bei den Ergebnissen für \texttt{sby\_need} ist außerdem anzumerken, dass Ergebnisse kleiner Null automatisch auf Null gesetzt werden, da es nicht weniger als keinen Ersatzfahrer geben kann.
-            Dieser Umstand sorgt dafür, dass sich die Ergebnissen gerade bei den perfekten Vorhersagen verbessern können, da es automatisch mehr Treffer für Null als Vorhersage gleich Null als echten Wert gibt.
+            Dieser Umstand sorgt dafür, dass sich die Ergebnissen gerade bei den perfekten Vorhersagen verbessern können, da es automatisch mehr Treffer für Null in Vorhersage und echten Wert gibt.
 
             %To-Do: Zahlenwerte nochmal verifizieren
             \begin{table}[H]
@@ -772,35 +801,34 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \begin{tabular}{|l|c|c|c|}
                 \hline
                 \textbf{Metrik} & \textbf{LSTM} & \textbf{GRU} & \textbf{CNN} \\ \hline
-                MAE (Mean Absolute Error) (bezogen auf \texttt{calls}) & 946.1 & 949.57 & 931.63 \\ \hline
-                RMSE (Root Mean Squared Error) (bezogen auf \texttt{calls}) & 946 & 1135.48 & 1099.75 \\ \hline
-                R²-Score (bezogen auf \texttt{calls}) & 0.26 & 0.24 & 0.29 \\ \hline \hline
-                Anteil an Tagen mit Unterbesetzung (\%) & 21.33 & 22.22 & 21.77 \\ \hline
-                Anteil an Tagen mit Überbesetzung (\%) & 6.22 & 0 & 4.44 \\ \hline
-                Anteil an Tagen mit perfekter Vorhersage (\%) & 72.44 & 77.77 & 73.88 \\ \hline
-                Durchschnittliche Überbesetzung & 32.39 & N/A & 24.79 \\ \hline
-                Durchschnittliche Unterbesetzung & 128.89 & 137.31 & 127.39 \\ \hline
-                Median Überbesetzung & 20.72 & N/A & 29.34 \\ \hline
-                Median Unterbesetzung & 96.45 & 114.82 & 92 \\ \hline
+                MAE (Mean Absolute Error) (bezogen auf \texttt{calls}) & 846.41 & 873.56 & 916.48 \\ \hline
+                RMSE (Root Mean Squared Error) (bezogen auf \texttt{calls}) & 1012.82 & 1053.52 & 1089.96 \\ \hline
+                R²-Score (bezogen auf \texttt{calls}) & 0.39 & 0.34 & 0.29 \\ \hline \hline
+                Anteil an Tagen mit Unterbesetzung (\%) & 22.08 & 20.35 & 22.08 \\ \hline
+                Anteil an Tagen mit Überbesetzung (\%) & 3.03 & 8.66 & 3.03 \\ \hline
+                Anteil an Tagen mit perfekter Vorhersage (\%) & 74.89 & 71.00 & 74.89 \\ \hline
+                Durchschnittliche Überbesetzung & 39.94 & 44.61 & 25.15 \\ \hline
+                Durchschnittliche Unterbesetzung & 119.25 & 114.43 & 131.09 \\ \hline
+                Median Überbesetzung & 23.94 & 32.95 & 25.96 \\ \hline
+                Median Unterbesetzung & 91.00 & 91.00 & 97.97 \\ \hline
                 \end{tabular}
-                \caption{Vergleich der Metriken für TDNN, LSTM und GRU}
+                \caption{Vergleich der Metriken für LSTM, GRU und CNN}
                 \label{tab:model_comparison}
             \end{table}
-
             
-            Die Ergebnisse der durchgeführten Modellierungsansätze, dargestellt in Tabelle \ref{tab:model_comparison}, zeigen, dass die Modelle LSTM, GRU und CNN bei der Vorhersage einen höheren Anteil geplanten Tage gegenüber der statischen Planung mit einer konstanten Anzahl von 90 Ersatzfahrern bieten, jedoch insgesamt keine herausragenden Ergebnisse liefern, da die Vorhersagen überwiegend 0 geworden sind.
+            Die Ergebnisse der durchgeführten Modellierungsansätze, dargestellt in Tabelle \ref{tab:model_comparison}, zeigen, dass die Modelle LSTM, GRU und CNN bei der Vorhersage einen höheren Anteil geplanten Tage gegenüber der statischen Planung mit einer konstanten Anzahl von 90 Ersatzfahrern bieten, jedoch insgesamt keine herausragenden Ergebnisse liefern, da die Vorhersagen überwiegend Null geworden sind.
             Das entspricht zwar der Mehrheit der Tage, ist aber nicht Sinn der Planung von Ersatzfahrern.
 
             Auch die klassischen Regressionsmetriken wie MAE, RMSE und R²-Score verdeutlichen, dass die Modelle eher schwache Leistungen aufweisen.
 
-            Insbesondere der niedrige R²-Score, der für alle Modelle um 0.25 liegt, zeigt, dass die Modelle nur einen relativ niedrigen Anteil der Varianz in den Daten erklären können. 
+            Insbesondere der niedrige R²-Score, der für alle Modelle um 0.4 bis 0.3 liegt, zeigt, dass die Modelle nur einen relativ niedrigen Anteil der Varianz in den Daten erklären können. 
             Dies weist darauf hin, dass die Vorhersagegenauigkeit der Modelle begrenzt ist und viele externe Einflüsse, die das Personalbedarfsmanagement betreffen, möglicherweise nicht ausreichend durch die vorhandenen Daten abgedeckt werden. 
             Auch die MAE- und RMSE-Werte sind relativ hoch, was darauf hindeutet, dass die Modelle systematische Fehler in der Vorhersage aufweisen.
 
             Trotz dieser insgesamt ernüchternden Ergebnisse zeigen die Modelle dennoch Potential im Vergleich zur statischen Planung mit konstant 90 Ersatzfahrern pro Tag, wie in Tabelle \ref{tab:custom_metrics_90_sby} ersichtlich ist. 
             Das Potential wird vor allem bei der Vorhersage der Notrufe (\texttt{calls}) ersichtlich und dadurch, dass die allermeisten Tage \enquote{perfekt} vorhergesagt wurden.
 
-            Betrachtet man die Ergebnisse der benutzerdefinierten Personalmetriken genauer, fällt auf, dass das GRU-Modell hinsichtlich der perfekten Vorhersagen gerinfügig bessere Ergebnisse liefert. 
+            %Betrachtet man die Ergebnisse der benutzerdefinierten Personalmetriken genauer, fällt auf, dass das GRU-Modell hinsichtlich des Anteil an Tagen mit Unterbesetzung bessere Ergebnisse liefert. 
             % Es weist den geringsten MAE (36.02) und RMSE (4817) auf und erzielt mit 5.88\% einen höheren Anteil an perfekten Vorhersagen als das LSTM-Modell (0\%) und liegt auch bei der Überbesetzung und der durchschnittlichen Überbesetzung mit 66.27\% und 19.16 respektive im vorteilhaften Bereich. 
             % Diese Werte deuten darauf hin, dass das GRU-Modell in der Lage ist, die Anzahl der Ersatzfahrer besser zu balancieren und sowohl Über- als auch Unterbesetzungen zu minimieren.
 
@@ -808,7 +836,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             % Unterbesetzungen gilt es vielmerh zu vermeiden als Überbesetzungen.
             % Insgesamt zeigt das GRU-Modell jedoch den größten Mehrwert im Vergleich zur statischen Planung und ist daher als das leistungsfähigste Modell in dieser Analyse zu betrachten.
             
-            Zusätzlich ist festzuhalten, dass die in der Tabelle dargestellten Ergebnisse für die Modelle TDNN, LSTM und GRU nicht allein auf die jeweilige Modellart zurückzuführen sind. 
+            Zusätzlich ist festzuhalten, dass die in der Tabelle dargestellten Ergebnisse für die Modelle CNN, LSTM und GRU nicht allein auf die jeweilige Modellart zurückzuführen sind. 
             Ein entscheidender Einflussfaktor auf die Leistungsfähigkeit der Modelle ist auch der spezifische Aufbau und die gewählten Parameter der Modelle. 
             Jedes Modell besitzt eine Vielzahl von Hyperparametern, wie beispielsweise die Anzahl der Neuronen in den Schichten, die Lernrate, die Batchgröße und die Anzahl der Epochen, die während des Trainings verwendet werden. 
             Diese Parameter können die Effizienz und Genauigkeit der Modelle erheblich beeinflussen.
@@ -820,46 +848,79 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Durch andere Ansätze zur Modellierung, wie die Veränderung der Architektur oder eine umfassendere Hyperparameter-Optimierung, könnten potenziell auch andere Ergebnisse erzielt werden. 
             Es ist denkbar, dass sich durch alternative Konfigurationen ein anderes Modell als das leistungsfähigste herausstellt oder die Ergebnisse in einzelnen Metriken verbessert werden könnten.
 
-
     \section{Anpassung der Verlustfunktion durch Straffaktor}
 
         Neben dem klassischen Hyperparameter-Tuning, bei dem Parameter wie die Lernrate, Batchgröße und Anzahl der Neuronen optimiert wurden, wurde eine spezielle Anpassung der Verlustfunktion vorgenommen. 
         Ein Straffaktor wurde in die Verlustfunktion integriert, um Unterbesetzungen stärker zu gewichten als Überbesetzungen. 
-        Dieser Ansatz zielt darauf ab, die Modelle so zu trainieren, dass sie Überbesetzungen bevorzugen und dadurch das Risiko von Unterbesetzungen minimieren, was in einem operationellen Umfeld kritisch sein kann.
+        Dieser Ansatz zielt darauf ab, die Modelle so zu trainieren, dass sie Überbesetzungen bevorzugen und dadurch das Risiko von Unterbesetzungen minimieren, da gerade Unterbesetzungen in einem operationellen Umfeld kritisch sein können.
         
         Der Straffaktor \( \lambda \) beeinflusst, wie stark Vorhersagefehler, die zu einer Unterbesetzung führen, in die Verlustfunktion eingehen. 
         Dadurch wird sichergestellt, dass das Modell vermehrt Personal bereitstellt, um eine Überbesetzung zu fördern, ohne dass es zu häufig zu kritischen Engpässen kommt.
         
-        In der nachfolgenden Tabelle \ref{tab:straffaktor_comparison} sind die Auswirkungen unterschiedlicher Straffaktoren \( \lambda \) für das GRU-Modell auf die Modellergebnisse dargestellt.
+        In der nachfolgenden Tabelle \ref{tab:straffaktor_comparison} sind die Auswirkungen unterschiedlicher Straffaktoren \( \lambda \) auf die Modellergebnisse dargestellt.
 
 
         %To-Do: Tabelle vervollständigen! Nur 1 und 2.5 als Faktor richtig drin
 
         \begin{table}[H]
             \centering
-            \begin{tabular}{|l|c|c|c|c|}
+            \begin{tabular}{|p{4cm}|c|c|c|c|c|c|c|c|}
             \hline
-            \textbf{Parameter} & \textbf{1.0 (keine Gewichtung)} & \textbf{25} & \textbf{50} & \textbf{100} \\ \hline
-            \textbf{Anteil Unterbesetzung (\%)} & 22.22 & 8.89 & 3.56 & 4.00 \\ \hline
-            \textbf{Anteil Überbesetzung (\%)} & 0 & 61.33 & 84.00 & 81.78 \\ \hline
-            \textbf{Perfekte Vorhersagen (\%)} & 77.77 & 29.78 & 12.44 & 14.22 \\ \hline
-            \textbf{Durchschnittliche Überbesetzung} & N/A & 119.21 & 167.35 & 155.50 \\ \hline
-            \textbf{Durchschnittliche Unterbesetzung} & 137.31 & 91.25 & 90.09 & 97.83 \\ \hline
-            \textbf{Median Überbesetzung} & N/A & 116.53 & 164.17 & 149.22 \\ \hline
-            \textbf{Median Unterbesetzung} & 114.82 & 63.35 & 63.52 & 48.74 \\ \hline
+            \textbf{Parameter} & \textbf{Modell} & \multicolumn{4}{c|}{\textbf{Straffaktor für Überschätzungen}} \\ \cline{3-6}
+            & & \textbf{1.0 (keine Gewichtung)} & \textbf{10} & \textbf{20} & \textbf{50} \\ \hline
+            % \textbf{MAE (Mean Absolute Error) (bezogen auf Spalte \texttt{calls})} & LSTM & 846.41 & 1035.93 & 1095.14 & 1434.74 \\ \cline{2-6}
+            % & GRU & 873.56 & 1340.29 & 1604.36 & 1466.51 \\ \cline{2-6}
+            % & CNN & 916.48 & 1085.50 & 1063.68 & 1533.94 \\ \hline
+            % \textbf{RMSE (Root Mean Squared Error) (bezogen auf Spalte \texttt{calls})} & LSTM & 1012.82 & 1302.13 & 1380.31 & 1746.29 \\ \cline{2-6}
+            % & GRU & 1053.52 & 1654.27 & 1932.75 & 1778.96 \\ \cline{2-6}
+            % & CNN & 1089.96 & 1336.38 & 1309.46 & 1837.03 \\ \hline
+            % \textbf{R²-Score (bezogen auf Spalte \texttt{calls})} & LSTM & 0.39 & -0.01 & -0.14 & -0.82 \\ \cline{2-6}
+            % & GRU & 0.34 & -0.63 & -1.23 & -0.89 \\ \cline{2-6}
+            % & CNN & 0.29 & -0.06 & -0.02 & -1.01 \\ \hline \hline
+            \textbf{Anteil an Tagen mit Unterbesetzung (\%)} & LSTM & 22.08 & 12.99 & 11.69 & 2.16 \\ \cline{2-6}
+            & GRU & 20.35 & 7.79 & 4.76 & 2.60 \\ \cline{2-6}
+            & CNN & 22.08 & 15.15 & 14.72 & 7.79 \\ \hline
+            \textbf{Anteil an Tagen mit Überbesetzung (\%)} & LSTM & 3.03 & 48.48 & 49.35 & 78.35 \\ \cline{2-6}
+            & GRU & 8.66 & 70.56 & 85.28 & 81.39 \\ \cline{2-6}
+            & CNN & 3.03 & 43.29 & 40.26 & 92.21 \\ \hline
+            \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)} & LSTM & 74.89 & 38.53 & 38.96 & 19.48 \\ \cline{2-6}
+            & GRU & 71.00 & 21.65 & 9.96 & 16.02 \\ \cline{2-6}
+            & CNN & 74.89 & 41.56 & 45.02 & 0.00 \\ \hline
+            \textbf{Durchschnittliche Überbesetzung} & LSTM & 39.94 & 94.78 & 108.34 & 154.19 \\ \cline{2-6}
+            & GRU & 44.61 & 135.60 & 176.49 & 156.01 \\ \cline{2-6}
+            & CNN & 25.15 & 78.52 & 77.19 & 126.95 \\ \hline
+            \textbf{Durchschnittliche Unterbesetzung} & LSTM & 119.25 & 73.35 & 61.68 & 25.68 \\ \cline{2-6}
+            & GRU & 114.43 & 53.05 & 44.10 & 47.80 \\ \cline{2-6}
+            & CNN & 131.09 & 93.67 & 106.05 & 70.91 \\ \hline
+            \textbf{Median Überbesetzung} & LSTM & 23.94 & 95.04 & 102.76 & 152.86 \\ \cline{2-6}
+            & GRU & 32.95 & 127.16 & 157.30 & 155.89 \\ \cline{2-6}
+            & CNN & 25.96 & 67.29 & 65.12 & 131.53 \\ \hline
+            \textbf{Median Unterbesetzung} & LSTM & 91.00 & 62.37 & 60.16 & 15.07 \\ \cline{2-6}
+            & GRU & 91.00 & 51.61 & 39.17 & 35.60 \\ \cline{2-6}
+            & CNN & 97.97 & 75.88 & 80.76 & 40.87 \\ \hline
+
+            % To-Do: Werte für: Differenz Tagesdurchschnitt Ersatzfahrer zu Realität, Tagesdurchschnitt Ersatzfahrer für Planung -- Rekonstruieren aus dem Copilot Chat. Ergebnisse sind da
+            % Anderes To-Do: Tabelle in Höhe reduzieren (Grund zu viel leerer Raum unter Parameter)
+
             \end{tabular}
-            \caption{Vergleich der GRU-Modellergebnisse bei unterschiedlicher Gewichtung von Unterbesetzungen (\( \lambda \))}
+            \caption{Vergleich der Modellergebnisse (LSTM, GRU, CNN) bei unterschiedlicher Gewichtung von Unterbesetzungen (\( \lambda \))}
             \label{tab:straffaktor_comparison}
         \end{table}
         
-        Die Ergebnisse in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass mit steigendem Straffaktor \( \lambda \) der Anteil der Tage mit Unterbesetzung reduziert wird konnte. 
+        
+        Die Ergebnisse in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass mit steigendem Straffaktor \( \lambda \) der Anteil der Tage mit Unterbesetzung reduziert wird. 
         Nachteil eines steigendem Straffaktor ist jedoch die zunehmende Überbesetzung.
-        Dies zeigt, dass das Modell mit einem höheren Straffaktor vermehrt Personal bereitstellt, um das Risiko von Unterbesetzungen zu verringern, jedoch auf Kosten der Effizienz.
+        Das Modell mit einem höheren Straffaktor zeigt dies indem vermehrt Personal bereitstellt wird, um das Risiko von Unterbesetzungen zu verringern, jedoch auf Kosten der Effizienz und der allgemeinen Modellmetriken.
         
         Der Straffaktor bietet somit eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. 
-        In manchen Anwendungsfällen kann ein Straffaktor von \( \lambda = 50 \) als sinnvoller Kompromiss angesehen werden, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt als auch die Überbesetzung in einem noch vertretbaren Bereich hält.
+        In manchen Anwendungsfällen kann ein Straffaktor von \( \lambda = 10 \) als sinnvoller Kompromiss angesehen werden, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt als auch die Überbesetzung in einem noch vertretbaren Bereich hält.
+
+        Eine Alternative zum Straffaktor könnte auch fixer Aufschlag von Ersatzfahrern sein.
+        Ohne Straffaktor beträgt die Median Unterbesetzung ca. 90 Personen. 
+        Deshalb könnte es sich anbieten die Vorhersage des Modells (ohne Straffaktor) einfach auf die bereits festen 90 Personen aufzuschlagen.
         
-        
+        % bis hierhin das hoffentlich letzte Mal überarbeitet
+
         \subsection{Abschließende Bewertung des besten Modells}
 
             Obwohl das GRU-Modell im Vergleich zu anderen Modellen wie LSTM und CNN durch eine bessere Balance zwischen Über- und Unterbesetzung hervorsticht, lässt sich dennoch kein universell optimaler Straffaktor \( \lambda \) bestimmen. 
@@ -989,15 +1050,16 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 % Overall Abschluss To-Dos: 
 % Zahlenwerte nochmal prüfen, ob diese übereinstimmen
 % Dokument durchgehen und die Werte und Ziele festigen. 
-% Der API-Server muss noch funktional gemacht werden.
-% Einbinden von mehr Grafiken: Vor allem bei der Modellierung
-% Feature Engineering Abschnitt im Dokument nochmal klein, falls die extrahierten Features wirklich zum Schluss bleiben 
-% Quellen für Code hinzufügen
+% API-Server Code in Teilen im Text dokumentieren
+% Einbinden von mehr Grafiken: Vor allem bei der Modellierung, ggf. dann in Anhang und verlinken
+% Feature Engineering Abschnitt im Dokument nochmal updaten, falls die extrahierten Features wirklich zum Schluss bleiben 
+% Quellen für Code-Vorlagen hinzufügen
 % Bibliotheken und deren Version irgendwo dokumentieren
 % Evtl. via Docker und/oder requirements.txt
+% Beschreiben, dass sby_need und n_duty behoben wurden, damit die Vorhersage und das Modell richtig evaluieren können
+% evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM
+% Diagramme mit Zeit fixen. Unten ist eine komische Darstellung der Zeitspalte
 
-%TDNN und CNN nochmal vergleichen und evtl anpassen
-
-%Dokument am besten von oben nach unten durchgehen und dabei direkt die Punkte checken und abarbeiten
+% Dokument am besten von oben nach unten durchgehen und dabei direkt die Punkte checken und abarbeiten
 
 \end{document}
