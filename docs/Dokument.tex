@@ -80,6 +80,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{booktabs}
 \usepackage{makecell}
 \usepackage{amsmath}
+\usepackage{multirow}
 
     %%%%%%% Neues Design %%%%%%%%%%%
 
@@ -630,6 +631,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         % To-Do: Modell auf andere Zielvariable umstellen. Noch nicht klar ob sby_need das richtige ist
         Das Baseline-Modell ist in diesem Fall ein Durchschnittsmodell für die Spalte \texttt{sby\_need}, das den mittleren Wert der schlussendlich gesuchten Zielvariable für jede Vorhersage nutzt.
+        Der Durchschnitt über den Trainingsdatensatz hinweg beträgt \textit{29.99} Personen und ist damit weit unter den aktuell fest eingeplanten 90 Personen.
         
         Die Leistung des Baseline-Modells wird mittels des Mean Absolute Error (MAE) und dem Bestimmtgeitsmaß ($R^2$-Score) bewertet. 
         Abbildung \ref{fig:baseline_performance} zeigt die Performance des Baseline-Modells im Vergleich zu den tatsächlichen Werten.
@@ -811,6 +813,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 Durchschnittliche Unterbesetzung & 119.25 & 114.43 & 131.09 \\ \hline
                 Median Überbesetzung & 23.94 & 32.95 & 25.96 \\ \hline
                 Median Unterbesetzung & 91.00 & 91.00 & 97.97 \\ \hline
+                Tagesdurchschnitt Ersatzfahrer für Planung & 6.01 & 12.4 & 2.74 \\ \hline
+                Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & -24.92 & -18.53 & -28.19 \\ \hline
                 \end{tabular}
                 \caption{Vergleich der Metriken für LSTM, GRU und CNN}
                 \label{tab:model_comparison}
@@ -868,39 +872,44 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \hline
             \textbf{Parameter} & \textbf{Modell} & \multicolumn{4}{c|}{\textbf{Straffaktor für Überschätzungen}} \\ \cline{3-6}
             & & \textbf{1.0 (keine Gewichtung)} & \textbf{10} & \textbf{20} & \textbf{50} \\ \hline
-            % \textbf{MAE (Mean Absolute Error) (bezogen auf Spalte \texttt{calls})} & LSTM & 846.41 & 1035.93 & 1095.14 & 1434.74 \\ \cline{2-6}
-            % & GRU & 873.56 & 1340.29 & 1604.36 & 1466.51 \\ \cline{2-6}
-            % & CNN & 916.48 & 1085.50 & 1063.68 & 1533.94 \\ \hline
-            % \textbf{RMSE (Root Mean Squared Error) (bezogen auf Spalte \texttt{calls})} & LSTM & 1012.82 & 1302.13 & 1380.31 & 1746.29 \\ \cline{2-6}
-            % & GRU & 1053.52 & 1654.27 & 1932.75 & 1778.96 \\ \cline{2-6}
-            % & CNN & 1089.96 & 1336.38 & 1309.46 & 1837.03 \\ \hline
-            % \textbf{R²-Score (bezogen auf Spalte \texttt{calls})} & LSTM & 0.39 & -0.01 & -0.14 & -0.82 \\ \cline{2-6}
-            % & GRU & 0.34 & -0.63 & -1.23 & -0.89 \\ \cline{2-6}
-            % & CNN & 0.29 & -0.06 & -0.02 & -1.01 \\ \hline \hline
-            \textbf{Anteil an Tagen mit Unterbesetzung (\%)} & LSTM & 22.08 & 12.99 & 11.69 & 2.16 \\ \cline{2-6}
-            & GRU & 20.35 & 7.79 & 4.76 & 2.60 \\ \cline{2-6}
+            \textbf{MAE} & LSTM & 846.41 & 1035.93 & 1095.14 & 1434.74 \\ \cline{2-6}
+            (bezogen auf \texttt{calls}) & GRU & 873.56 & 1340.29 & 1604.36 & 1466.51 \\ \cline{2-6}
+            & CNN & 916.48 & 1085.50 & 1063.68 & 1533.94 \\ \hline
+            \textbf{RMSE} & LSTM & 1012.82 & 1302.13 & 1380.31 & 1746.29 \\ \cline{2-6}
+            (bezogen auf \texttt{calls}) & GRU & 1053.52 & 1654.27 & 1932.75 & 1778.96 \\ \cline{2-6}
+            & CNN & 1089.96 & 1336.38 & 1309.46 & 1837.03 \\ \hline
+            \textbf{R²-Score} & LSTM & 0.39 & -0.01 & -0.14 & -0.82 \\ \cline{2-6}
+            (bezogen auf \texttt{calls}) & GRU & 0.34 & -0.63 & -1.23 & -0.89 \\ \cline{2-6}
+            & CNN & 0.29 & -0.06 & -0.02 & -1.01 \\ \hline \hline
+            \textbf{Anteil an Tagen mit} & LSTM & 22.08 & 12.99 & 11.69 & 2.16 \\ \cline{2-6}
+            \textbf{Unterbesetzung (\%)}& GRU & 20.35 & 7.79 & 4.76 & 2.60 \\ \cline{2-6}
             & CNN & 22.08 & 15.15 & 14.72 & 7.79 \\ \hline
-            \textbf{Anteil an Tagen mit Überbesetzung (\%)} & LSTM & 3.03 & 48.48 & 49.35 & 78.35 \\ \cline{2-6}
-            & GRU & 8.66 & 70.56 & 85.28 & 81.39 \\ \cline{2-6}
+            \textbf{Anteil an Tagen mit} & LSTM & 3.03 & 48.48 & 49.35 & 78.35 \\ \cline{2-6}
+            \textbf{Überbesetzung (\%)} & GRU & 8.66 & 70.56 & 85.28 & 81.39 \\ \cline{2-6}
             & CNN & 3.03 & 43.29 & 40.26 & 92.21 \\ \hline
-            \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)} & LSTM & 74.89 & 38.53 & 38.96 & 19.48 \\ \cline{2-6}
-            & GRU & 71.00 & 21.65 & 9.96 & 16.02 \\ \cline{2-6}
-            & CNN & 74.89 & 41.56 & 45.02 & 0.00 \\ \hline
-            \textbf{Durchschnittliche Überbesetzung} & LSTM & 39.94 & 94.78 & 108.34 & 154.19 \\ \cline{2-6}
-            & GRU & 44.61 & 135.60 & 176.49 & 156.01 \\ \cline{2-6}
+            \textbf{Anteil an Tagen mit} & LSTM & 74.89 & 38.53 & 38.96 & 19.48 \\ \cline{2-6}
+            \textbf{perfekter Vorhersage} & GRU & 71.00 & 21.65 & 9.96 & 16.02 \\ \cline{2-6}
+            \textbf{(\%)}& CNN & 74.89 & 41.56 & 45.02 & 0.00 \\ \hline
+            \textbf{Durchschnittliche} & LSTM & 39.94 & 94.78 & 108.34 & 154.19 \\ \cline{2-6}
+            \textbf{Überbesetzung} & GRU & 44.61 & 135.60 & 176.49 & 156.01 \\ \cline{2-6}
             & CNN & 25.15 & 78.52 & 77.19 & 126.95 \\ \hline
-            \textbf{Durchschnittliche Unterbesetzung} & LSTM & 119.25 & 73.35 & 61.68 & 25.68 \\ \cline{2-6}
-            & GRU & 114.43 & 53.05 & 44.10 & 47.80 \\ \cline{2-6}
+            \textbf{Durchschnittliche} & LSTM & 119.25 & 73.35 & 61.68 & 25.68 \\ \cline{2-6}
+            \textbf{Unterbesetzung} & GRU & 114.43 & 53.05 & 44.10 & 47.80 \\ \cline{2-6}
             & CNN & 131.09 & 93.67 & 106.05 & 70.91 \\ \hline
-            \textbf{Median Überbesetzung} & LSTM & 23.94 & 95.04 & 102.76 & 152.86 \\ \cline{2-6}
-            & GRU & 32.95 & 127.16 & 157.30 & 155.89 \\ \cline{2-6}
+            \textbf{Median} & LSTM & 23.94 & 95.04 & 102.76 & 152.86 \\ \cline{2-6}
+            \textbf{Überbesetzung} & GRU & 32.95 & 127.16 & 157.30 & 155.89 \\ \cline{2-6}
             & CNN & 25.96 & 67.29 & 65.12 & 131.53 \\ \hline
-            \textbf{Median Unterbesetzung} & LSTM & 91.00 & 62.37 & 60.16 & 15.07 \\ \cline{2-6}
-            & GRU & 91.00 & 51.61 & 39.17 & 35.60 \\ \cline{2-6}
+            \textbf{Median} & LSTM & 91.00 & 62.37 & 60.16 & 15.07 \\ \cline{2-6}
+            \textbf{Unterbesetzung} & GRU & 91.00 & 51.61 & 39.17 & 35.60 \\ \cline{2-6}
             & CNN & 97.97 & 75.88 & 80.76 & 40.87 \\ \hline
 
-            % To-Do: Werte für: Differenz Tagesdurchschnitt Ersatzfahrer zu Realität, Tagesdurchschnitt Ersatzfahrer für Planung -- Rekonstruieren aus dem Copilot Chat. Ergebnisse sind da
-            % Anderes To-Do: Tabelle in Höhe reduzieren (Grund zu viel leerer Raum unter Parameter)
+            \textbf{Tagesdurchschnitt} & LSTM & 6.01 & 67.36 & 77.19 & 151.19 \\ \cline{2-6}
+            \textbf{Ersatzfahrer} & GRU & 12.4 & 122.48 & 179.34 & 156.66 \\ \cline{2-6}
+            \textbf{für Planung}& CNN & 2.74 & 50.73 & 46.40 & 142.46 \\ \hline
+            
+            \textbf{Differenz Tages-} & LSTM & -24.92 & 36.43 & 46.26 & 120.26 \\ \cline{2-6}
+            \textbf{durchschnitt Ersatz-} & GRU & -18.53 & 91.55 & 148.41 & 125.73 \\ \cline{2-6}
+            \textbf{fahrer zu Realität}& CNN & -28.19 & 19.80 & 15.47 & 111.53 \\ \hline
 
             \end{tabular}
             \caption{Vergleich der Modellergebnisse (LSTM, GRU, CNN) bei unterschiedlicher Gewichtung von Unterbesetzungen (\( \lambda \))}
@@ -915,24 +924,44 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Der Straffaktor bietet somit eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. 
         In manchen Anwendungsfällen kann ein Straffaktor von \( \lambda = 10 \) als sinnvoller Kompromiss angesehen werden, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt als auch die Überbesetzung in einem noch vertretbaren Bereich hält.
 
-        Eine Alternative zum Straffaktor könnte auch fixer Aufschlag von Ersatzfahrern sein.
-        Ohne Straffaktor beträgt die Median Unterbesetzung ca. 90 Personen. 
-        Deshalb könnte es sich anbieten die Vorhersage des Modells (ohne Straffaktor) einfach auf die bereits festen 90 Personen aufzuschlagen.
-        
-        % bis hierhin das hoffentlich letzte Mal überarbeitet
-
         \subsection{Abschließende Bewertung des besten Modells}
 
-            Obwohl das GRU-Modell im Vergleich zu anderen Modellen wie LSTM und CNN durch eine bessere Balance zwischen Über- und Unterbesetzung hervorsticht, lässt sich dennoch kein universell optimaler Straffaktor \( \lambda \) bestimmen. 
-            Die Ergebnisse der verschiedenen Straffaktoren in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass der Straffaktor einen signifikanten Einfluss auf die Vorhersagen des Modells hat: Mit einem höheren Straffaktor lässt sich die Unterbesetzung erfolgreich reduzieren, jedoch geht dies stets mit einer Zunahme der Überbesetzung einher.
-            
-            Da der Straffaktor unterschiedliche Auswirkungen auf den operativen Betrieb hat, gibt es keine "perfekte" Einstellung, die für alle Einsatzszenarien gleichermaßen ideal ist. 
-            Die Wahl des optimalen Straffaktors hängt stark von den Prioritäten und spezifischen Anforderungen der Einsatzplanung ab. 
-            In manchen Fällen könnte eine geringere Unterbesetzung zu Lasten einer moderaten Überbesetzung akzeptabel sein, während in anderen Fällen eine höhere Effizienz im Vordergrund steht und somit eine Reduzierung der Überbesetzung angestrebt wird.
-            
-            In Anbetracht dieser Überlegungen wird vorgeschlagen, den Einsatzplanern die Möglichkeit zu geben, den Straffaktor nach ihren Bedürfnissen flexibel anzupassen. 
+            Im Rahmen der abschließenden Modellbewertung wurden verschiedene Ansätze (LSTM, GRU, CNN) unter Berücksichtigung unterschiedlicher Straffaktoren für Überschätzungen (\(\lambda\)) untersucht.
+            Ziel war es, ein Modell zu identifizieren, das eine möglichst präzise Vorhersage der benötigten Einsatzfahrenden im Bereitschaftsdienst bietet, während gleichzeitig Unterbesetzungen minimiert und Überbesetzungen reduziert werden.
+
+            Der Straffaktor bietet dabei eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. 
+            Mit einem höheren Straffaktor lässt sich die Unterbesetzung erfolgreich reduzieren, jedoch geht dies stets mit einer Zunahme der Überbesetzung einher. 
+            Ein Straffaktor von \(\lambda = 10\) bietet in diesem Fall einen sinnvollen Kompromiss, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt (12,99\%) als auch die Überbesetzung (48,48\%) in einem vertretbaren Bereich hält. 
+            Das LSTM-Modell erweist sich mit diesem Straffaktor als besonders ausgewogen.
+
+            Obwohl das GRU-Modell bei einem höheren Straffaktor tendenziell eine bessere Balance zwischen Unter- und Überbesetzung zeigt, bringt es eine erhebliche Zunahme der Überbesetzung mit sich. 
+            Daher ist das LSTM-Modell vorzuziehen, da es eine gute Balance zwischen einer akzeptablen Reduktion der Unterbesetzung und einer moderaten Erhöhung der Überbesetzung bietet.
+
+            Eine Alternative zum Straffaktor könnte ein fixer Aufschlag von Ersatzfahrern auf die Modellvorhersage sein. 
+            Ohne Straffaktor beträgt die Median-Unterbesetzung ca. 90 Personen. 
+            Dies könnte dafür sprechen, die Vorhersage des Modells ohne Straffaktor auf einen fixen Wert von 90 Ersatzfahrern aufzuschlagen, um die Unterbesetzung ohne drastische Änderungen im Modell zu kompensieren.
+
+            Ein Vergleich mit der statischen Planung, bei der jeden Tag konstant 90 Ersatzfahrer eingesetzt werden, verdeutlicht den Mehrwert des dynamischen Modells. 
+            Bei der statischen Planung ergeben sich für den gesamten Zeitraum folgende Werte: 
+            Ein Anteil an Tagen mit Unterbesetzung von 13,11\%, ein Anteil an Überbesetzungstagen von 86,63\% und ein sehr geringer Anteil an Tagen mit perfekter Vorhersage von nur 0,26\%. 
+            Zudem beträgt die durchschnittliche Überbesetzung 84,45 Personen und die durchschnittliche Unterbesetzung liegt bei 101,77 Personen. 
+            Der Median der Überbesetzung liegt bei 90 Personen, was ebenfalls auf die starre, vorab festgelegte Anzahl an Ersatzfahrern hinweist. 
+            Der Tagesdurchschnitt der Ersatzfahrer beträgt logischerweise 90 Personen, was zu einer Differenz zum tatsächlichen Durchschnitts-Bedarf von 59,82 Personen führt.
+
+            Im Vergleich dazu bietet das LSTM-Modell mit einem Straffaktor von 10 eine deutliche Verbesserung. 
+            Der Anteil an Unterbesetzungstagen sinkt auf 12,99\%, während die Überbesetzung bei 48,48\% liegt. 
+            Besonders auffällig ist der deutlich höhere Anteil an Tagen mit perfekter Vorhersage (38,53\%), was zeigt, dass das Modell in der Lage ist, den tatsächlichen Bedarf präziser vorherzusagen. 
+            Die dynamische Planung sorgt auch für eine bessere Anpassung der Ersatzfahrer an den tatsächlichen Bedarf und reduziert somit die Ressourcenverschwendung durch Überbesetzung.
+
+            Es gibt jedoch keinen universell optimalen Straffaktor für alle Szenarien, da die Wahl des idealen Straffaktors stark von den Prioritäten und den spezifischen Anforderungen der Einsatzplanung abhängt. 
+            In manchen Fällen kann eine geringere Unterbesetzung zu Lasten einer moderaten Überbesetzung akzeptabel sein, während in anderen Fällen eine höhere Effizienz angestrebt wird. 
+            Aus diesem Grund wird vorgeschlagen, den Einsatzplanern die Möglichkeit zu geben, den Straffaktor flexibel an ihre operativen Bedürfnisse anzupassen. 
             Je nach aktueller Lage und den verfügbaren Ressourcen können sie so eine individuell geeignete Gewichtung zwischen Unter- und Überbesetzung wählen, die ihren operationellen Zielen entspricht. 
             Dies gewährleistet, dass das Modell nicht starr, sondern anpassungsfähig bleibt und dynamisch auf verschiedene Anforderungen reagieren kann.
+
+            Zusammenfassend zeigt sich, dass das dynamische Modell, insbesondere das LSTM-Modell mit einem Straffaktor von 10, eine klare Verbesserung im Vergleich zur statischen Planung bietet. 
+            Es ermöglicht eine präzisere Vorhersage des Personalbedarfs, minimiert kritische Unterbesetzungen und optimiert die Nutzung der Ressourcen durch eine bessere Kontrolle der Überbesetzung.
+
 
 %\chapter{Diskussion der Modellvariablen}
 % To-Do: Evaluieren, ob dieses Kapitel weiterhin Sinn  machen kann oder ob man Teile aus den Kapitel darüber einfach hierrein verschiebt.
@@ -946,6 +975,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Die Implementierung basiert auf einem Flask-Web-Framework, das als leichtgewichtiger Web-Server fungiert. 
         Das Modell und die erforderlichen Vorverarbeitungswerkzeuge werden als trainierte Artefakte gespeichert und bei Bedarf geladen. 
+
+        % bis hierhin das hoffentlich letzte Mal überarbeitet
+
         Das folgende Code-Snippet zeigt die Struktur des Servers:
 
         % To-Do: Code-Schnipsel im Blick behalten und vor Abgabe sicherstellen, dass diese zum echten Code passen
@@ -988,6 +1020,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Langfristig könnte das System auch um zusätzliche Funktionen wie die automatische Anpassung des Modells an neue Daten und die Integration weiterer Datenquellen erweitert werden.
         Das Zukommen Lassen neuer Daten ließe sich dabei auch über die API abwickeln.
+        Dann würde das Modell mit den neuen Daten direkt neu trainiert werden können und durch das neue Training ließe sich dann auch der Straffaktor für Überschätzungen ändern.
 
     \section{Einbindung in den Arbeitsalltag}
 
@@ -1015,7 +1048,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Jede Veränderung des Straffaktors führte zu einer Verschiebung zwischen diesen beiden Zielen, was die Suche nach einem "perfekten" Modell erschwerte. 
         Hinzu kommt, dass unterschiedliche Einsatzanforderungen auch unterschiedliche Priorisierungen erfordern – eine Herausforderung, die nur durch eine dynamische Anpassung des Modells und des Straffaktors von den Einsatzplanern selbst gemeistert werden kann.
         
-        Die Modellergebnisse verdeutlichen, dass selbst fortgeschrittene maschinelle Lernansätze wie GRU, LSTM oder CNN nicht in allen Fällen den gewünschten Erfolg bringen. 
+        Die Modellergebnisse verdeutlichen, dass selbst fortgeschrittene maschinelle Lernansätze wie GRU, LSTM oder CNN nicht in allen Fällen den ursprünglich erhofften Erfolg bringen. 
         Während die Modelle im Vergleich zu statischen Ansätzen klare Verbesserungen hinsichtlich der Reduzierung von Unterbesetzungen aufzeigen, gab es auch Szenarien, in denen die Effizienz durch eine übermäßige Überbesetzung beeinträchtigt wurde. 
         Dies zeigt die Notwendigkeit, weiterhin Modelle zu entwickeln, die besser auf die realen Herausforderungen der Einsatzplanung abgestimmt sind.
         
@@ -1027,7 +1060,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Langfristig könnte auch der Einsatz von ensemblebasierten Methoden oder hybriden Modellen (z. B. Kombination von maschinellem Lernen und regelbasierten Systemen) untersucht werden. 
         Diese Modelle könnten die Vorteile verschiedener Ansätze kombinieren und so die Vorhersagegenauigkeit und Effizienz weiter verbessern.
         
-        Zusammenfassend lässt sich festhalten, dass datengetriebene Vorhersagemodelle bereits einen deutlichen Mehrwert zur statischen Einsatzplanung bieten. 
+        Zusammenfassend lässt sich trotz Herausforderungen festhalten, dass das datengetriebene Vorhersagemodell einen deutlichen Mehrwert gegenüber der statischen Einsatzplanung bietet und eine zeitnahe Integration in den Planungsprozess definitiv zu empfehlen ist.
 
     % Schluss ca. 10%
 
@@ -1059,6 +1092,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 % Beschreiben, dass sby_need und n_duty behoben wurden, damit die Vorhersage und das Modell richtig evaluieren können
 % evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM
 % Diagramme mit Zeit fixen. Unten ist eine komische Darstellung der Zeitspalte
+% Abstract auch noch unbedingt anpassen
 
 % Dokument am besten von oben nach unten durchgehen und dabei direkt die Punkte checken und abarbeiten
 

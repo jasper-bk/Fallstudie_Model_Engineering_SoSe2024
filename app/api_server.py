@@ -17,6 +17,8 @@ from sklearn_keras_wrapper import BaseModelWrapper, LSTMModelWrapper, GRUModelWr
 # Lade das Modell und den Scaler
 model_wrapper = BaseModelWrapper.load('./app/models/lstm')  # Lade das gespeicherte Modell und den Wrapper
 
+# evtl mehrere Modell bereithalten und wie in einem Drop-Down kann man sich für ein Modell per API Parameter entscheiden
+
 def extract_features(date_str):
     date = datetime.strptime(date_str, "%Y-%m-%d")
     return {
