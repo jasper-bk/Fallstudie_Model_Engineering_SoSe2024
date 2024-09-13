@@ -81,7 +81,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{makecell}
 \usepackage{amsmath}
 \usepackage{multirow}
-
     %%%%%%% Neues Design %%%%%%%%%%%
 
     \usepackage{helvet} %Arial-Ersatz
@@ -190,6 +189,59 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
 \renewcommand{\lstlistingname}{Code Ausschnitt}% 
 \renewcommand{\lstlistlistingname}{Code-Ausschnitt-Verzeichnis}%
+
+
+% Extra languages for listings
+\definecolor{delim}{RGB}{20,105,176}
+\definecolor{numb}{RGB}{106, 109, 32}
+\definecolor{string}{rgb}{0.64,0.08,0.08}
+
+\lstset{language=Python,
+    numbers=left,
+    numberstyle=\small,
+    frame=single,
+    rulecolor=\color{black},
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{gray}\hookrightarrow\space}},
+    breakatwhitespace=true,
+    basicstyle=\ttfamily\small,
+    upquote=true,
+    morestring=[b]",
+    stringstyle=\color{string}
+}
+
+\lstdefinelanguage{json}{
+    numbers=left,
+    numberstyle=\small,
+    frame=single,
+    rulecolor=\color{black},
+    showspaces=false,
+    showtabs=false,
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{gray}\hookrightarrow\space}},
+    breakatwhitespace=true,
+    basicstyle=\ttfamily\small,
+    upquote=true,
+    morestring=[b]",
+    stringstyle=\color{string},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
 
 \begin{document}
 
@@ -864,8 +916,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         In der nachfolgenden Tabelle \ref{tab:straffaktor_comparison} sind die Auswirkungen unterschiedlicher Straffaktoren \( \lambda \) auf die Modellergebnisse dargestellt.
 
 
-        %To-Do: Tabelle vervollständigen! Nur 1 und 2.5 als Faktor richtig drin
-
         \begin{table}[H]
             \centering
             \begin{tabular}{|p{4cm}|c|c|c|c|c|c|c|c|}
@@ -976,47 +1026,45 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Die Implementierung basiert auf einem Flask-Web-Framework, das als leichtgewichtiger Web-Server fungiert. 
         Das Modell und die erforderlichen Vorverarbeitungswerkzeuge werden als trainierte Artefakte gespeichert und bei Bedarf geladen. 
 
-        % bis hierhin das hoffentlich letzte Mal überarbeitet
+        Der folgende Code-Ausschnitt \ref{lst:api_server_base} zeigt die übersichtliche Struktur des Servers mit seinen zwei Endpunkten für Vorhersagen von Notrufen (\texttt{calls}) und den nötigen Ersatzfahrern (\texttt{sby\_need}):
 
-        Das folgende Code-Snippet zeigt die Struktur des Servers:
+        \lstset{caption={Aufbau Vorhersage API}}
+        \lstset{inputencoding=latin1} % rquires extra package: \usepackage[utf8]{inputenc}
+        \lstinputlisting[label={lst:api_server_base},firstline=74,firstnumber=74,language=Python,lastline=103]{../app/api_server.py}
 
-        % To-Do: Code-Schnipsel im Blick behalten und vor Abgabe sicherstellen, dass diese zum echten Code passen
-        \begin{lstlisting}[language=Python, gobble=8, caption=Aufbau Vorhersage API]
-        import pandas as pd
-        import numpy as np
-        import joblib
-        from flask import Flask, request, jsonify
-
-        # Funktion zur Vorhersage neuer Daten
-        def predict_readiness(calls, day_of_week, month):
-            model = joblib.load('app/models/readiness_model.pkl')
-            new_data = np.array([[calls, day_of_week, month]])
-            prediction = model.predict(new_data)
-            return prediction[0]
-
-        app = Flask(__name__)
-
-        @app.route('/predict', methods=['POST'])
-        def predict():
-            data = request.json
-            calls = data['calls']
-            day_of_week = data['day_of_week']
-            month = data['month']
-            prediction = predict_readiness(calls, day_of_week, month)
-            return jsonify({'prediction': prediction})
-
-        if __name__ == '__main__':
-            app.run(debug=True)
-        \end{lstlisting}
+        Der vollständige Code ist auch im Anhang zu finden. % To-Do: Verlinkung und Anhang
 
     \section{Benutzerinteraktion}
 
         Die Benutzer können über eine einfache Web-Oberfläche oder direkt über HTTP-Requests mit der API interagieren. 
         Dabei werden alle relevanten und zur Verfügung stehenden Informationen -- in dem Fall der ausgewählte Tag -- an die API gesendet.
+
+        Der Request wendet sich als POST an \texttt{/predict-sby-need} mit einem einfachen Request-Body. 
+        Zu sehen im API Request Body Beispiel \ref{lst:request_body_example}.
+
+        \begin{lstlisting}[language=json, gobble=8, caption=Beispiel API Request Body, label={lst:request_body_example}]
+            {
+                "2018-10-09": {"n_duty": 1900},
+                "2018-10-10": {"n_duty": 1900},
+                "2018-10-11": {"n_duty": 1900}
+            }
+        \end{lstlisting}
+
         Die API liefert daraufhin eine Vorhersage für die Anzahl der benötigten Bereitschaftsdiensthabenden und damit wird z. B. beim Planungsprozess für den Folgemonat zusätzliche Kapazität zur Erreichung der höheren Ausnutzung an aktivierten Einsatzfahrenden eingeplant.
+        Für jeden Tag der via API angefragt wird, gibt es eine Vorhersage, wie in der Beispiel Response \ref{lst:reponse_example} zu sehen.
+
+        \begin{lstlisting}[language=json, gobble=8, caption=Beispiel API Response, label={lst:reponse_example}]
+            {
+                "sby-need-prediction": {
+                    "2018-10-09": 174,
+                    "2018-10-10": 64,
+                    "2018-10-11": 0
+                }
+            }
+        \end{lstlisting}
 
         Durch die Anpassung bestehender Verwaltungssysteme kann die API auch problemlos dort integriert bzw. aufgerufen werden und beim Planen muss kein zusätzliches System nebenher eingesetzt werden.
-        So ließen sich im bestehenden Verwaltungssystem bei vorhergesagten Engpässen die Tage farblich markieren und vor Freigabe der Planung eine Warnung für die einzelnen Tage ausgeben, ohne das man jeden Tag einzeln in einer separaten Software abgleichen muss.
+        So ließen sich im bestehenden Verwaltungssystem bei vorhergesagten Engpässen die Tage z. B. farblich markieren und vor Freigabe der Planung eine Warnung für die einzelnen Tage ausgeben, ohne das man jeden Tag einzeln in einer separaten Software abgleichen muss.
 
         Langfristig könnte das System auch um zusätzliche Funktionen wie die automatische Anpassung des Modells an neue Daten und die Integration weiterer Datenquellen erweitert werden.
         Das Zukommen Lassen neuer Daten ließe sich dabei auch über die API abwickeln.
@@ -1024,13 +1072,15 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Einbindung in den Arbeitsalltag}
 
-        Um die Vorhersagen effektiv in den Arbeitsalltag zu integrieren, können verschiedene Strategien angewendet werden:
-        \begin{itemize}
-            \item \textbf{Planung des Dienstplans}: Basierend auf den Vorhersagen können die Einsatzkräfte besser auf mögliche Engpässe vorbereitet werden, indem zusätzliche Ressourcen eingeplant werden.
-            % To-Do: müsste dann unabhängig vorausgesagt werden % Evtl. machen auch mehrere Modelle Sinn
-            \item \textbf{Proaktive Maßnahmen}: Bei einer hohen vorhergesagten Anzahl von Ersatzfahrern können präventive Maßnahmen ergriffen werden, um die Einsatzbereitschaft sicherzustellen.
-            \item \textbf{Monitoring und Anpassung}: Die Vorhersagen können regelmäßig überprüft und mit den tatsächlichen Ereignissen verglichen werden, um das Modell kontinuierlich zu verbessern.
-        \end{itemize}
+        Indem die API nahtlos in die bestehende Infrastruktur eingebunden wird, können Planer Vorhersagen direkt in ihrem Workflow nutzen, ohne auf externe Tools zurückgreifen zu müssen. 
+        So sind etwa Vorschläge oder Warnhinweise für mögliche Engpässe oder Überbesetzungen direkt in den bestehenden Planungsoberflächen möglich.
+
+        Basierend auf den Vorhersagen können die Einsatzkräfte bereits früh auf mögliche Engpässe vorbereitet werden, indem zusätzliche Ressourcen eingeplant oder bereitgehalten werden.
+        Bei einer hohen vorhergesagten Anzahl von Ersatzfahrern lassen sich präventive Maßnahmen ergriffen, um die Einsatzbereitschaft sicherzustellen.
+        
+        Außerdem lassen sich die Vorhersagen regelmäßig überprüfen und mit den tatsächlichen Ereignissen vergleichen, um das Modell kontinuierlich zu verbessern.
+        Zudem werden vergangene Zeiträume mit ihrem realen Bedarf zum Trainingsdatensatz hinzugefügt, um das Modell auf den aktuellen Stand zu halten und zudem die Effizienz zu verbessern.
+       
 
     \chapter{Fazit \& Ausblick}
 
@@ -1045,7 +1095,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         
         Ein weiteres zentrales Problem war die Wahl und Anpassung des Straffaktors \( \lambda \). 
         Es zeigte sich, dass es keinen universellen Straffaktor gibt, der sowohl die Überbesetzung als auch die Unterbesetzung optimal balanciert. 
-        Jede Veränderung des Straffaktors führte zu einer Verschiebung zwischen diesen beiden Zielen, was die Suche nach einem "perfekten" Modell erschwerte. 
+        Jede Veränderung des Straffaktors führte zu einer Verschiebung zwischen diesen beiden Zielen, was die Suche nach einem \enquote{perfekten} Modell erschwerte. 
         Hinzu kommt, dass unterschiedliche Einsatzanforderungen auch unterschiedliche Priorisierungen erfordern – eine Herausforderung, die nur durch eine dynamische Anpassung des Modells und des Straffaktors von den Einsatzplanern selbst gemeistert werden kann.
         
         Die Modellergebnisse verdeutlichen, dass selbst fortgeschrittene maschinelle Lernansätze wie GRU, LSTM oder CNN nicht in allen Fällen den ursprünglich erhofften Erfolg bringen. 

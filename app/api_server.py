@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import sys
 import os
@@ -12,12 +13,13 @@ import tensorflow as tf
 from datetime import datetime, timedelta
 import math
 
-from sklearn_keras_wrapper import BaseModelWrapper, LSTMModelWrapper, GRUModelWrapper, CustomLoss  # Importiere die benutzerdefinierte Verlustfunktion und den Wrapper
+# Importiere die benutzerdefinierte Verlustfunktion und den Wrapper
+from sklearn_keras_wrapper import BaseModelWrapper, LSTMModelWrapper, GRUModelWrapper, CustomLoss  
 
-# Lade das Modell und den Scaler
+# Lade das Modell und den Scaler über die Super-Klasse BaseModelWrapper
 model_wrapper = BaseModelWrapper.load('./app/models/lstm')  # Lade das gespeicherte Modell und den Wrapper
 
-# evtl mehrere Modell bereithalten und wie in einem Drop-Down kann man sich für ein Modell per API Parameter entscheiden
+# evtl mehrere Modelle bereithalten und wie in einem Drop-Down kann man sich für ein Modell per API Parameter entscheiden
 
 def extract_features(date_str):
     date = datetime.strptime(date_str, "%Y-%m-%d")
@@ -30,9 +32,14 @@ def extract_features(date_str):
 
 # Needed to avoid skipping the first sequence in prediction
 def create_historic_sequences(earlist_date):
+    # Erstelle so viele Tage vorm ersten aus Datum, wie  die Sequenz des Modells lang ist 
     historic_dates = [(earlist_date - timedelta(days=x)).strftime('%Y-%m-%d') for x in range(1, model_wrapper.seq_length + 1)]
+
+    # Extrahiere Zeit-Features aus den neuen Datums
     historical_data_for_sequence = [extract_features(date) for date in historic_dates]
     historical_data_for_sequence_df = pd.DataFrame(historical_data_for_sequence)
+
+    # Daten in selbe Form bringen
     historical_data_for_sequence_df["date"] = historic_dates
     historical_data_for_sequence_df['date'] = pd.to_datetime(historical_data_for_sequence_df['date'])
     historical_data_for_sequence_df.set_index('date', inplace=True)
@@ -67,9 +74,10 @@ app = Flask(__name__)
 @app.route('/predict-calls', methods=['POST'])
 def route_predict_calls():
     data = request.json
-    dates = data['dates']  # Erwarte eine Liste von Datumsangaben im YYYY-MM-DD-Format
+    # Erwarte eine Liste von Datumsangaben im YYYY-MM-DD-Format
+    dates = data['dates']  
     
-    # Berechne die Vorhersage
+    # Vorhersage
     prediction = predict_calls(dates)
     
     return jsonify({'calls-prediction': prediction})
@@ -77,9 +85,10 @@ def route_predict_calls():
 @app.route('/predict-sby-need', methods=['POST'])
 def route_predict_sby_need():
     data = request.json
-    
+    # Erwarte eine Dictionary mit Datumsangaben als Keys und den n_duty Werten pro Tag, um sby-need zu berechnen
     date_list = list(data.keys())
     
+    # Vorhersage und folgende Berechnung aus Vorhersage
     prediction = predict_calls(date_list)
 
     result = {}
