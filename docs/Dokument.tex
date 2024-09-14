@@ -323,21 +323,24 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     % Zum Schluss nochmal neuschreiben bzw. überarbeiten
 
-    In dieser Arbeit wird die Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende mithilfe eines Vorhersagemodells untersucht. 
-    Der Prozess umfasst eine detaillierte Datenanalyse, die auf einem bereitgestellten CSV-Datensatz basiert, welcher Informationen über krankheitsbedingte Abwesenheiten und Anrufvolumina enthält. 
-    Die Analyse umfasst die explorative Datenanalyse (EDA), Datenbereinigung und -vorbereitung sowie die Erstellung eines Basismodells und eines präziseren Vorhersagemodells.
+    Die vorliegende Arbeit beschäftigt sich mit der Entwicklung und Integration eines Vorhersagemodells zur effizienten Einsatzplanung von Bereitschaftsdienstfahrenden. 
+    Der Prozess umfasst eine detaillierte Datenanalyse, die auf einem bereitgestellten CSV-Datensatz basiert, welcher Informationen über krankheitsbedingte Abwesenheiten, notwendigen Ersatzfahrende und Anrufvolumina enthält. 
+    Ziel des Modells ist es, die Anzahl der notwendigen Ersatzfahrenden auf Tagesbasis präzise vorherzusagen und dabei Unterbesetzungen zu minimieren sowie Überbesetzungen zu reduzieren. 
 
-    Zunächst wird der Datensatz inspiziert und grundlegende Statistiken sowie Visualisierungen zur Verteilung der Variablen n\_sick (Anzahl der erkrankten Mitarbeiter) und calls (Anrufvolumen) erstellt. 
-    Dabei wird die zeitliche Dimension berücksichtigt, um saisonale Trends und Muster zu erkennen. 
+    Zunächst wird der Datensatz inspiziert und grundlegende Statistiken sowie Visualisierungen zu den der Variablen sby\_need (tatsächlich benötigte Ersatzfahrer) und calls (Anrufvolumen) erstellt. 
+    Dabei wird die zeitliche Dimension besonders untersucht, um saisonale Trends und Muster zu erkennen. 
     Die Datenvorbereitung beinhaltet die Behandlung fehlender Werte, Feature Engineering und die Aufteilung in Trainings- und Testdatensätze.
-    
-    Ein Basismodell wird als Ausgangspunkt implementiert und seine Leistung mittels Mean Absolute Error (MAE) bewertet.
-    Anschließend wird ein fortgeschritteneres Modell (Random Forest) trainiert und durch Hyperparameter-Tuning optimiert. 
-    Die Modelle werden anhand von MAE und Feature-Importance-Analysen evaluiert, um die wichtigsten Einflussfaktoren zu identifizieren.
-    
+
     Die Ergebnisse der Datenanalyse und Modellierung werden durch geeignete Visualisierungen und Berichte kommuniziert. 
-    Dies ermöglicht eine fundierte Entscheidungsfindung und trägt zur Effizienzsteigerung des Bereitschaftsdienstplans bei, indem präzisere Vorhersagen über krankheitsbedingte Abwesenheiten getroffen werden können. 
-    Die Arbeit zeigt, dass eine strukturierte Vorgehensweise bei der Datenanalyse und Modellierung wesentliche Erkenntnisse liefert, die zur Optimierung betrieblicher Prozesse beitragen.
+    Dies ermöglicht eine fundierte Entscheidungsfindung und trägt zur Effizienzsteigerung des Bereitschaftsdienstplans bei, indem eine präzisere Planung ermöglicht wird. 
+
+    Die Implementierung des Modells erfolgt als API-basiertes System, das nahtlos in bestehende Verwaltungssysteme integriert werden kann. 
+    Die API ermöglicht es, Vorhersagen über eine REST-Schnittstelle abzufragen, wodurch der Planungsprozess dynamisch und automatisiert unterstützt wird. 
+    Benutzer können über die API Vorhersagen für spezifische Tage anfragen und erhalten eine präzise Einschätzung der benötigten Einsatzkräfte. 
+
+    Der Vergleich mit der statischen Planung zeigt eine signifikante Verbesserung der Planungsqualität durch das dynamische Modell, insbesondere durch die Reduktion der Ressourcenverschwendung und die Optimierung des Personaleinsatzes. 
+    Diese Arbeit stellt somit eine wertvolle Unterstützung für die Einsatzplanung dar und bietet durch die kontinuierliche Verbesserung und Integration in den Arbeitsalltag langfristig ein großes Potenzial zur Effizienzsteigerung.
+
     
 
 \end{abstract}
@@ -387,7 +390,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Solche ad-hoc Lösungen sind jedoch oft ineffizient und können die Einsatzbereitschaft und Reaktionszeit negativ beeinflussen.
 
     Das Ziel dieses Projekts ist es, die bestehende Planungslogik zu verbessern und die Bereitschaftsdienstplanung zu automatisieren. 
-    Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden im Bereitschaftsdienst auf Tagesbasis effizient abgeschätzt werden. %To-Do: Verifizieren was genau vorhersagt werden muss und ggf hier anpassen. Anzahl der Kranken (n_suck). Anzahl der Einsätze (?), Anzahl der benötigten Bereitschaftsdiensthabenden (sby_need)?
+    Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden im Bereitschaftsdienst auf Tagesbasis effizient abgeschätzt werden.
     Ein besonderes Augenmerk liegt dabei auf der Identifikation saisonaler Muster, wie zum Beispiel die erhöhte Ausfallrate in den Wintermonaten. 
     Durch die Analyse historischer Daten zu Abwesenheiten und Notrufaufkommen sollen präzise Vorhersagen getroffen werden, um die Einsatzbereitschaft optimal zu gewährleisten.
     (\cite[Vgl.][S. 3, 4]{data_science_aufgabenstellung})
@@ -476,9 +479,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         .3 data\_preparation.
         .3 models.
         .3 evaluation.
-        .2 reports.
-        .3 figures.
-        .3 tables.
         .2 docs.
         }
 
@@ -489,10 +489,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Der Unterordner \texttt{exploration} enthält Notebooks zur ersten Datenanalyse, und der Unterordner \texttt{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle.
             \item \textbf{app}: In diesem Ordner sind die Skripte zur Datenvorbereitung, Modellierung und Evaluation gespeichert. %To-Do: Aktuell halten
             Die Skripte im Unterordner \texttt{data\_preparation} kümmern sich um die Datenbereinigung und -transformation, während im Unterordner \texttt{models} die Modelltrainingsskripte und im Unterordner \texttt{evaluation} die Evaluationsskripte abgelegt werden.
-            \item \textbf{reports}: Dieser Ordner enthält alle Berichte, Abbildungen und Tabellen, die im Laufe des Projekts erstellt werden. 
-            Der Unterordner \texttt{figures} speichert Grafiken und Diagramme, während der Unterordner \texttt{tables} die erstellten Tabellen enthält.
             \item \textbf{docs}: Hier werden alle Projektdokumentationen abgelegt. 
-            Dies umfasst Projektpläne, Anforderungsdokumente und andere relevante Dokumente.
+            Dies umfasst Visualisierungen, dieses Dokument und andere relevante Dokumente.
         \end{itemize}
 
         Diese strukturierte Vorgehensweise und die klare Organisation des Repositories tragen wesentlich zur Effizienz und Transparenz des Projekts bei und erleichtern die Zusammenarbeit im Team.
@@ -575,7 +573,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \end{itemize}
 
             Wird der Datensatz auf den Zeitraum von einem Jahr reduziert, nimmt die Korrelation zur Zeit weiter ab und bei der Spalte \texttt{n\_duty} entfällt aufgrund des konstanten Wertes über ein Jahr gleich komplett die Korrelation.
-            Die Korrelationsmatrix dafür befindet sich im Anhang. % To-Do: Grafik im Anhang hinzufügen
+            Die Korrelationsmatrix für nur ein Jahr befindet sich als Abbildung \ref{fig:korrelationsmatrix_ein_jahr} im Anhang. 
 
 
     \section{Datenvorbereitung}
@@ -584,8 +582,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Dieser Schritt ist entscheidend, um die Daten in ein Format zu bringen, das für die Modellierung geeignet ist.
 
         \subsection{Umgang mit fehlenden Werten}
-
-            %To-Do: Nochmal zum Schluss prüfen, ob das hier passt
 
             Fehlende Werte zwischen den Tagen liegen nicht vor.
             Es gibt keinen Handlungsbedarf.
@@ -617,12 +613,12 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Weitere externe Features welche hinzugefügt wurden, sind die Durchschnittstemperatur, die Höchstemperatur und die niedrigste Temperatur in Berlin.
             Auch hier haben sich die Merkmal als nicht wertvoll herausgestellt und wurden daraufhin ebenfalls verworfen.
-            Zudem stellt sich bei einer Nutzung dieser Features die Frage, ob die Werte des Wetterberichts ausreichend genau sind, um mit dessen Hilfe dann genaue Ergebnisse vorherzusagen. % To-Do: Auf jeden Fall nochmal überprüfen und ggf. anpassen
-            Details zu den verworfenen Features finden sich im Anhang. %To-Do: Hierfür Grafiken im Anhang hinzufügen und Link schaffen
+            Zudem stellt sich bei einer Nutzung dieser Features die Frage, ob die Werte des Wetterberichts ausreichend genau sind, um mit dessen Hilfe dann genaue Ergebnisse vorherzusagen.
+            Details zu den verworfenen Features finden sich als Abbildung \ref{sec:appendix:dropped_features} im Anhang. 
 
             Für die weitere Analyse wurden neue Spalten aus den bereits vorhanden Features erstellt und beibehalten.
             Auch wenn diese in der späteren Modellierung keine Rolle mehr gespielt haben.
-            Details dazu in späteren Kapiteln. %To-Do: Ref hinzufügen
+            Details dazu in späteren Kapiteln. 
 
             Tabelle \ref{tab:new_features} zeigt die neuen Spalten, die erstellt wurden.
 
@@ -669,6 +665,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ziemlich genau berechnen lässt: $\frac{calls}{4.82}-n\_sby$.
             Die mittlere Abweichung zwischen den aus den Anrufen berechneten Ersatzfahrern und der echten Anzahl an Ersatzfahrern beträgt \textit{2.86} und liegt außerdem i. d. R. knapp über dem echten Wert.
             Zudem steht die Spalte \texttt{calls} zum Zeitpunkt der Vorhersage nicht zu Verfügung und kann ohnehin nicht im Feature-Datensatz genutzt werden.
+            Eine Visualisierung von dem echten \texttt{sby\_need} verglichen mit dem aus \texttt{calls} berechneten Ersatzfahrern findet sich als Abbildung \ref{fig:calc_sby_need} im Anhang.
 
             Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. 
             Die beiden Zielvariable \texttt{sby\_need} und \texttt{calls} werden dann aus dem Feature-Datensatz entfernt, da sie die Zielvariablen darstellen, deren Vorhersage im Fokus steht.
@@ -681,12 +678,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Baseline-Modell}
 
-        % mögliches To-Do: evtl noch ein einfaches Baseline-Modell einbauen, dann ließse sich auch das Subkapitel wieder einbinden
-
         Bevor komplexere Modelle entwickelt werden, wird ein Baseline-Modell erstellt, um eine erste Vergleichsbasis zu haben. 
         Ein einfaches Baseline-Modell kann beispielsweise der Durchschnitt der Zielvariable oder ein einfacher linearer Regressor sein. 
 
-        % To-Do: Modell auf andere Zielvariable umstellen. Noch nicht klar ob sby_need das richtige ist
         Das Baseline-Modell ist in diesem Fall ein Durchschnittsmodell für die Spalte \texttt{sby\_need}, das den mittleren Wert der schlussendlich gesuchten Zielvariable für jede Vorhersage nutzt.
         Der Durchschnitt über den Trainingsdatensatz hinweg beträgt \textit{29.99} Personen und ist damit weit unter den aktuell fest eingeplanten 90 Personen.
         
@@ -703,7 +697,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \texttt{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
         
-        Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}. %To-Do: Wert aktualisieren, wenn verändert
+        Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}.
         Diese Werte dienen als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
 
         Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrern empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
@@ -745,6 +739,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Allerdings erwiesen sich die Ergebnisse dieser Modelle als schlechter oder zumindest nicht besser im Vergleich zu Modellen, die sich stärker auf die zeitliche Komponente der Daten konzentrierten. 
         Zudem erhöhten diese Modelle die Komplexität und die Abhängigkeiten erheblich, ohne dabei einen signifikanten Mehrwert zu bieten. 
         Um den Rahmen dieser Fallstudie nicht zu sprengen, werden die verworfenen Zwischen-Ergebnisse der anderen Modelle nicht im Detail behandelt.
+        Im Anhang befindet sich Abbildung \ref{fig:full_model_comparison} für eine vollständige Visualisierung des gesamten Modellvergleich.
         
         Im Verlauf der Bearbeitung und durch die Erkenntnisse aus der Datenanalyse zeigte sich, dass die zeitliche Abfolge als eine der wenig verfügbaren Informationen zum Zeitpunkt der Vorhersage den größten Einfluss auf die Zielvariable hat. 
         Andere Features -- wie die Anzahl der Notrufe -- würden einen signifikanten Beitrag zur Vorhersagegenauigkeit leisten, stehen aber zum Zeitpunkt der Vorhersage im produktiven Einsatz nicht zur Verfügung.
@@ -754,13 +749,16 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und CNN (Convolutional Neural Network).
         
         \begin{itemize}
-            \item \textbf{LSTM (Long Short-Term Memory)}: LSTM-Netzwerke sind eine spezielle Form von rekurrenten neuronalen Netzen, die dafür bekannt sind, langanhaltende Abhängigkeiten in Zeitreihen effektiv zu modellieren. Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrer.
+            \item \textbf{LSTM (Long Short-Term Memory)}: LSTM-Netzwerke sind eine spezielle Form von rekurrenten neuronalen Netzen, die dafür bekannt sind, langanhaltende Abhängigkeiten in Zeitreihen effektiv zu modellieren. 
+            Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrer.
         
-            \item \textbf{GRU (Gated Recurrent Unit)}: GRU ist eine vereinfachte Variante des LSTM, die jedoch ähnliche Fähigkeiten zur Modellierung von zeitlichen Abhängigkeiten bietet, bei gleichzeitig geringerer Komplexität und schnellerer Trainingszeit. GRU-Modelle zeigen in der Praxis oft vergleichbare Vorhersagegenauigkeiten wie LSTM, was sie ebenfalls zu einem aussichtsreichen Kandidaten für die Modellierung macht.
+            \item \textbf{GRU (Gated Recurrent Unit)}: GRU ist eine vereinfachte Variante des LSTM, die jedoch ähnliche Fähigkeiten zur Modellierung von zeitlichen Abhängigkeiten bietet, bei gleichzeitig geringerer Komplexität und schnellerer Trainingszeit. 
+            GRU-Modelle zeigen in der Praxis oft vergleichbare Vorhersagegenauigkeiten wie LSTM, was sie ebenfalls zu einem aussichtsreichen Kandidaten für die Modellierung macht.
         
-            \item \textbf{CNN (Convolutional Neural Network)}: CNNs sind neuronale Netzwerke, die ursprünglich für die Verarbeitung von Bilddaten entwickelt wurden, aber auch erfolgreich auf Zeitreihen angewendet werden können. Sie nutzen Faltungsschichten, um lokale Muster in den Daten zu erkennen, und sind besonders effektiv bei der Extraktion von Merkmalen aus sequentiellen Daten. CNNs eignen sich gut für die Vorhersage, wenn es darum geht, komplexe Muster in den Daten zu identifizieren.
+            \item \textbf{CNN (Convolutional Neural Network)}: CNNs sind neuronale Netzwerke, die ursprünglich für die Verarbeitung von Bilddaten entwickelt wurden, aber auch erfolgreich auf Zeitreihen angewendet werden können. 
+            Sie nutzen Faltungsschichten, um lokale Muster in den Daten zu erkennen, und sind besonders effektiv bei der Extraktion von Merkmalen aus sequentiellen Daten. CNNs eignen sich gut für die Vorhersage, wenn es darum geht, komplexe Muster in den Daten zu identifizieren.
         \end{itemize}     
-        %To-Do: Quelle   
+        (\cite[Vgl.][S. 1-7]{lstm_gru_cnn}) 
         
         Diese Algorithmen wurden aufgrund ihrer Fähigkeit ausgewählt, komplexe zeitliche Abhängigkeiten in den Daten zu modellieren und präzise Vorhersagen für die Zukunft zu treffen. 
         Die Modelle wurden so entwickelt, dass sie die Zeitspalten als Input verwenden, um die zukünftigen Werte der Spalte \texttt{calls} vorherzusagen.
@@ -837,10 +835,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \end{tabular}
             \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrer}
             \label{tab:custom_metrics_90_sby}
-        \end{table}        
-        
-
-        %Tabelle nochmal aktualisieren
+        \end{table}
 
         Das Minimalziel für das Modell ist es also bessere Metriken zu erhalten als die statische 90-Ersatzfahrer-Strategie, die in Tabelle \ref{tab:custom_metrics_90_sby} zu sehen ist.
         Erzeugt kein Modell besseren Metriken, so ist auch kein Mehrwert gegenüber der statischen 90-Ersatzfahrer-Strategie vorhanden. 
@@ -914,12 +909,12 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Neben dem klassischen Hyperparameter-Tuning, bei dem Parameter wie die Lernrate, Batchgröße und Anzahl der Neuronen optimiert wurden, wurde eine spezielle Anpassung der Verlustfunktion vorgenommen. 
         Ein Straffaktor wurde in die Verlustfunktion integriert, um Unterbesetzungen stärker zu gewichten als Überbesetzungen. 
         Dieser Ansatz zielt darauf ab, die Modelle so zu trainieren, dass sie Überbesetzungen bevorzugen und dadurch das Risiko von Unterbesetzungen minimieren, da gerade Unterbesetzungen in einem operationellen Umfeld kritisch sein können.
+        (\cite[Vgl.][]{custom_loss})
         
         Der Straffaktor \( \lambda \) beeinflusst, wie stark Vorhersagefehler, die zu einer Unterbesetzung führen, in die Verlustfunktion eingehen. 
         Dadurch wird sichergestellt, dass das Modell vermehrt Personal bereitstellt, um eine Überbesetzung zu fördern, ohne dass es zu häufig zu kritischen Engpässen kommt.
         
         In der nachfolgenden Tabelle \ref{tab:straffaktor_comparison} sind die Auswirkungen unterschiedlicher Straffaktoren \( \lambda \) auf die Modellergebnisse dargestellt.
-
 
         \begin{table}[H]
             \centering
@@ -1055,7 +1050,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         \lstset{inputencoding=latin1} % rquires extra package: \usepackage[utf8]{inputenc}
         \lstinputlisting[label={lst:api_server_base},firstline=74,firstnumber=74,language=Python,lastline=103]{../app/api_server.py}
 
-        Der vollständige Code ist auch im Anhang zu finden. % To-Do: Verlinkung und Anhang
+        Der vollständige Code ist auch im Anhang \ref{lst:api_server_full} zu finden. % To-Do: Verlinkung und Anhang
 
     \section{Benutzerinteraktion}
 
@@ -1157,16 +1152,88 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 % Zahlenwerte nochmal prüfen, ob diese übereinstimmen                                                                               - passt
 % Dokument durchgehen und die Werte und Ziele festigen                                                                              - passt
 % API-Server Code in Teilen im Text dokumentieren                                                                                   - done
-% Einbinden von mehr Grafiken: Vor allem bei der Modellierung, ggf. dann in Anhang und verlinken                                    - Anhang fehlt
+% Einbinden von mehr Grafiken: Vor allem bei der Modellierung, ggf. dann in Anhang und verlinken                                    - done
 % Feature Engineering Abschnitt im Dokument nochmal updaten, falls die extrahierten Features wirklich zum Schluss bleiben           - done
 % Quellen für Code-Vorlagen hinzufügen                                                                                              - ???
 % Bibliotheken und deren Version irgendwo dokumentieren                                                                             - To-Do
 % Evtl. via Docker und/oder requirements.txt                                                                                        - ja, gute Idee
-% Beschreiben, dass sby_need und n_duty behoben wurden, damit die Vorhersage und das Modell richtig evaluieren können               - nicht nötig
 % evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM                                                                 - 
 % Diagramme mit Zeit fixen. Unten ist eine komische Darstellung der Zeitspalte                                                      - done
-% Abstract auch noch unbedingt anpassen                                                                                             - To-Do
+% Abstract auch noch unbedingt anpassen                                                                                             - done
 
 % Dokument am besten von oben nach unten durchgehen und dabei direkt die Punkte checken und abarbeiten
+
+\cleardoublepage
+
+\appendix
+
+\addchap{Anhang}
+\label{sec:appendix}
+
+{\Large
+\begin{enumerate}[label=\Alph*.]
+    \item \hyperref[sec:appendix:korrelationsmatrix_ein_jahr]{Korrelationsmatrix auf ein Jahr}
+    \item \hyperref[sec:appendix:dropped_features]{Auswahl verworfener Features}
+    \item \hyperref[sec:appendix:calc_sby_need]{Visualisierte Berechnung von sby\_need aus calls}
+    \item \hyperref[sec:appendix:full_model_comparison]{Komplette Modellvergleichsübersicht}
+\end{enumerate}
+}
+\pagebreak
+
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+
+\tocless\chapter{Korrelationsmatrix auf ein Jahr}
+\label{sec:appendix:korrelationsmatrix_ein_jahr}
+
+\begin{figure}[H]
+    \centering
+    \hspace*{-1cm}
+    \includegraphics[width=1.1\textwidth]{assets/corr_matrix_2018.png}
+    \caption{Korrelationsmatrix für das Jahr 2018}
+    \label{fig:korrelationsmatrix_ein_jahr}
+\end{figure}
+
+\tocless\chapter{Darstellung von interessanten, aber verworfenen Extramerkmalen}
+\label{sec:appendix:dropped_features}
+
+\begin{figure}[H]
+    \centering
+    \hspace*{-1cm}
+    \includegraphics[width=1.1\textwidth]{assets/dropped_features.png}
+    \caption{Verworfene Features: Wochenende, Feiertage, Temperatur (Min, Max, Avg.)}
+    \label{fig:korrelationsmatrix_ein_jahr}
+\end{figure}
+
+\tocless\chapter{Visualisierte Berechnung von sby\_need aus calls}
+\label{sec:appendix:calc_sby_need}
+
+\begin{figure}[H]
+    \centering
+    \hspace*{-1cm}
+    \includegraphics[width=1.1\textwidth]{assets/sby_need_calc.png}
+    \caption{Visualisierte Berechnung von sby\_need aus calls}
+    \label{fig:calc_sby_need}
+\end{figure}
+
+\tocless\chapter{Komplette Modellvergleichsübersicht}
+\label{sec:appendix:full_model_comparison}
+
+\begin{figure}[H]
+    \centering
+    \hspace*{-1cm}
+    \includegraphics[width=1.1\textwidth]{assets/model_comparision.png}
+    \caption{Visualisierung des vollständigen Modellvergleichs}
+    \label{fig:full_model_comparison}
+\end{figure}
+
+\newpage
+
+\tocless\chapter{Vollständiger Code des API-Server}
+\label{sec:appendix:code_api}
+
+\lstset{caption={Kompletter Code des API-Server}}
+\lstset{inputencoding=latin1} % rquires extra package: \usepackage[utf8]{inputenc}
+\lstinputlisting[label={lst:api_server_full},firstline=1,firstnumber=1,language=Python]{../app/api_server.py}
 
 \end{document}
