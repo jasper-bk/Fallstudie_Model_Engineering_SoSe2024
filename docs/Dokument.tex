@@ -602,14 +602,14 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Wie bereits im Kapitel \ref{sec:korrelationen} vorweg genommen, wurde das numerische Feature \texttt{unix\_ts\_date} für die Zeit hinzugefügt, welches die Spalte \texttt{date} als Unix Timestamp numerisch darstellt.
             Es wurden außerdem zeitliche Merkmale wie das Jahr, der Monat, der Wochentag, die Kalenderwoche und der Tag des Jahres aus dem Datum extrahiert und analysiert.
-            Bei der engeren Auswahl der späteren Modellierung haben sich diese Features nicht wertvoller als die Spalte \texttt{unix\_ts\_date} herausgestellt und wurden daraufhin wieder verworfen.
+            Bei der engeren Auswahl während der späteren Modellierung haben sich nicht alle dieser zeitlichen Features als wertvoll herausgestellt und es sind nur der Wochentag, der Tag des Monats, der Tag des Jahres und das Jahr geblieben.
 
             Es wurden auch Versuche unternommen boolsche Werte (sog. Flags) hinzuzufügen.
             Darunter folgende sinngemäße Features: \texttt{\enquote{ist ein Feiertag?}} und \texttt{\enquote{ist Wochenende?}}. 
             Das Feature \texttt{\enquote{ist Wochenende?}} wurde über den Wochentag extrahiert und das Feature \texttt{\enquote{ist ein Feiertag?}} wurde für das Bundesland Berlin über die API \texttt{\url{https://feiertage-api.de/}} extern zugeführt.
             Allerdings haben sich auch diese Features als nicht wertvoll herausgestellt und wurden daraufhin wieder verworfen.
 
-            Um noch mehr Merkmale zu erhalten, die eine genaurere Vorhersage erlauben, wurden im späteren Verlauf noch Lag-Features und gleitende Durchschnitte für die wichtigsten Spalten in den Datensatz integriert. 
+            Um noch mehr Merkmale zu erhalten, die eine genauere Vorhersage erlauben, wurden im späteren Verlauf noch Lag-Features und gleitende Durchschnitte für die wichtigsten Spalten in den Datensatz integriert. 
             Diese Features sollten zeitliche Abhängigkeiten und Trends in den Daten erfassen, um die Vorhersagegenauigkeit zu verbessern. 
             Allerdings zeigten die Ergebnisse in der später folgenden Modellierung, dass diese zusätzlichen Features nicht zu einer Verbesserung der Modellleistung führten, da die Werte starken Abweichungen mit jedem Tag unterliegen.
             Stattdessen verschlechterten sie die Vorhersageergebnisse. 
@@ -632,13 +632,17 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \hline
                 \textbf{Neues Merkmal} & \textbf{Beschreibung} \\ \hline
                 unix\_ts\_date & Datum in numerischer Form als Unix Zeistempel \\ \hline
+                day\_of\_year & Tag des Jahres, extrahiert aus Datum \\ \hline
+                day\_of\_month & Tag des Monats, extrahiert aus Datum \\ \hline
+                day\_of\_week & Tag der Woche, extrahiert aus Datum \\ \hline
+                year & Das Jahr, extrahiert aus Datum \\ \hline
                 sby\_used\_percent  & \makecell{Prozentsatz an eingesetzten Ersatzfahrern, die geplant worden sind: $\frac{sby\_need}{n\_sby}$ \\\\
                 \includegraphics[width=0.5\textwidth]{assets/plot_sby_used_percent.png}      
                 \\ Anmerkung: Bei über 100\% gilt: dafted $>$ 0 } \\ \hline
                 call\_stress & \makecell{ Notfallbelastung: $\frac{calls}{n\_duty+sby\_need}$    \\\\
                 \includegraphics[width=0.5\textwidth]{assets/plot_call_stress.png}   
                 \\ Beobachtung: \enquote{sby\_need} lässt sich mit folgender Formel ungefähr berechnen: \\ 
-                $\frac{calls}{4.7}-n\_sby$
+                $\frac{calls}{4.82}-n\_sby$
                 \\ Somit lässt sich für die spätere Modellierung ggf. auch die Spalte \texttt{calls} \\ als Zielspalte für eine ungefähre Vorhersage heranziehen.
                 }\\ \hline
                 \end{tabular}
@@ -662,7 +666,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             %To-Do: falls es noch mehr Features geben sollte, diese ergänzen bzw den Text adaptieren
 
             Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \texttt{sby\_need} als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
-            Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ausreichend genau berechnen lässt: $\frac{calls}{4.7}-n\_sby$.
+            Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ziemlich genau berechnen lässt: $\frac{calls}{4.82}-n\_sby$.
+            Die mittlere Abweichung zwischen den aus den Anrufen berechneten Ersatzfahrern und der echten Anzahl an Ersatzfahrern beträgt \textit{2.86} und liegt außerdem i. d. R. knapp über dem echten Wert.
             Zudem steht die Spalte \texttt{calls} zum Zeitpunkt der Vorhersage nicht zu Verfügung und kann ohnehin nicht im Feature-Datensatz genutzt werden.
 
             Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. 
@@ -670,9 +675,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Zusätzlich werden alle anderen Features zwangsweise aus dem Feature-Datensatz entfernt, die im Produktionsbetrieb nicht verfügbar sein können. 
             Dies betrifft nahezu alle Merkmale, da die meisten Informationen erst im Nachhinein oder zeitnah vorliegen. 
-            Als einzige Ausnahme bleibt das Datum bestehen, da es im Produktionsbetrieb vorab bekannt ist und daher als relevantes Feature erhalten bleibt.
+            Als einzige Ausnahme bleiben die zeitlichen Merkmale bestehen, da diese im Produktionsbetrieb vorab bekannt sind und daher als relevantes Feature erhalten bleibt.
 
-            Der finale Feature-Datensatz enthält somit ausschließlich das Datum in Form der Spalte \texttt{unix\_ts\_date}, während die Spalten \texttt{sby\_need} und \texttt{calls} als Zielvariablen fungieren.
+            Der finale Feature-Datensatz enthält somit ausschließlich die Zeitspalten \texttt{unix\_ts\_date}, \texttt{day\_of\_year}, \texttt{day\_of\_month}, \texttt{day\_of\_week} und \texttt{year}, während die Spalten \texttt{sby\_need} und \texttt{calls} als Zielvariablen fungieren.
 
     \section{Baseline-Modell}
 
@@ -698,12 +703,12 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \texttt{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
         
-        Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{48.86} und einen $R^2$-Score von Null. %To-Do: Wert aktualisieren, wenn verändert
+        Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}. %To-Do: Wert aktualisieren, wenn verändert
         Diese Werte dienen als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
 
         Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrern empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
-        Allerdings verdeutlicht es nochmal gut, dass eine Dynamik bei der Planung der Ersatzfahrer auf jeden Fall erforderlich ist, da es im Durchschnitt bereits viele Überbesetzungen gibt, aber für bestimmte Tage auch starke Unterbestzungen.
-        Sprich die aktuelle Planung ist mehrfacher Hinsicht suboptimal und ein Mehrwert kann durch dynamische Vorhersage geschaffen werden.
+        Allerdings verdeutlicht es nochmal gut, dass eine Dynamik bei der Planung der Ersatzfahrer auf jeden Fall erforderlich ist, da es im Durchschnitt bereits viele Überbesetzungen gibt, aber für bestimmte Tage auch starke Unterbesetzungen.
+        Sprich die aktuelle Planung ist in mehrfacher Hinsicht suboptimal und ein Mehrwert kann durch dynamische Vorhersage geschaffen werden.
             
 
     % \subsection{Visualisierung der Ergebnisse} % Braucht man hier vermutlich auch nicht
@@ -745,7 +750,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Andere Features -- wie die Anzahl der Notrufe -- würden einen signifikanten Beitrag zur Vorhersagegenauigkeit leisten, stehen aber zum Zeitpunkt der Vorhersage im produktiven Einsatz nicht zur Verfügung.
         Daher fiel die engere Auswahl auf Algorithmen, die speziell für die Analyse von Zeitreihen entwickelt wurden.
         
-        Die Zeitreihe wird durch die Spalte \texttt{unix\_ts\_date} repräsentiert, und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) vorherzusagen. 
+        Die Zeitreihe wird durch seine Zeitspalten repräsentiert, und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) vorherzusagen. 
         Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und CNN (Convolutional Neural Network).
         
         \begin{itemize}
@@ -758,7 +763,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         %To-Do: Quelle   
         
         Diese Algorithmen wurden aufgrund ihrer Fähigkeit ausgewählt, komplexe zeitliche Abhängigkeiten in den Daten zu modellieren und präzise Vorhersagen für die Zukunft zu treffen. 
-        Die Modelle wurden so entwickelt, dass sie die Spalte \texttt{unix\_ts\_date} als Input verwenden, um die zukünftigen Werte der Spalte \texttt{calls} vorherzusagen.
+        Die Modelle wurden so entwickelt, dass sie die Zeitspalten als Input verwenden, um die zukünftigen Werte der Spalte \texttt{calls} vorherzusagen.
         Über die Spalte \texttt{calls} lässt sich die Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) dann berechnen.
         Ansätze bei denen \texttt{sby\_need} direkt vorhersagt wird, haben sich im Rahmen der Bearbeitung als weniger genau herausgestellt.
 
@@ -820,19 +825,19 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \begin{tabular}{|l|l|}
             \hline
             \textbf{Metrik} & \textbf{Wert} \\ \hline
-            Anteil an Tagen mit Unterbesetzung (\%) & \textit{13.11\%} \\ \hline
-            Anteil an Tagen mit Überbesetzung (\%) & \textit{86.63\%} \\ \hline
+            Anteil an Tagen mit Unterbesetzung (\%) & \textit{14.84\%} \\ \hline
+            Anteil an Tagen mit Überbesetzung (\%) & \textit{84.90\%} \\ \hline
             Anteil an Tagen mit perfekter Vorhersage (\%) & \textit{0.26\%} \\ \hline
-            Durchschnittliche Überbesetzung & \textit{84.45} \\ \hline
-            Durchschnittliche Unterbesetzung & \textit{101.77} \\ \hline
+            Durchschnittliche Überbesetzung & \textit{84.36} \\ \hline
+            Durchschnittliche Unterbesetzung & \textit{110.05} \\ \hline
             Median Überbesetzung & \textit{90.0} \\ \hline
-            Median Unterbesetzung & \textit{85.0} \\ \hline
+            Median Unterbesetzung & \textit{86.0} \\ \hline
             Tagesdurchschnitt Ersatzfahrer für Planung & 90.0 \\ \hline
-            Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & 59.82 \\ \hline
+            Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & 55.28 \\ \hline
             \end{tabular}
             \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrer}
             \label{tab:custom_metrics_90_sby}
-        \end{table}
+        \end{table}        
         
 
         %Tabelle nochmal aktualisieren
@@ -866,7 +871,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 Median Überbesetzung & 23.94 & 32.95 & 25.96 \\ \hline
                 Median Unterbesetzung & 91.00 & 91.00 & 97.97 \\ \hline
                 Tagesdurchschnitt Ersatzfahrer für Planung & 6.01 & 12.4 & 2.74 \\ \hline
-                Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & -24.92 & -18.53 & -28.19 \\ \hline
+                Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & -29.46 & -23.07 & -32.73 \\ \hline
                 \end{tabular}
                 \caption{Vergleich der Metriken für LSTM, GRU und CNN}
                 \label{tab:model_comparison}
@@ -920,24 +925,24 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \centering
             \begin{tabular}{|p{4cm}|c|c|c|c|c|c|c|c|}
             \hline
-            \textbf{Parameter} & \textbf{Modell} & \multicolumn{4}{c|}{\textbf{Straffaktor für Überschätzungen}} \\ \cline{3-6}
+            \textbf{Parameter} & \textbf{Modell} & \multicolumn{4}{c|}{\textbf{Straffaktor für Unterschätzungen}} \\ \cline{3-6}
             & & \textbf{1.0 (keine Gewichtung)} & \textbf{10} & \textbf{20} & \textbf{50} \\ \hline
-            \textbf{MAE} & LSTM & 846.41 & 1035.93 & 1095.14 & 1434.74 \\ \cline{2-6}
+            \textbf{MAE} & LSTM & 846.41 & 980.93 & 1095.14 & 1434.74 \\ \cline{2-6}
             (bezogen auf \texttt{calls}) & GRU & 873.56 & 1340.29 & 1604.36 & 1466.51 \\ \cline{2-6}
             & CNN & 916.48 & 1085.50 & 1063.68 & 1533.94 \\ \hline
-            \textbf{RMSE} & LSTM & 1012.82 & 1302.13 & 1380.31 & 1746.29 \\ \cline{2-6}
+            \textbf{RMSE} & LSTM & 1012.82 & 1209.70 & 1380.31 & 1746.29 \\ \cline{2-6}
             (bezogen auf \texttt{calls}) & GRU & 1053.52 & 1654.27 & 1932.75 & 1778.96 \\ \cline{2-6}
             & CNN & 1089.96 & 1336.38 & 1309.46 & 1837.03 \\ \hline
-            \textbf{R²-Score} & LSTM & 0.39 & -0.01 & -0.14 & -0.82 \\ \cline{2-6}
+            \textbf{R²-Score} & LSTM & 0.39 & 0.13 & -0.14 & -0.82 \\ \cline{2-6}
             (bezogen auf \texttt{calls}) & GRU & 0.34 & -0.63 & -1.23 & -0.89 \\ \cline{2-6}
             & CNN & 0.29 & -0.06 & -0.02 & -1.01 \\ \hline \hline
-            \textbf{Anteil an Tagen mit} & LSTM & 22.08 & 12.99 & 11.69 & 2.16 \\ \cline{2-6}
+            \textbf{Anteil an Tagen mit} & LSTM & 22.08 & 19.04 & 11.69 & 2.16 \\ \cline{2-6}
             \textbf{Unterbesetzung (\%)}& GRU & 20.35 & 7.79 & 4.76 & 2.60 \\ \cline{2-6}
             & CNN & 22.08 & 15.15 & 14.72 & 7.79 \\ \hline
-            \textbf{Anteil an Tagen mit} & LSTM & 3.03 & 48.48 & 49.35 & 78.35 \\ \cline{2-6}
+            \textbf{Anteil an Tagen mit} & LSTM & 3.03 & 44.58 & 49.35 & 78.35 \\ \cline{2-6}
             \textbf{Überbesetzung (\%)} & GRU & 8.66 & 70.56 & 85.28 & 81.39 \\ \cline{2-6}
             & CNN & 3.03 & 43.29 & 40.26 & 92.21 \\ \hline
-            \textbf{Anteil an Tagen mit} & LSTM & 74.89 & 38.53 & 38.96 & 19.48 \\ \cline{2-6}
+            \textbf{Anteil an Tagen mit} & LSTM & 74.89 & 36.36 & 38.96 & 19.48 \\ \cline{2-6}
             \textbf{perfekter Vorhersage} & GRU & 71.00 & 21.65 & 9.96 & 16.02 \\ \cline{2-6}
             \textbf{(\%)}& CNN & 74.89 & 41.56 & 45.02 & 0.00 \\ \hline
             \textbf{Durchschnittliche} & LSTM & 39.94 & 94.78 & 108.34 & 154.19 \\ \cline{2-6}
@@ -957,9 +962,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \textbf{Ersatzfahrer} & GRU & 12.4 & 122.48 & 179.34 & 156.66 \\ \cline{2-6}
             \textbf{für Planung}& CNN & 2.74 & 50.73 & 46.40 & 142.46 \\ \hline
             
-            \textbf{Differenz Tages-} & LSTM & -24.92 & 36.43 & 46.26 & 120.26 \\ \cline{2-6}
-            \textbf{durchschnitt Ersatz-} & GRU & -18.53 & 91.55 & 148.41 & 125.73 \\ \cline{2-6}
-            \textbf{fahrer zu Realität}& CNN & -28.19 & 19.80 & 15.47 & 111.53 \\ \hline
+            \textbf{Differenz Tages-} & LSTM & -29.46 & 31.89 & 41.72 & 115.72 \\ \cline{2-6}
+            \textbf{durchschnitt Ersatz-} & GRU & -23.07 & 87.01 & 143.87 & 121.19 \\ \cline{2-6}
+            \textbf{fahrer zu Realität}& CNN & -32.73 & 15.26 & 10.93 & 106.99 \\ \hline            
 
             \end{tabular}
             \caption{Vergleich der Modellergebnisse (LSTM, GRU, CNN) bei unterschiedlicher Gewichtung von Unterbesetzungen (\( \lambda \))}
@@ -972,16 +977,32 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Das Modell mit einem höheren Straffaktor zeigt dies indem vermehrt Personal bereitstellt wird, um das Risiko von Unterbesetzungen zu verringern, jedoch auf Kosten der Effizienz und der allgemeinen Modellmetriken.
         
         Der Straffaktor bietet somit eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. 
-        In manchen Anwendungsfällen kann ein Straffaktor von \( \lambda = 10 \) als sinnvoller Kompromiss angesehen werden, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt als auch die Überbesetzung in einem noch vertretbaren Bereich hält.
+
+        Das beste Ergebnis aus der Tabelle erzielte ein LSTM mit einem Straffaktor von \( \lambda = 10 \).
+        Die Vorhersageergebnisse sind in der nachfolgenden Abbildung \ref{fig:lstm_calls_pred_performance} für die \enquote{\texttt{calls}} Vorhersage und in Abbildung \ref{fig:lstm_sby_need_pred_performance} für die \enquote{\texttt{sby\_need}} Vorhersage zu sehen.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=1\textwidth]{assets/final_lstm_call_prediction_performance.png}
+            \caption{\enquote{\texttt{calls}} Vorhersageergebnisse für LSTM Modell mit Straffaktor von \( \lambda = 10 \)}
+            \label{fig:lstm_calls_pred_performance}
+        \end{figure}
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=1\textwidth]{assets/final_lstm_sby_need_prediction_performance.png}
+            \caption{\enquote{\texttt{sby\_need}} Vorhersageergebnisse für LSTM Modell mit Straffaktor von \( \lambda = 10 \)}
+            \label{fig:lstm_sby_need_pred_performance}
+        \end{figure}
 
         \subsection{Abschließende Bewertung des besten Modells}
 
-            Im Rahmen der abschließenden Modellbewertung wurden verschiedene Ansätze (LSTM, GRU, CNN) unter Berücksichtigung unterschiedlicher Straffaktoren für Überschätzungen (\(\lambda\)) untersucht.
+            Im Rahmen der abschließenden Modellbewertung wurden verschiedene Ansätze (LSTM, GRU, CNN) unter Berücksichtigung unterschiedlicher Straffaktoren für Unterschätzungen (\(\lambda\)) untersucht.
             Ziel war es, ein Modell zu identifizieren, das eine möglichst präzise Vorhersage der benötigten Einsatzfahrenden im Bereitschaftsdienst bietet, während gleichzeitig Unterbesetzungen minimiert und Überbesetzungen reduziert werden.
 
             Der Straffaktor bietet dabei eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. 
             Mit einem höheren Straffaktor lässt sich die Unterbesetzung erfolgreich reduzieren, jedoch geht dies stets mit einer Zunahme der Überbesetzung einher. 
-            Ein Straffaktor von \(\lambda = 10\) bietet in diesem Fall einen sinnvollen Kompromiss, da er sowohl die Unterbesetzung auf ein akzeptables Niveau senkt (12,99\%) als auch die Überbesetzung (48,48\%) in einem vertretbaren Bereich hält. 
+            Ein Straffaktor von \(\lambda = 10\) bietet in diesem Fall einen sinnvollen Kompromiss, da er sowohl die durchschnittliche Unterbesetzung auf ein akzeptables Niveau senkt (78) als auch den Anteil an Überbesetzung (44,58\%) in einem vertretbaren Bereich hält. 
             Das LSTM-Modell erweist sich mit diesem Straffaktor als besonders ausgewogen.
 
             Obwohl das GRU-Modell bei einem höheren Straffaktor tendenziell eine bessere Balance zwischen Unter- und Überbesetzung zeigt, bringt es eine erhebliche Zunahme der Überbesetzung mit sich. 
@@ -993,14 +1014,16 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Ein Vergleich mit der statischen Planung, bei der jeden Tag konstant 90 Ersatzfahrer eingesetzt werden, verdeutlicht den Mehrwert des dynamischen Modells. 
             Bei der statischen Planung ergeben sich für den gesamten Zeitraum folgende Werte: 
-            Ein Anteil an Tagen mit Unterbesetzung von 13,11\%, ein Anteil an Überbesetzungstagen von 86,63\% und ein sehr geringer Anteil an Tagen mit perfekter Vorhersage von nur 0,26\%. 
-            Zudem beträgt die durchschnittliche Überbesetzung 84,45 Personen und die durchschnittliche Unterbesetzung liegt bei 101,77 Personen. 
+            Ein Anteil an Tagen mit Unterbesetzung von 14,84\%, ein Anteil an Überbesetzungstagen von 84,90\% und ein sehr geringer Anteil an Tagen mit perfekter Vorhersage von nur 0,26\%. 
+            Zudem beträgt die durchschnittliche Überbesetzung 84,36 Personen und die durchschnittliche Unterbesetzung liegt bei 110,05 Personen. 
             Der Median der Überbesetzung liegt bei 90 Personen, was ebenfalls auf die starre, vorab festgelegte Anzahl an Ersatzfahrern hinweist. 
-            Der Tagesdurchschnitt der Ersatzfahrer beträgt logischerweise 90 Personen, was zu einer Differenz zum tatsächlichen Durchschnitts-Bedarf von 59,82 Personen führt.
+            Der Tagesdurchschnitt der Ersatzfahrer beträgt logischerweise 90 Personen, was zu einer Differenz zum tatsächlichen Durchschnitts-Bedarf von 55,28 Personen führt.
+
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
             Im Vergleich dazu bietet das LSTM-Modell mit einem Straffaktor von 10 eine deutliche Verbesserung. 
-            Der Anteil an Unterbesetzungstagen sinkt auf 12,99\%, während die Überbesetzung bei 48,48\% liegt. 
-            Besonders auffällig ist der deutlich höhere Anteil an Tagen mit perfekter Vorhersage (38,53\%), was zeigt, dass das Modell in der Lage ist, den tatsächlichen Bedarf präziser vorherzusagen. 
+            Die durchschnittliche Unterbesetzung sinkt um 32 Personen, während der Anteil an Überbesetzung um 43,73\% sinkt. 
+            Besonders auffällig ist der deutlich höhere Anteil an Tagen mit perfekter Vorhersage (36,36\%), was zeigt, dass das Modell in der Lage ist, den tatsächlichen Bedarf präziser vorherzusagen. 
             Die dynamische Planung sorgt auch für eine bessere Anpassung der Ersatzfahrer an den tatsächlichen Bedarf und reduziert somit die Ressourcenverschwendung durch Überbesetzung.
 
             Es gibt jedoch keinen universell optimalen Straffaktor für alle Szenarien, da die Wahl des idealen Straffaktors stark von den Prioritäten und den spezifischen Anforderungen der Einsatzplanung abhängt. 
@@ -1068,7 +1091,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Langfristig könnte das System auch um zusätzliche Funktionen wie die automatische Anpassung des Modells an neue Daten und die Integration weiterer Datenquellen erweitert werden.
         Das Zukommen Lassen neuer Daten ließe sich dabei auch über die API abwickeln.
-        Dann würde das Modell mit den neuen Daten direkt neu trainiert werden können und durch das neue Training ließe sich dann auch der Straffaktor für Überschätzungen ändern.
+        Dann würde das Modell mit den neuen Daten direkt neu trainiert werden können und durch das neue Training ließe sich dann auch der Straffaktor für Unterschätzungen ändern.
 
     \section{Einbindung in den Arbeitsalltag}
 
@@ -1085,7 +1108,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \chapter{Fazit \& Ausblick}
 
         Die vorliegende Arbeit hat sich mit der Entwicklung und Implementierung eines Vorhersagemodells zur Optimierung des Bereitschaftsdienstplans für Einsatzfahrende beschäftigt. 
-        Durch die Anwendung verschiedener Zeitreihenmodelle wie LSTM, GRU und CNN sowie der Integration zusätzlicher Anpassungen, insbesondere der Einführung eines Straffaktors zur Gewichtung von Unterbesetzungen, konnte gezeigt werden, dass datengetriebene Ansätze zu einer verbesserten Personalplanung führen können. 
+        Durch die Anwendung verschiedener Zeitreihenmodelle wie LSTM, GRU und CNN sowie der Integration zusätzlicher Anpassungen, insbesondere der Einführung eines Straffaktors zur Gewichtung von Unterbesetzungen, konnte gezeigt werden, dass datengetriebene Ansätze zu einer verbesserten Personalplanung führen. 
         Dennoch gab es im Laufe der Arbeit mehrere Herausforderungen, die das Potenzial dieser Modelle in der Praxis beeinflussen.
 
         Eines der zentralen Probleme lag in der Datenqualität und -verfügbarkeit. 
@@ -1093,7 +1116,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Faktoren wie Wetter, Verkehrslage oder Großereignisse, die signifikanten Einfluss auf die Einsatzplanung haben, konnten nur bedingt in die Modelle integriert werden. 
         Eine unzureichende Berücksichtigung dieser externen Einflüsse führte dazu, dass die Vorhersagemodelle in bestimmten Situationen nur eingeschränkt performten.
         
-        Ein weiteres zentrales Problem war die Wahl und Anpassung des Straffaktors \( \lambda \). 
+        Ein weiteres zentrales Problem war die Wahl und Anpassung des Straffaktors \( \lambda \) für Unterbesetzungen. 
         Es zeigte sich, dass es keinen universellen Straffaktor gibt, der sowohl die Überbesetzung als auch die Unterbesetzung optimal balanciert. 
         Jede Veränderung des Straffaktors führte zu einer Verschiebung zwischen diesen beiden Zielen, was die Suche nach einem \enquote{perfekten} Modell erschwerte. 
         Hinzu kommt, dass unterschiedliche Einsatzanforderungen auch unterschiedliche Priorisierungen erfordern – eine Herausforderung, die nur durch eine dynamische Anpassung des Modells und des Straffaktors von den Einsatzplanern selbst gemeistert werden kann.
@@ -1131,18 +1154,18 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
 
 % Overall Abschluss To-Dos: 
-% Zahlenwerte nochmal prüfen, ob diese übereinstimmen
-% Dokument durchgehen und die Werte und Ziele festigen. 
-% API-Server Code in Teilen im Text dokumentieren
-% Einbinden von mehr Grafiken: Vor allem bei der Modellierung, ggf. dann in Anhang und verlinken
-% Feature Engineering Abschnitt im Dokument nochmal updaten, falls die extrahierten Features wirklich zum Schluss bleiben 
-% Quellen für Code-Vorlagen hinzufügen
-% Bibliotheken und deren Version irgendwo dokumentieren
-% Evtl. via Docker und/oder requirements.txt
-% Beschreiben, dass sby_need und n_duty behoben wurden, damit die Vorhersage und das Modell richtig evaluieren können
-% evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM
-% Diagramme mit Zeit fixen. Unten ist eine komische Darstellung der Zeitspalte
-% Abstract auch noch unbedingt anpassen
+% Zahlenwerte nochmal prüfen, ob diese übereinstimmen                                                                               - passt
+% Dokument durchgehen und die Werte und Ziele festigen                                                                              - passt
+% API-Server Code in Teilen im Text dokumentieren                                                                                   - done
+% Einbinden von mehr Grafiken: Vor allem bei der Modellierung, ggf. dann in Anhang und verlinken                                    - Anhang fehlt
+% Feature Engineering Abschnitt im Dokument nochmal updaten, falls die extrahierten Features wirklich zum Schluss bleiben           - done
+% Quellen für Code-Vorlagen hinzufügen                                                                                              - ???
+% Bibliotheken und deren Version irgendwo dokumentieren                                                                             - To-Do
+% Evtl. via Docker und/oder requirements.txt                                                                                        - ja, gute Idee
+% Beschreiben, dass sby_need und n_duty behoben wurden, damit die Vorhersage und das Modell richtig evaluieren können               - nicht nötig
+% evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM                                                                 - 
+% Diagramme mit Zeit fixen. Unten ist eine komische Darstellung der Zeitspalte                                                      - done
+% Abstract auch noch unbedingt anpassen                                                                                             - To-Do
 
 % Dokument am besten von oben nach unten durchgehen und dabei direkt die Punkte checken und abarbeiten
 

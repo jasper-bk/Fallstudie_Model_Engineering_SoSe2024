@@ -93,7 +93,7 @@ def route_predict_sby_need():
 
     result = {}
 
-    calls_divisor = 4.7
+    calls_divisor = 4.82
 
     for key in prediction:
         if key in data:
