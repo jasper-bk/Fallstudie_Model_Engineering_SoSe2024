@@ -81,6 +81,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{makecell}
 \usepackage{amsmath}
 \usepackage{multirow}
+\usepackage{listingsutf8}
+
     %%%%%%% Neues Design %%%%%%%%%%%
 
     \usepackage{helvet} %Arial-Ersatz
@@ -327,7 +329,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     Der Prozess umfasst eine detaillierte Datenanalyse, die auf einem bereitgestellten CSV-Datensatz basiert, welcher Informationen über krankheitsbedingte Abwesenheiten, notwendigen Ersatzfahrende und Anrufvolumina enthält. 
     Ziel des Modells ist es, die Anzahl der notwendigen Ersatzfahrenden auf Tagesbasis präzise vorherzusagen und dabei Unterbesetzungen zu minimieren sowie Überbesetzungen zu reduzieren. 
 
-    Zunächst wird der Datensatz inspiziert und grundlegende Statistiken sowie Visualisierungen zu den der Variablen sby\_need (tatsächlich benötigte Ersatzfahrer) und calls (Anrufvolumen) erstellt. 
+    Zunächst wird der Datensatz inspiziert und grundlegende Statistiken sowie Visualisierungen zu den der Variablen sby\_need (tatsächlich benötigte Ersatzfahrende) und calls (Anrufvolumen) erstellt. 
     Dabei wird die zeitliche Dimension besonders untersucht, um saisonale Trends und Muster zu erkennen. 
     Die Datenvorbereitung beinhaltet die Behandlung fehlender Werte, Feature Engineering und die Aufteilung in Trainings- und Testdatensätze.
 
@@ -518,12 +520,12 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \hline
                 \textbf{Merkmal} & \textbf{Beschreibung} \\ \hline
                 date & Datum des Eintrags \\ \hline
-                n\_sick & Anzahl der Einsatzfahrer, die einen Krankenstand angemeldet haben \\ \hline
+                n\_sick & Anzahl der Einsatzfahrenden, die einen Krankenstand angemeldet haben \\ \hline
                 calls & Anzahl der Notrufe \\ \hline
-                n\_duty & Anzahl der Einsatzfahrer im Dienst \\ \hline
-                n\_sby & Anzahl der verfügbaren Ersatzfahrer \\ \hline
-                sby\_need &  Anzahl der Ersatzfahrer, die aktiviert werden \\ \hline
-                dafted & \makecell{Anzahl der zusätzlichen Einsatzfahrer, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrer im Bereitschaftsdienst nicht ausreicht. \\
+                n\_duty & Anzahl der Einsatzfahrenden im Dienst \\ \hline
+                n\_sby & Anzahl der verfügbaren Ersatzfahrenden \\ \hline
+                sby\_need &  Anzahl der Ersatzfahrenden, die aktiviert werden \\ \hline
+                dafted & \makecell{Anzahl der zusätzlichen Einsatzfahrenden, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrenden im Bereitschaftsdienst nicht ausreicht. \\
                 Anmerkung: Spaltenname fehlt offenbar der Buchstabe \enquote{r} an dritter Stelle.} \\ \hline
                 \end{tabular}
                 \\
@@ -541,7 +543,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \label{fig:data_insepection}
             \end{figure}
 
-            Die Spalte \texttt{sby\_need} gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrern zu setzen, wie sie in Spalte \texttt{n\_sby} zu sehen ist.
+            Die Spalte \texttt{sby\_need} gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrenden zu setzen, wie sie in Spalte \texttt{n\_sby} zu sehen ist.
 
             Beim Inspizieren der Daten fällt außerdem auf, dass die Spalte \texttt{dafted} keinen Mehrwert gegenüber der Spalte \texttt{sby\_need} bietet, da es sich lediglich um die Differenz größer Null der Spalte \texttt{sby\_need} und \texttt{n\_sby} handelt.
             Die Spalte \texttt{dafted} wird deswegen im weiteren Verlauf nicht genauer analysiert.
@@ -632,7 +634,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 day\_of\_month & Tag des Monats, extrahiert aus Datum \\ \hline
                 day\_of\_week & Tag der Woche, extrahiert aus Datum \\ \hline
                 year & Das Jahr, extrahiert aus Datum \\ \hline
-                sby\_used\_percent  & \makecell{Prozentsatz an eingesetzten Ersatzfahrern, die geplant worden sind: $\frac{sby\_need}{n\_sby}$ \\\\
+                sby\_used\_percent  & \makecell{Prozentsatz an eingesetzten Ersatzfahrenden, die geplant worden sind: $\frac{sby\_need}{n\_sby}$ \\\\
                 \includegraphics[width=0.5\textwidth]{assets/plot_sby_used_percent.png}      
                 \\ Anmerkung: Bei über 100\% gilt: dafted $>$ 0 } \\ \hline
                 call\_stress & \makecell{ Notfallbelastung: $\frac{calls}{n\_duty+sby\_need}$    \\\\
@@ -661,11 +663,11 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             %To-Do: falls es noch mehr Features geben sollte, diese ergänzen bzw den Text adaptieren
 
-            Da das Ziel die Vorhersage von Ersatzfahrern ist, wird die Spalte \texttt{sby\_need} als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrer tatsächlich benötigt wurden.
+            Da das Ziel die Vorhersage von Ersatzfahrenden ist, wird die Spalte \texttt{sby\_need} als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrende tatsächlich benötigt wurden.
             Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ziemlich genau berechnen lässt: $\frac{calls}{4.82}-n\_sby$.
-            Die mittlere Abweichung zwischen den aus den Anrufen berechneten Ersatzfahrern und der echten Anzahl an Ersatzfahrern beträgt \textit{2.86} und liegt außerdem i. d. R. knapp über dem echten Wert.
+            Die mittlere Abweichung zwischen den aus den Anrufen berechneten Ersatzfahrenden und der echten Anzahl an Ersatzfahrenden beträgt \textit{2.86} und liegt außerdem i. d. R. knapp über dem echten Wert.
             Zudem steht die Spalte \texttt{calls} zum Zeitpunkt der Vorhersage nicht zu Verfügung und kann ohnehin nicht im Feature-Datensatz genutzt werden.
-            Eine Visualisierung von dem echten \texttt{sby\_need} verglichen mit dem aus \texttt{calls} berechneten Ersatzfahrern findet sich als Abbildung \ref{fig:calc_sby_need} im Anhang.
+            Eine Visualisierung von dem echten \texttt{sby\_need} verglichen mit dem aus \texttt{calls} berechneten Ersatzfahrenden findet sich als Abbildung \ref{fig:calc_sby_need} im Anhang.
 
             Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. 
             Die beiden Zielvariable \texttt{sby\_need} und \texttt{calls} werden dann aus dem Feature-Datensatz entfernt, da sie die Zielvariablen darstellen, deren Vorhersage im Fokus steht.
@@ -695,13 +697,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \label{fig:baseline_performance}
         \end{figure}
 
-        Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \texttt{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrer visualisiert.
+        Im Graphen sind die Testdaten grün dargestellt, der Durchschnitt bzw. die \enquote{Vorhersage} des Baseline-Modells ist rot dargestellt und zusätzlich abgebildet ist die Spalte \texttt{n\_sby} in blau, welche den aktuellen Stand der fest eingeplanten Ersatzfahrenden visualisiert.
         
         Die Evaluierung des Baseline-Modells ergab einen MAE von \textit{65.56} und einen $R^2$-Score von \textit{-0.05}.
         Diese Werte dienen als Ausgangspunkt für die Bewertung der Leistung komplexerer Modelle.
 
-        Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrern empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
-        Allerdings verdeutlicht es nochmal gut, dass eine Dynamik bei der Planung der Ersatzfahrer auf jeden Fall erforderlich ist, da es im Durchschnitt bereits viele Überbesetzungen gibt, aber für bestimmte Tage auch starke Unterbesetzungen.
+        Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrenden empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
+        Allerdings verdeutlicht es nochmal gut, dass eine Dynamik bei der Planung der Ersatzfahrenden auf jeden Fall erforderlich ist, da es im Durchschnitt bereits viele Überbesetzungen gibt, aber für bestimmte Tage auch starke Unterbesetzungen.
         Sprich die aktuelle Planung ist in mehrfacher Hinsicht suboptimal und ein Mehrwert kann durch dynamische Vorhersage geschaffen werden.
             
 
@@ -745,12 +747,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Andere Features -- wie die Anzahl der Notrufe -- würden einen signifikanten Beitrag zur Vorhersagegenauigkeit leisten, stehen aber zum Zeitpunkt der Vorhersage im produktiven Einsatz nicht zur Verfügung.
         Daher fiel die engere Auswahl auf Algorithmen, die speziell für die Analyse von Zeitreihen entwickelt wurden.
         
-        Die Zeitreihe wird durch seine Zeitspalten repräsentiert, und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) vorherzusagen. 
+        Die Zeitreihe wird durch seine Zeitspalten repräsentiert, und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrenden (\texttt{sby\_need}) vorherzusagen. 
         Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und CNN (Convolutional Neural Network).
         
         \begin{itemize}
             \item \textbf{LSTM (Long Short-Term Memory)}: LSTM-Netzwerke sind eine spezielle Form von rekurrenten neuronalen Netzen, die dafür bekannt sind, langanhaltende Abhängigkeiten in Zeitreihen effektiv zu modellieren. 
-            Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrer.
+            Sie verfügen über Gedächtniszellen, die es dem Modell ermöglichen, relevante Informationen über längere Zeiträume hinweg zu speichern und zu nutzen. 
+            Diese Eigenschaft machte LSTM zu einem der Top-Kandidaten für die Vorhersage der Ersatzfahrenden.
         
             \item \textbf{GRU (Gated Recurrent Unit)}: GRU ist eine vereinfachte Variante des LSTM, die jedoch ähnliche Fähigkeiten zur Modellierung von zeitlichen Abhängigkeiten bietet, bei gleichzeitig geringerer Komplexität und schnellerer Trainingszeit. 
             GRU-Modelle zeigen in der Praxis oft vergleichbare Vorhersagegenauigkeiten wie LSTM, was sie ebenfalls zu einem aussichtsreichen Kandidaten für die Modellierung macht.
@@ -762,28 +765,34 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         
         Diese Algorithmen wurden aufgrund ihrer Fähigkeit ausgewählt, komplexe zeitliche Abhängigkeiten in den Daten zu modellieren und präzise Vorhersagen für die Zukunft zu treffen. 
         Die Modelle wurden so entwickelt, dass sie die Zeitspalten als Input verwenden, um die zukünftigen Werte der Spalte \texttt{calls} vorherzusagen.
-        Über die Spalte \texttt{calls} lässt sich die Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) dann berechnen.
+        Über die Spalte \texttt{calls} lässt sich die Anzahl der benötigten Ersatzfahrenden (\texttt{sby\_need}) dann berechnen.
         Ansätze bei denen \texttt{sby\_need} direkt vorhersagt wird, haben sich im Rahmen der Bearbeitung als weniger genau herausgestellt.
 
+        Der Code für die Top-Modelle findet sich im Anhang \ref{lst:keras_sklearn_wrapper} und ist inspiriert von folgenden Quellen: (\cite[][]{keras_cheat_sheet}) und (\cite[][]{tensorflow_keras}).
+        Für die Ausführung werden die Bibliotheken aus der requirements.txt Datei in ihren jeweilige Versionen benötigt, welches im Anhang \ref{lst:requirements} zu finden ist.
+
     \section{Training und Bewertung der Modelle}
+
+        Um Overfitting zu verhindern, werden die Modelle mit einer Dropout-Regularisierung versehen. 
+        Zusätzlich wurden nur die wichtigsten Features verwendet, um die Komplexität des Modells zu verringern
                 
-        Im Rahmen der Modellierung wurde ein besonderer Fokus auf die Bewertung der Vorhersagegenauigkeit gelegt, um sicherzustellen, dass die Modelle nicht nur allgemein gute Ergebnisse liefern, sondern auch speziell für den Anwendungsfall der Einsatzplanung optimiert sind. 
+        Zudem wird im Rahmen der Modellierung ein besonderer Fokus auf die Bewertung der Vorhersagegenauigkeit gelegt, um sicherzustellen, dass die Modelle nicht nur allgemein gute Ergebnisse liefern, sondern auch speziell für den Anwendungsfall der Einsatzplanung optimiert sind. 
         Neben den klassischen Regressionsmetriken wie dem Mean Absolute Error (MAE), dem Root Mean Squared Error (RMSE) und dem \(R^2\)-Score, die zur Beurteilung der allgemeinen Modellgüte verwendet wurden, kamen auch spezielle Zusatzmetriken zum Einsatz, die für die spezifischen Anforderungen der Personalplanung entwickelt wurden.
 
-        Diese speziellen Metriken wurden entwickelt, um die Effizienz der Modelle bei der Vorhersage der Anzahl der benötigten Ersatzfahrer (\texttt{sby\_need}) zu bewerten. 
+        Diese speziellen Metriken wurden entwickelt, um die Effizienz der Modelle bei der Vorhersage der Anzahl der benötigten Ersatzfahrenden (\texttt{sby\_need}) zu bewerten. 
         Hierbei liegt der Fokus darauf, Unterbesetzung (zu wenige Fahrer im Dienst) und Überbesetzung (zu viele Fahrer im Dienst) zu minimieren, um sowohl die Einsatzbereitschaft zu gewährleisten als auch die Ressourcen optimal zu nutzen.
 
         Die spezifischen Zusatzmetriken wurden mithilfe einer benutzerdefinierten Funktion berechnet, die verschiedene Aspekte der Vorhersagegenauigkeit quantifiziert, die speziell auf den Anwendungsfall der Personalplanung zugeschnitten sind.
 
         \begin{itemize}
-            \item \textbf{Anteil an Tagen mit Unterbesetzung (\%)}: Diese Metrik gibt den Prozentsatz der Tage an, an denen weniger Ersatzfahrer vorhergesagt wurden, als tatsächlich benötigt wurden.
-            \item \textbf{Anteil an Tagen mit Überbesetzung (\%)}: Diese Metrik gibt den Prozentsatz der Tage an, an denen mehr Ersatzfahrer vorhergesagt wurden, als tatsächlich benötigt wurden.
+            \item \textbf{Anteil an Tagen mit Unterbesetzung (\%)}: Diese Metrik gibt den Prozentsatz der Tage an, an denen weniger Ersatzfahrende vorhergesagt wurden, als tatsächlich benötigt wurden.
+            \item \textbf{Anteil an Tagen mit Überbesetzung (\%)}: Diese Metrik gibt den Prozentsatz der Tage an, an denen mehr Ersatzfahrende vorhergesagt wurden, als tatsächlich benötigt wurden.
             \item \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)}: Diese Metrik zeigt den Prozentsatz der Tage an, an denen die Vorhersage exakt mit dem tatsächlichen Bedarf übereinstimmte.
-            \item \textbf{Durchschnittliche Überbesetzung}: Der durchschnittliche Unterschied zwischen der vorhergesagten und der tatsächlichen Anzahl der benötigten Ersatzfahrer an Tagen mit Überbesetzung.
-            \item \textbf{Durchschnittliche Unterbesetzung}: Der durchschnittliche Unterschied zwischen der tatsächlichen und der vorhergesagten Anzahl der benötigten Ersatzfahrer an Tagen mit Unterbesetzung.
-            \item \textbf{Median Überbesetzung}: Der Median der Überbesetzungen an Tagen, an denen zu viele Ersatzfahrer vorhergesagt wurden.
-            \item \textbf{Median Unterbesetzung}: Der Median der Unterbesetzungen an Tagen, an denen zu wenige Ersatzfahrer vorhergesagt wurden.
-            \item \textbf{Tagesdurchschnitt Ersatzfahrer für Planung}: Der Durchschnitt der geplanten Ersatzfahrer über alle Tage im Zeitraum.
+            \item \textbf{Durchschnittliche Überbesetzung}: Der durchschnittliche Unterschied zwischen der vorhergesagten und der tatsächlichen Anzahl der benötigten Ersatzfahrenden an Tagen mit Überbesetzung.
+            \item \textbf{Durchschnittliche Unterbesetzung}: Der durchschnittliche Unterschied zwischen der tatsächlichen und der vorhergesagten Anzahl der benötigten Ersatzfahrenden an Tagen mit Unterbesetzung.
+            \item \textbf{Median Überbesetzung}: Der Median der Überbesetzungen an Tagen, an denen zu viele Ersatzfahrende vorhergesagt wurden.
+            \item \textbf{Median Unterbesetzung}: Der Median der Unterbesetzungen an Tagen, an denen zu wenige Ersatzfahrende vorhergesagt wurden.
+            \item \textbf{Tagesdurchschnitt Ersatzfahrer für Planung}: Der Durchschnitt der geplanten Ersatzfahrenden über alle Tage im Zeitraum.
             \item \textbf{Differenz Tagesdurchschnitt Ersatzfahrer zu Realität:} Die Differenz vom wirklich benötigten Tagesdurchschnitt zum geplanten Tagesdurchschnitt.
         \end{itemize}
 
@@ -794,7 +803,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Das perfekte Modell wird es nicht geben, es muss also abgewägt werden, wie hoch die anderen Zusatzmetriken ausfallen sollen.
         Der Anteil an Unterbesetzung sollte möglichst gering sein, aber die Anzahl der Überbesetzungen auch nicht viel zu hoch.
 
-        Ohne Vorhersage mit den noch statisch 90 eingeplanten Ersatzfahrern lassen sich auch die Metriken berechnen und wir erhalten für den gesamten Zeitraum die Werte in Tabelle \ref{tab:custom_metrics_90_sby}.
+        Ohne Vorhersage mit den noch statisch 90 eingeplanten Ersatzfahrenden lassen sich auch die Metriken berechnen und wir erhalten für den gesamten Zeitraum die Werte in Tabelle \ref{tab:custom_metrics_90_sby}.
 
         % Tabelle für unkorrigiertes sby_need ab Jahr 2019
 
@@ -830,15 +839,15 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Durchschnittliche Unterbesetzung & \textit{110.05} \\ \hline
             Median Überbesetzung & \textit{90.0} \\ \hline
             Median Unterbesetzung & \textit{86.0} \\ \hline
-            Tagesdurchschnitt Ersatzfahrer für Planung & 90.0 \\ \hline
-            Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & 55.28 \\ \hline
+            Tagesdurchschnitt Ersatzfahrende für Planung & 90.0 \\ \hline
+            Differenz Tagesdurchschnitt Ersatzfahrende zu Realität & 55.28 \\ \hline
             \end{tabular}
-            \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrer}
+            \caption{Berechnungen der benutzerdefinierten Personalmetriken für statische 90 Ersatzfahrende}
             \label{tab:custom_metrics_90_sby}
         \end{table}
 
-        Das Minimalziel für das Modell ist es also bessere Metriken zu erhalten als die statische 90-Ersatzfahrer-Strategie, die in Tabelle \ref{tab:custom_metrics_90_sby} zu sehen ist.
-        Erzeugt kein Modell besseren Metriken, so ist auch kein Mehrwert gegenüber der statischen 90-Ersatzfahrer-Strategie vorhanden. 
+        Das Minimalziel für das Modell ist es also bessere Metriken zu erhalten als die statische 90-Ersatzfahrende-Strategie, die in Tabelle \ref{tab:custom_metrics_90_sby} zu sehen ist.
+        Erzeugt kein Modell besseren Metriken, so ist auch kein Mehrwert gegenüber der statischen 90-Ersatzfahrende-Strategie vorhanden. 
 
 
         \subsection{Ergebnisse}
@@ -846,7 +855,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Die Modelle wurden mit demselben Trainingsdatensatz trainiert und mit demselben Testdatensatz validiert.
             Die Ergebnisse der Modellbewertungen sind in Tabelle \ref{tab:model_comparison} zusammengefasst.
             Bei den Ergebnissen ist zu beachten, dass die allgemeinen Metriken sich auf die Spalte \texttt{calls} beziehen und die speziellen Metriken nur auf die Spalte \texttt{sby\_need}.
-            Bei den Ergebnissen für \texttt{sby\_need} ist außerdem anzumerken, dass Ergebnisse kleiner Null automatisch auf Null gesetzt werden, da es nicht weniger als keinen Ersatzfahrer geben kann.
+            Bei den Ergebnissen für \texttt{sby\_need} ist außerdem anzumerken, dass Ergebnisse kleiner Null automatisch auf Null gesetzt werden, da es nicht weniger als keinen Ersatzfahrenden geben kann.
             Dieser Umstand sorgt dafür, dass sich die Ergebnissen gerade bei den perfekten Vorhersagen verbessern können, da es automatisch mehr Treffer für Null in Vorhersage und echten Wert gibt.
 
             %To-Do: Zahlenwerte nochmal verifizieren
@@ -865,15 +874,15 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 Durchschnittliche Unterbesetzung & 119.25 & 114.43 & 131.09 \\ \hline
                 Median Überbesetzung & 23.94 & 32.95 & 25.96 \\ \hline
                 Median Unterbesetzung & 91.00 & 91.00 & 97.97 \\ \hline
-                Tagesdurchschnitt Ersatzfahrer für Planung & 6.01 & 12.4 & 2.74 \\ \hline
-                Differenz Tagesdurchschnitt Ersatzfahrer zu Realität & -29.46 & -23.07 & -32.73 \\ \hline
+                Tagesdurchschnitt Ersatzfahrende für Planung & 6.01 & 12.4 & 2.74 \\ \hline
+                Differenz Tagesdurchschnitt Ersatzfahrende zu Realität & -29.46 & -23.07 & -32.73 \\ \hline
                 \end{tabular}
                 \caption{Vergleich der Metriken für LSTM, GRU und CNN}
                 \label{tab:model_comparison}
             \end{table}
             
-            Die Ergebnisse der durchgeführten Modellierungsansätze, dargestellt in Tabelle \ref{tab:model_comparison}, zeigen, dass die Modelle LSTM, GRU und CNN bei der Vorhersage einen höheren Anteil geplanten Tage gegenüber der statischen Planung mit einer konstanten Anzahl von 90 Ersatzfahrern bieten, jedoch insgesamt keine herausragenden Ergebnisse liefern, da die Vorhersagen überwiegend Null geworden sind.
-            Das entspricht zwar der Mehrheit der Tage, ist aber nicht Sinn der Planung von Ersatzfahrern.
+            Die Ergebnisse der durchgeführten Modellierungsansätze, dargestellt in Tabelle \ref{tab:model_comparison}, zeigen, dass die Modelle LSTM, GRU und CNN bei der Vorhersage einen höheren Anteil geplanten Tage gegenüber der statischen Planung mit einer konstanten Anzahl von 90 Ersatzfahrenden bieten, jedoch insgesamt keine herausragenden Ergebnisse liefern, da die Vorhersagen überwiegend Null geworden sind.
+            Das entspricht zwar der Mehrheit der Tage, ist aber nicht Sinn der Planung von Ersatzfahrenden.
 
             Auch die klassischen Regressionsmetriken wie MAE, RMSE und R²-Score verdeutlichen, dass die Modelle eher schwache Leistungen aufweisen.
 
@@ -881,7 +890,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Dies weist darauf hin, dass die Vorhersagegenauigkeit der Modelle begrenzt ist und viele externe Einflüsse, die das Personalbedarfsmanagement betreffen, möglicherweise nicht ausreichend durch die vorhandenen Daten abgedeckt werden. 
             Auch die MAE- und RMSE-Werte sind relativ hoch, was darauf hindeutet, dass die Modelle systematische Fehler in der Vorhersage aufweisen.
 
-            Trotz dieser insgesamt ernüchternden Ergebnisse zeigen die Modelle dennoch Potential im Vergleich zur statischen Planung mit konstant 90 Ersatzfahrern pro Tag, wie in Tabelle \ref{tab:custom_metrics_90_sby} ersichtlich ist. 
+            Trotz dieser insgesamt ernüchternden Ergebnisse zeigen die Modelle dennoch Potential im Vergleich zur statischen Planung mit konstant 90 Ersatzfahrenden pro Tag, wie in Tabelle \ref{tab:custom_metrics_90_sby} ersichtlich ist. 
             Das Potential wird vor allem bei der Vorhersage der Notrufe (\texttt{calls}) ersichtlich und dadurch, dass die allermeisten Tage \enquote{perfekt} vorhergesagt wurden.
 
             %Betrachtet man die Ergebnisse der benutzerdefinierten Personalmetriken genauer, fällt auf, dass das GRU-Modell hinsichtlich des Anteil an Tagen mit Unterbesetzung bessere Ergebnisse liefert. 
@@ -1003,23 +1012,23 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Obwohl das GRU-Modell bei einem höheren Straffaktor tendenziell eine bessere Balance zwischen Unter- und Überbesetzung zeigt, bringt es eine erhebliche Zunahme der Überbesetzung mit sich. 
             Daher ist das LSTM-Modell vorzuziehen, da es eine gute Balance zwischen einer akzeptablen Reduktion der Unterbesetzung und einer moderaten Erhöhung der Überbesetzung bietet.
 
-            Eine Alternative zum Straffaktor könnte ein fixer Aufschlag von Ersatzfahrern auf die Modellvorhersage sein. 
+            Eine Alternative zum Straffaktor könnte ein fixer Aufschlag von Ersatzfahrenden auf die Modellvorhersage sein. 
             Ohne Straffaktor beträgt die Median-Unterbesetzung ca. 90 Personen. 
-            Dies könnte dafür sprechen, die Vorhersage des Modells ohne Straffaktor auf einen fixen Wert von 90 Ersatzfahrern aufzuschlagen, um die Unterbesetzung ohne drastische Änderungen im Modell zu kompensieren.
+            Dies könnte dafür sprechen, die Vorhersage des Modells ohne Straffaktor auf einen fixen Wert von 90 Ersatzfahrenden aufzuschlagen, um die Unterbesetzung ohne drastische Änderungen im Modell zu kompensieren.
 
-            Ein Vergleich mit der statischen Planung, bei der jeden Tag konstant 90 Ersatzfahrer eingesetzt werden, verdeutlicht den Mehrwert des dynamischen Modells. 
+            Ein Vergleich mit der statischen Planung, bei der jeden Tag konstant 90 Ersatzfahrende eingesetzt werden, verdeutlicht den Mehrwert des dynamischen Modells. 
             Bei der statischen Planung ergeben sich für den gesamten Zeitraum folgende Werte: 
             Ein Anteil an Tagen mit Unterbesetzung von 14,84\%, ein Anteil an Überbesetzungstagen von 84,90\% und ein sehr geringer Anteil an Tagen mit perfekter Vorhersage von nur 0,26\%. 
             Zudem beträgt die durchschnittliche Überbesetzung 84,36 Personen und die durchschnittliche Unterbesetzung liegt bei 110,05 Personen. 
-            Der Median der Überbesetzung liegt bei 90 Personen, was ebenfalls auf die starre, vorab festgelegte Anzahl an Ersatzfahrern hinweist. 
-            Der Tagesdurchschnitt der Ersatzfahrer beträgt logischerweise 90 Personen, was zu einer Differenz zum tatsächlichen Durchschnitts-Bedarf von 55,28 Personen führt.
+            Der Median der Überbesetzung liegt bei 90 Personen, was ebenfalls auf die starre, vorab festgelegte Anzahl an Ersatzfahrenden hinweist. 
+            Der Tagesdurchschnitt der Ersatzfahrenden beträgt logischerweise 90 Personen, was zu einer Differenz zum tatsächlichen Durchschnitts-Bedarf von 55,28 Personen führt.
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
             Im Vergleich dazu bietet das LSTM-Modell mit einem Straffaktor von 10 eine deutliche Verbesserung. 
             Die durchschnittliche Unterbesetzung sinkt um 32 Personen, während der Anteil an Überbesetzung um 43,73\% sinkt. 
             Besonders auffällig ist der deutlich höhere Anteil an Tagen mit perfekter Vorhersage (36,36\%), was zeigt, dass das Modell in der Lage ist, den tatsächlichen Bedarf präziser vorherzusagen. 
-            Die dynamische Planung sorgt auch für eine bessere Anpassung der Ersatzfahrer an den tatsächlichen Bedarf und reduziert somit die Ressourcenverschwendung durch Überbesetzung.
+            Die dynamische Planung sorgt auch für eine bessere Anpassung der Ersatzfahrenden an den tatsächlichen Bedarf und reduziert somit die Ressourcenverschwendung durch Überbesetzung.
 
             Es gibt jedoch keinen universell optimalen Straffaktor für alle Szenarien, da die Wahl des idealen Straffaktors stark von den Prioritäten und den spezifischen Anforderungen der Einsatzplanung abhängt. 
             In manchen Fällen kann eine geringere Unterbesetzung zu Lasten einer moderaten Überbesetzung akzeptabel sein, während in anderen Fällen eine höhere Effizienz angestrebt wird. 
@@ -1044,7 +1053,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Die Implementierung basiert auf einem Flask-Web-Framework, das als leichtgewichtiger Web-Server fungiert. 
         Das Modell und die erforderlichen Vorverarbeitungswerkzeuge werden als trainierte Artefakte gespeichert und bei Bedarf geladen. 
 
-        Der folgende Code-Ausschnitt \ref{lst:api_server_base} zeigt die übersichtliche Struktur des Servers mit seinen zwei Endpunkten für Vorhersagen von Notrufen (\texttt{calls}) und den nötigen Ersatzfahrern (\texttt{sby\_need}):
+        Der folgende Code-Ausschnitt \ref{lst:api_server_base} zeigt die übersichtliche Struktur des Servers mit seinen zwei Endpunkten für Vorhersagen von Notrufen (\texttt{calls}) und den nötigen Ersatzfahrenden (\texttt{sby\_need}):
 
         \lstset{caption={Aufbau Vorhersage API}}
         \lstset{inputencoding=latin1} % rquires extra package: \usepackage[utf8]{inputenc}
@@ -1094,7 +1103,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         So sind etwa Vorschläge oder Warnhinweise für mögliche Engpässe oder Überbesetzungen direkt in den bestehenden Planungsoberflächen möglich.
 
         Basierend auf den Vorhersagen können die Einsatzkräfte bereits früh auf mögliche Engpässe vorbereitet werden, indem zusätzliche Ressourcen eingeplant oder bereitgehalten werden.
-        Bei einer hohen vorhergesagten Anzahl von Ersatzfahrern lassen sich präventive Maßnahmen ergriffen, um die Einsatzbereitschaft sicherzustellen.
+        Bei einer hohen vorhergesagten Anzahl von Ersatzfahrenden lassen sich präventive Maßnahmen ergriffen, um die Einsatzbereitschaft sicherzustellen.
         
         Außerdem lassen sich die Vorhersagen regelmäßig überprüfen und mit den tatsächlichen Ereignissen vergleichen, um das Modell kontinuierlich zu verbessern.
         Zudem werden vergangene Zeiträume mit ihrem realen Bedarf zum Trainingsdatensatz hinzugefügt, um das Modell auf den aktuellen Stand zu halten und zudem die Effizienz zu verbessern.
@@ -1154,10 +1163,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 % API-Server Code in Teilen im Text dokumentieren                                                                                   - done
 % Einbinden von mehr Grafiken: Vor allem bei der Modellierung, ggf. dann in Anhang und verlinken                                    - done
 % Feature Engineering Abschnitt im Dokument nochmal updaten, falls die extrahierten Features wirklich zum Schluss bleiben           - done
-% Quellen für Code-Vorlagen hinzufügen                                                                                              - ???
+% Quellen für Code-Vorlagen hinzufügen                                                                                              - sollte reichen
 % Bibliotheken und deren Version irgendwo dokumentieren                                                                             - To-Do
-% Evtl. via Docker und/oder requirements.txt                                                                                        - ja, gute Idee
-% evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM                                                                 - 
+% Evtl. via Docker und/oder requirements.txt                                                                                        - Done
+% evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM                                                                 - vllt
 % Diagramme mit Zeit fixen. Unten ist eine komische Darstellung der Zeitspalte                                                      - done
 % Abstract auch noch unbedingt anpassen                                                                                             - done
 
@@ -1176,6 +1185,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \item \hyperref[sec:appendix:dropped_features]{Auswahl verworfener Features}
     \item \hyperref[sec:appendix:calc_sby_need]{Visualisierte Berechnung von sby\_need aus calls}
     \item \hyperref[sec:appendix:full_model_comparison]{Komplette Modellvergleichsübersicht}
+    \item \hyperref[sec:appendix:requirements]{Notwendige Abhängigkeiten für Code}
 \end{enumerate}
 }
 \pagebreak
@@ -1233,7 +1243,22 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \label{sec:appendix:code_api}
 
 \lstset{caption={Kompletter Code des API-Server}}
-\lstset{inputencoding=latin1} % rquires extra package: \usepackage[utf8]{inputenc}
+\lstset{inputencoding=utf8/latin1}
 \lstinputlisting[label={lst:api_server_full},firstline=1,firstnumber=1,language=Python]{../app/api_server.py}
+
+
+\tocless\chapter{Vollständiger Code der Modelle: LSTM, CNN, GRU}
+\label{sec:appendix:code_models}
+
+\lstset{caption={Kompletter Code der Modelle: LSTM, CNN, GRU}}
+\lstset{inputencoding=utf8/latin1}
+\lstinputlisting[label={lst:keras_sklearn_wrapper},firstline=1,firstnumber=1, lastline=216, language=Python]{../app/sklearn_keras_wrapper.py}
+
+\tocless\chapter{Notwendige Abhängigkeiten für Code}
+\label{sec:appendix:requirements}
+
+\lstset{caption={requirements.txt}}
+\lstset{inputencoding=utf8/latin1}
+\lstinputlisting[label={lst:requirements},firstline=1,firstnumber=1, language=Python]{../requirements.txt}
 
 \end{document}
