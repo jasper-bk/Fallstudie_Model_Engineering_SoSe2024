@@ -465,8 +465,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Struktur des Git-Repositories}
 
-        Ein gut strukturiertes Git-Repository ist entscheidend für die effiziente Zusammenarbeit im Projektteam und die Nachvollziehbarkeit der Entwicklungsschritte. 
-        Die folgende Ordnerstruktur wird für dieses Projekt vorgeschlagen:
+        Ein gut strukturiertes Git-Repository ist entscheidend für die effiziente Organisatiom und die Nachvollziehbarkeit der Entwicklungsschritte. 
+        Die folgende Ordnerstruktur wird für dieses Projekt genutzt:
 
         % To-do Zum Schluss, Richtung Abgabe die Struktur an den Ist-Zustand anpassen 
         \dirtree{%
@@ -478,9 +478,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         .3 exploration.
         .3 modeling.
         .2 app. 
-        .3 data\_preparation.
         .3 models.
-        .3 evaluation.
         .2 docs.
         }
 
@@ -488,9 +486,11 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \item \textbf{data}: Dieser Ordner enthält alle Daten, die im Projekt verwendet werden. 
             Der Unterordner \texttt{raw} speichert die unbearbeiteten Rohdaten, während im Unterordner \texttt{processed} die für die Modellierung vorbereiteten Daten abgelegt werden.
             \item \textbf{notebooks}: Hier werden Jupyter-Notebooks für die Datenexploration und Modellierung gespeichert. 
-            Der Unterordner \texttt{exploration} enthält Notebooks zur ersten Datenanalyse, und der Unterordner \texttt{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle.
-            \item \textbf{app}: In diesem Ordner sind die Skripte zur Datenvorbereitung, Modellierung und Evaluation gespeichert. %To-Do: Aktuell halten
-            Die Skripte im Unterordner \texttt{data\_preparation} kümmern sich um die Datenbereinigung und -transformation, während im Unterordner \texttt{models} die Modelltrainingsskripte und im Unterordner \texttt{evaluation} die Evaluationsskripte abgelegt werden.
+            Der Unterordner \texttt{exploration} enthält Notebooks zur ersten Datenanalyse für die Phasen \textbf{Business Understanding}, \textbf{Data Understanding} und in weiten Teilen \textbf{Data Preparation}.
+            Der Unterordner \texttt{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle für die Phasen \textbf{Modeling} und \textbf{Evaluation}.
+            \item \textbf{app}: In diesem Ordner sind alle Skripte und Dateien für die Phase \textbf{Deployment} enthalten.
+            Da es die produktiv einsetzbaren Skripte beinhaltet, gibt es noch Überschneidungen zu den vorherigen Phasen \textbf{Modeling} und \textbf{Data Preparation}.
+            Im Unterordner \texttt{models} befinden sich exportierte Modelle, die von den deployten Ressourcen genutzt werden.
             \item \textbf{docs}: Hier werden alle Projektdokumentationen abgelegt. 
             Dies umfasst Visualisierungen, dieses Dokument und andere relevante Dokumente.
         \end{itemize}
@@ -1164,7 +1164,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 % Einbinden von mehr Grafiken: Vor allem bei der Modellierung, ggf. dann in Anhang und verlinken                                    - done
 % Feature Engineering Abschnitt im Dokument nochmal updaten, falls die extrahierten Features wirklich zum Schluss bleiben           - done
 % Quellen für Code-Vorlagen hinzufügen                                                                                              - sollte reichen
-% Bibliotheken und deren Version irgendwo dokumentieren                                                                             - To-Do
+% Bibliotheken und deren Version irgendwo dokumentieren                                                                             - in requirements.txt und Anhang
 % Evtl. via Docker und/oder requirements.txt                                                                                        - Done
 % evtl. die Notebooks nochmal aufbrechen in die Phasen von CRISP-DM                                                                 - vllt
 % Diagramme mit Zeit fixen. Unten ist eine komische Darstellung der Zeitspalte                                                      - done
