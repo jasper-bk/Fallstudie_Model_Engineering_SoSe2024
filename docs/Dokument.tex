@@ -82,6 +82,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \usepackage{amsmath}
 \usepackage{multirow}
 \usepackage{listingsutf8}
+\usepackage{pdfpages}
 
     %%%%%%% Neues Design %%%%%%%%%%%
 
@@ -496,6 +497,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         \end{itemize}
 
         Diese strukturierte Vorgehensweise und die klare Organisation des Repositories tragen wesentlich zur Effizienz und Transparenz des Projekts bei und erleichtern die Bearbeitung.
+        Die Skripte, Notebooks, Dokumente und sonstige Dateien sind im \hyperref[sec:appendix]{Anhang} zu finden.
 
 \chapter{Datenanalyse}
         
@@ -1202,6 +1204,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \addchap{Anhang}
 \label{sec:appendix}
 
+Der vollständige Code, die Notebooks und die Anhänge können auch als Archiv von folgender Webseite runtergeladen werden: \\
+\url{https://jasper.bremenkamp.de/tmp/git/Bremenkamp_Abgabe_Fallstudie_Model_Engineering.zip}
+
+\addsec*{Anhangsverzeichnis}
 {\Large
 \begin{enumerate}[label=\Alph*.]
     \item \hyperref[sec:appendix:korrelationsmatrix_ein_jahr]{Korrelationsmatrix auf ein Jahr}
@@ -1209,6 +1215,9 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \item \hyperref[sec:appendix:calc_sby_need]{Visualisierte Berechnung von sby\_need aus calls}
     \item \hyperref[sec:appendix:full_model_comparison]{Komplette Modellvergleichsübersicht}
     \item \hyperref[sec:appendix:requirements]{Notwendige Abhängigkeiten für Code}
+    \item \hyperref[sec:appendix:trainings_code]{Skript für Training der finalen Modelle}
+    \item \hyperref[sec:appendix:notebook_exploration]{Jupyter Notebook für Exploration}
+    \item \hyperref[sec:appendix:notebook_modeling]{Jupyter Notebook für Modeling}
 \end{enumerate}
 }
 \pagebreak
@@ -1283,5 +1292,28 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 \lstset{caption={requirements.txt}}
 \lstset{inputencoding=utf8/latin1}
 \lstinputlisting[label={lst:requirements},firstline=1,firstnumber=1, language=Python]{../requirements.txt}
+
+\tocless\chapter{Skript für Training der finalen Modelle}
+\label{sec:appendix:trainings_code}
+
+\lstset{caption={Traingingsskript der finalen Modelle zur Nutzung im API Service}}
+\lstset{inputencoding=utf8/latin1}
+\lstinputlisting[label={lst:trainings_code},firstline=1,firstnumber=1, language=Python]{../app/train_models.py}
+
+\tocless\chapter{Jupyter Notebook für Exploration}
+\label{sec:appendix:notebook_exploration}
+
+\vspace*{-2cm}
+
+\includegraphics[scale=0.8]{assets/data_exploration.pdf}
+\includepdf[pages=2-, scale=.95, pagecommand={}]{assets/data_exploration.pdf}
+
+\tocless\chapter{Jupyter Notebook für Modeling}
+\label{sec:appendix:notebook_modeling}
+
+\vspace*{-2cm}
+
+\includegraphics[scale=0.8]{assets/modeling.pdf}
+\includepdf[pages=2-, scale=.95, pagecommand={}]{assets/modeling.pdf}
 
 \end{document}
