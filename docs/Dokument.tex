@@ -23,13 +23,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
 \def \titel {Automatisierung des Bereitschaftsdienstplans für Einsatzfahrende mithilfe eines Vorhersagemodells} 
 \def \arbeit {Fallstudie}
-\def \autor {<to be replaced>}%{Jasper Bremenkamp}
-\def \abschluss {<to be replaced>}%{M.Sc.}
-\def \studiengang {<to be replaced>}%{Data Science}
-\def \datumAbgabe {<to be replaced>}%{\today}
-\def \modul {<to be replaced>}%{Model Engineering}
-\def \matrikelnr {<to be replaced>}%{92125193}
-\def \tutor {<to be replaced>}%{Markus Pak}
+\def \autor {Jasper Bremenkamp}
+\def \abschluss {M.Sc.}
+\def \studiengang {Data Science}
+\def \datumAbgabe {\today}
+\def \modul {Model Engineering}
+\def \matrikelnr {92125193}
+\def \tutor {Markus Pak}
 
 \def \seitenrand {2cm}
 
@@ -253,7 +253,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \begin{figure}[h]
         \centering
         \advance\leftskip--2cm
-        %\includegraphics[width=0.50\textwidth]{assets/logo.pdf} %To-Do: wieder einbauen
+        \includegraphics[width=0.50\textwidth]{assets/logo.pdf} 
         \end{figure}
         \FloatBarrier
         
@@ -326,10 +326,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     % Zum Schluss nochmal neuschreiben bzw. überarbeiten
 
     Die vorliegende Arbeit beschäftigt sich mit der Entwicklung und Integration eines Vorhersagemodells zur effizienten Einsatzplanung von Bereitschaftsdienstfahrenden. 
-    Der Prozess umfasst eine detaillierte Datenanalyse, die auf einem bereitgestellten CSV-Datensatz basiert, welcher Informationen über krankheitsbedingte Abwesenheiten, notwendigen Ersatzfahrende und Anrufvolumina enthält. 
-    Ziel des Modells ist es, die Anzahl der notwendigen Ersatzfahrenden auf Tagesbasis präzise vorherzusagen und dabei Unterbesetzungen zu minimieren sowie Überbesetzungen zu reduzieren. 
+    Der Prozess umfasst eine detaillierte Datenanalyse, die auf einem bereitgestellten CSV-Datensatz basiert, welcher Informationen über krankheitsbedingte Abwesenheiten, die notwendigen Ersatzfahrenden und das Anrufvolumina enthält. 
+    Ziel des Modells ist es, die Anzahl der notwendigen Ersatzfahrenden bereits am 15. des laufenden Monats für den Folgemonat auf Tagesbasis präzise vorherzusagen und dabei Unterbesetzungen zu minimieren sowie Überbesetzungen zu reduzieren. 
 
-    Zunächst wird der Datensatz inspiziert und grundlegende Statistiken sowie Visualisierungen zu den der Variablen sby\_need (tatsächlich benötigte Ersatzfahrende) und calls (Anrufvolumen) erstellt. 
+    Zunächst wird der Datensatz inspiziert und grundlegende Statistiken sowie Visualisierungen zu den der Variablen sby\_need (tatsächlich benötigte Ersatzfahrende) und calls (Anrufvolumen für Notrufe) erstellt. 
     Dabei wird die zeitliche Dimension besonders untersucht, um saisonale Trends und Muster zu erkennen. 
     Die Datenvorbereitung beinhaltet die Behandlung fehlender Werte, Feature Engineering und die Aufteilung in Trainings- und Testdatensätze.
 
@@ -338,12 +338,10 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     Die Implementierung des Modells erfolgt als API-basiertes System, das nahtlos in bestehende Verwaltungssysteme integriert werden kann. 
     Die API ermöglicht es, Vorhersagen über eine REST-Schnittstelle abzufragen, wodurch der Planungsprozess dynamisch und automatisiert unterstützt wird. 
-    Benutzer können über die API Vorhersagen für spezifische Tage anfragen und erhalten eine präzise Einschätzung der benötigten Einsatzkräfte. 
+    Benutzer können über die API-Anfragen mit verschiedenen Modellen spezifische Tage vorhersagen und erhalten eine präzisere Einschätzung der benötigten Einsatzkräfte. 
 
     Der Vergleich mit der statischen Planung zeigt eine signifikante Verbesserung der Planungsqualität durch das dynamische Modell, insbesondere durch die Reduktion der Ressourcenverschwendung und die Optimierung des Personaleinsatzes. 
     Diese Arbeit stellt somit eine wertvolle Unterstützung für die Einsatzplanung dar und bietet durch die kontinuierliche Verbesserung und Integration in den Arbeitsalltag langfristig ein großes Potenzial zur Effizienzsteigerung.
-
-    
 
 \end{abstract}
 
@@ -389,11 +387,11 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     (\cite[Vgl.][S. 3, 4]{data_science_aufgabenstellung})
 
     Diese unvorhersehbaren Ereignisse führen regelmäßig zu Kapazitätsengpässen, die nur durch die kurzfristige Aktivierung zusätzlicher Einsatzfahrender ausgeglichen werden können. 
-    Solche ad-hoc Lösungen sind jedoch oft ineffizient und können die Einsatzbereitschaft und Reaktionszeit negativ beeinflussen.
+    Solche ad hoc Lösungen sind jedoch oft ineffizient und können die Einsatzbereitschaft und Reaktionszeit negativ beeinflussen.
 
     Das Ziel dieses Projekts ist es, die bestehende Planungslogik zu verbessern und die Bereitschaftsdienstplanung zu automatisieren. 
     Mithilfe eines Vorhersagemodells soll die Anzahl der erforderlichen Einsatzfahrenden im Bereitschaftsdienst auf Tagesbasis effizient abgeschätzt werden.
-    Ein besonderes Augenmerk liegt dabei auf der Identifikation saisonaler Muster, wie zum Beispiel die erhöhte Ausfallrate in den Wintermonaten. 
+    Ein besonderes Augenmerk liegt dabei auf der Identifikation saisonaler Muster, wie zum Beispiel der erhöhte Bedarf in den Wintermonaten. 
     Durch die Analyse historischer Daten zu Abwesenheiten und Notrufaufkommen sollen präzise Vorhersagen getroffen werden, um die Einsatzbereitschaft optimal zu gewährleisten.
     (\cite[Vgl.][S. 3, 4]{data_science_aufgabenstellung})
     
@@ -409,11 +407,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     
     In den folgenden Kapiteln wird das Projekt im Detail beschrieben. 
     Zunächst wird die angewendete Projektmanagementmethodik erläutert und die Strukturierung des Git-Repositories vorgestellt. 
+    Um dieses Ziel zu erreichen, folgt das Projekt der CRISP-DM-Methodik, einem etablierten Standard im Data Science, der die Phasen Business Understanding, Data Understanding, Data Preparation, Modeling, Evaluation und Deployment umfasst.
     Daraufhin folgt eine ausführliche Datenanalyse, die die Grundlage für die Modellierung bildet. 
     Es werden sowohl ein erstes Basismodell als auch ein präziseres Vorhersagemodell entwickelt und deren Performance evaluiert. 
     Besonderes Augenmerk wird dabei auf die Interpretierbarkeit der Modellresultate und eine detaillierte Fehleranalyse gelegt. 
-    Abschließend wird ein Vorschlag zur Integration des Modells in den Arbeitsalltag des Fachbereichs präsentiert und eine beispielhafte grafische Benutzeroberfläche vorgestellt. 
-    Die Arbeit schließt mit einer Zusammenfassung der Ergebnisse und Empfehlungen für zukünftige Arbeiten oder Verbesserungen.
+    Abschließend wird ein Vorschlag zur Integration des Modells in den Arbeitsalltag des Fachbereichs präsentiert. 
+    Das entwickelte Modell wird als API-basierte Lösung implementiert, die nahtlos in bestehende Verwaltungssysteme integriert werden kann. 
+    Dies ermöglicht es den Planern, Vorhersagen in Echtzeit zu nutzen und flexibel auf Personalengpässe zu reagieren.
     
     Durch die erfolgreiche Implementierung dieses Projekts könnte der Berliner Rotkreuz-Rettungsdienst einen bedeutenden Schritt in Richtung einer moderneren und effizienteren Bereitschaftsdienstplanung machen. 
     Dies würde nicht nur die Einsatzbereitschaft und Reaktionszeit verbessern, sondern auch die Arbeitszufriedenheit der Einsatzfahrenden erhöhen.
@@ -465,7 +465,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Struktur des Git-Repositories}
 
-        Ein gut strukturiertes Git-Repository ist entscheidend für die effiziente Organisatiom und die Nachvollziehbarkeit der Entwicklungsschritte. 
+        Ein gut strukturiertes Git-Repository ist entscheidend für die effiziente Organisation und die Nachvollziehbarkeit der Entwicklungsschritte. 
         Die folgende Ordnerstruktur wird für dieses Projekt genutzt:
 
         % To-do Zum Schluss, Richtung Abgabe die Struktur an den Ist-Zustand anpassen 
@@ -486,7 +486,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \item \textbf{data}: Dieser Ordner enthält alle Daten, die im Projekt verwendet werden. 
             Der Unterordner \texttt{raw} speichert die unbearbeiteten Rohdaten, während im Unterordner \texttt{processed} die für die Modellierung vorbereiteten Daten abgelegt werden.
             \item \textbf{notebooks}: Hier werden Jupyter-Notebooks für die Datenexploration und Modellierung gespeichert. 
-            Der Unterordner \texttt{exploration} enthält Notebooks zur ersten Datenanalyse für die Phasen \textbf{Business Understanding}, \textbf{Data Understanding} und in weiten Teilen \textbf{Data Preparation}.
+            Der Unterordner \texttt{exploration} hält Notebooks zur Datenanalyse für die Phasen \textbf{Business Understanding}, \textbf{Data Understanding} und in weiten Teilen \textbf{Data Preparation} bereit.
             Der Unterordner \texttt{modeling} enthält Notebooks zur Entwicklung und Evaluation der Modelle für die Phasen \textbf{Modeling} und \textbf{Evaluation}.
             \item \textbf{app}: In diesem Ordner sind alle Skripte und Dateien für die Phase \textbf{Deployment} enthalten.
             Da es die produktiv einsetzbaren Skripte beinhaltet, gibt es noch Überschneidungen zu den vorherigen Phasen \textbf{Modeling} und \textbf{Data Preparation}.
@@ -495,7 +495,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Dies umfasst Visualisierungen, dieses Dokument und andere relevante Dokumente.
         \end{itemize}
 
-        Diese strukturierte Vorgehensweise und die klare Organisation des Repositories tragen wesentlich zur Effizienz und Transparenz des Projekts bei und erleichtern die Zusammenarbeit im Team.
+        Diese strukturierte Vorgehensweise und die klare Organisation des Repositories tragen wesentlich zur Effizienz und Transparenz des Projekts bei und erleichtern die Bearbeitung.
 
 \chapter{Datenanalyse}
         
@@ -510,7 +510,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         \subsection{Dateninspektion}
             \label{sec:dateninspektion}
 
-            Zunächst wurden die Daten auf ihre Grundstruktur hin untersucht. 
+            Zunächst wurden die Daten auf ihre Grundstruktur hin untersucht, um sowohl das Business- als auch Data Understanding zu erlangen. 
             Dabei wurden Informationen wie die Anzahl der Datensätze, die Struktur der Datensätze und das Vorhandensein von fehlenden Werten erfasst. 
             Die Merkmale der Daten sind in Tabelle \ref{tab:data_summary} zusammengefasst.
 
@@ -524,7 +524,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 calls & Anzahl der Notrufe \\ \hline
                 n\_duty & Anzahl der Einsatzfahrenden im Dienst \\ \hline
                 n\_sby & Anzahl der verfügbaren Ersatzfahrenden \\ \hline
-                sby\_need &  Anzahl der Ersatzfahrenden, die aktiviert werden \\ \hline
+                sby\_need & Anzahl der Ersatzfahrenden, die aktiviert werden \\ \hline
                 dafted & \makecell{Anzahl der zusätzlichen Einsatzfahrenden, die aktiviert werden müssen,\\ wenn die Anzahl der Einsatzfahrenden im Bereitschaftsdienst nicht ausreicht. \\
                 Anmerkung: Spaltenname fehlt offenbar der Buchstabe \enquote{r} an dritter Stelle.} \\ \hline
                 \end{tabular}
@@ -543,7 +543,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
                 \label{fig:data_insepection}
             \end{figure}
 
-            Die Spalte \texttt{sby\_need} gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrenden zu setzen, wie sie in Spalte \texttt{n\_sby} zu sehen ist.
+            Die Anzahl der Ersatzfahrenden (Spalte \texttt{sby\_need}) gilt es vorherzusagen, um die kurzfristige Aktivierung von Personal zu vermeiden, bereits früh genug Personal eingeplant zu haben und nicht mehr auf die aktuell statisch festgesetzte Zahl von 90 Ersatzfahrenden zu setzen, wie sie bei der Anzahl der Einsatzfahrenden im Dienst (Spalte \texttt{n\_sby}) zu sehen ist.
 
             Beim Inspizieren der Daten fällt außerdem auf, dass die Spalte \texttt{dafted} keinen Mehrwert gegenüber der Spalte \texttt{sby\_need} bietet, da es sich lediglich um die Differenz größer Null der Spalte \texttt{sby\_need} und \texttt{n\_sby} handelt.
             Die Spalte \texttt{dafted} wird deswegen im weiteren Verlauf nicht genauer analysiert.
@@ -555,7 +555,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
             Die Korrelationen zwischen den verschiedenen Merkmalen wurden mittels einer Korrelationsmatrix untersucht. 
             Dafür wurde bereits früh die neue numerische Spalte \texttt{unix\_ts\_date} für die Zeit hinzugefügt, welches das die Spalte \texttt{date} als Unix Timestamp numerisch darstellt.
-            Die \texttt{date} wird als Index verwendet und taucht in der Korrelationsmatrix nicht auf, aber verhält sich genau so wie \texttt{unix\_ts\_date}.
+            Die Spalte \texttt{date} wird als Index verwendet und taucht deswegen in der Korrelationsmatrix nicht auf, aber verhält sich genau so wie \texttt{unix\_ts\_date}.
             Details dazu im späteren Kapitel \ref{sec:feature_engineering}.
 
             Die nachfolgende Abbildung \ref{fig:corr_matrix} zeigt die Korrelationsmatrix der Merkmale über den ganzen Datensatz.
@@ -605,7 +605,8 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Es wurden auch Versuche unternommen boolsche Werte (sog. Flags) hinzuzufügen.
             Darunter folgende sinngemäße Features: \texttt{\enquote{ist ein Feiertag?}} und \texttt{\enquote{ist Wochenende?}}. 
             Das Feature \texttt{\enquote{ist Wochenende?}} wurde über den Wochentag extrahiert und das Feature \texttt{\enquote{ist ein Feiertag?}} wurde für das Bundesland Berlin über die API \texttt{\url{https://feiertage-api.de/}} extern zugeführt.
-            Allerdings haben sich auch diese Features als nicht wertvoll herausgestellt und wurden daraufhin wieder verworfen.
+            Allerdings haben sich auch diese Features als nicht wertvoll herausgestellt, da sie zu keiner Verbesserung der Modellleistung geführt haben.
+            Sie wurden daraufhin wieder verworfen.
 
             Um noch mehr Merkmale zu erhalten, die eine genauere Vorhersage erlauben, wurden im späteren Verlauf noch Lag-Features und gleitende Durchschnitte für die wichtigsten Spalten in den Datensatz integriert. 
             Diese Features sollten zeitliche Abhängigkeiten und Trends in den Daten erfassen, um die Vorhersagegenauigkeit zu verbessern. 
@@ -614,12 +615,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Aus diesem Grund wurden die Lag-Features und gleitenden Durchschnitte ebenfalls wieder verworfen.
 
             Weitere externe Features welche hinzugefügt wurden, sind die Durchschnittstemperatur, die Höchstemperatur und die niedrigste Temperatur in Berlin.
-            Auch hier haben sich die Merkmal als nicht wertvoll herausgestellt und wurden daraufhin ebenfalls verworfen.
-            Zudem stellt sich bei einer Nutzung dieser Features die Frage, ob die Werte des Wetterberichts ausreichend genau sind, um mit dessen Hilfe dann genaue Ergebnisse vorherzusagen.
+            Auch hier haben sich die Merkmal als nicht wertvoll herausgestellt, da sie ebenfalls nicht zur Verbesserung der Modellleistung beitragen konnten.
+            Sie wurden daraufhin wieder verworfen.
+            Zudem stellt sich bei einer Nutzung dieser Features die Frage, ob die Werte des Wetterberichts zum Zeitpunkt der Vorhersage ausreichend genau sind, um mit dessen Hilfe dann genaue Ergebnisse vorherzusagen.
             Details zu den verworfenen Features finden sich als Abbildung \ref{sec:appendix:dropped_features} im Anhang. 
 
             Für die weitere Analyse wurden neue Spalten aus den bereits vorhanden Features erstellt und beibehalten.
-            Auch wenn diese in der späteren Modellierung keine Rolle mehr gespielt haben.
+            Auch wenn nicht alle in der späteren Modellierung eine Rolle gespielt haben.
             Details dazu in späteren Kapiteln. 
 
             Tabelle \ref{tab:new_features} zeigt die neuen Spalten, die erstellt wurden.
@@ -658,10 +660,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Die Aufteilung erfolgte mit 80\% der Daten für das Training und 20\% für die Testphase.
 
             Die Daten werden dabei nicht gemischt, sondern so getrennt, dass die 80 und 20 Prozent im Zeitstrahl weiterhin zusammenhängen.
-            Ein Mischen hat sich bei der Evaluierung der Modell-Leistung als nachteilhaft herausgestellt.
-            Details dazu im späteren Kapitel. %To-Do: Ref hinzufügen
-
-            %To-Do: falls es noch mehr Features geben sollte, diese ergänzen bzw den Text adaptieren
+            Ein Mischen hat sich bei der Evaluierung der Modellleistung als nachteilhaft herausgestellt, da der Zeitverlauf durch das Mischen verloren geht.
 
             Da das Ziel die Vorhersage von Ersatzfahrenden ist, wird die Spalte \texttt{sby\_need} als Zielvariable festgelegt, da sie angibt, wie viele Ersatzfahrende tatsächlich benötigt wurden.
             Außerdem wird die Spalte \texttt{calls} als Zielvariable festgelegt, da sich mit ihr die \texttt{sby\_need} über folgende Formel ziemlich genau berechnen lässt: $\frac{calls}{4.82}-n\_sby$.
@@ -669,21 +668,22 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Zudem steht die Spalte \texttt{calls} zum Zeitpunkt der Vorhersage nicht zu Verfügung und kann ohnehin nicht im Feature-Datensatz genutzt werden.
             Eine Visualisierung von dem echten \texttt{sby\_need} verglichen mit dem aus \texttt{calls} berechneten Ersatzfahrenden findet sich als Abbildung \ref{fig:calc_sby_need} im Anhang.
 
-            Der Datensatz wird für das Training des Modells in Features und Zielspalte unterteilt. 
-            Die beiden Zielvariable \texttt{sby\_need} und \texttt{calls} werden dann aus dem Feature-Datensatz entfernt, da sie die Zielvariablen darstellen, deren Vorhersage im Fokus steht.
+            Der Datensatz wird für das Training des Modells in Features und Zielspalten unterteilt. 
+            Die beiden Zielvariablen \texttt{sby\_need} und \texttt{calls} tauchen nicht im Feature-Datensatz auf, da sie die Zielvariablen darstellen, deren Vorhersage im Fokus steht.
 
             Zusätzlich werden alle anderen Features zwangsweise aus dem Feature-Datensatz entfernt, die im Produktionsbetrieb nicht verfügbar sein können. 
-            Dies betrifft nahezu alle Merkmale, da die meisten Informationen erst im Nachhinein oder zeitnah vorliegen. 
-            Als einzige Ausnahme bleiben die zeitlichen Merkmale bestehen, da diese im Produktionsbetrieb vorab bekannt sind und daher als relevantes Feature erhalten bleibt.
+            Dies betrifft nahezu alle Merkmale, da die meisten Informationen erst im Nachhinein oder zeitnah vorliegen und nicht bereits am 15. des Vormonats.
+            Als einzige Ausnahme bleiben die zeitlichen Merkmale bestehen, da diese im Produktionsbetrieb vorab bekannt sind und daher als relevante Feature erhalten bleiben.
 
-            Der finale Feature-Datensatz enthält somit ausschließlich die Zeitspalten \texttt{unix\_ts\_date}, \texttt{day\_of\_year}, \texttt{day\_of\_month}, \texttt{day\_of\_week} und \texttt{year}, während die Spalten \texttt{sby\_need} und \texttt{calls} als Zielvariablen fungieren.
+            Der finale Feature-Datensatz enthält somit ausschließlich die Zeitspalten \texttt{day\_of\_year}, \texttt{day\_of\_month}, \texttt{day\_of\_week} und \texttt{year}, während die Spalten \texttt{sby\_need} und \texttt{calls} als Zielvariablen fungieren.
 
     \section{Baseline-Modell}
 
-        Bevor komplexere Modelle entwickelt werden, wird ein Baseline-Modell erstellt, um eine erste Vergleichsbasis zu haben. 
+        Bevor komplexere Modelle entwickelt werden, wird ein einfaches Baseline-Modell erstellt, um eine erste Vergleichsbasis zu haben. 
         Ein einfaches Baseline-Modell kann beispielsweise der Durchschnitt der Zielvariable oder ein einfacher linearer Regressor sein. 
+        (\cite[Vgl.][]{baseline}) 
 
-        Das Baseline-Modell ist in diesem Fall ein Durchschnittsmodell für die Spalte \texttt{sby\_need}, das den mittleren Wert der schlussendlich gesuchten Zielvariable für jede Vorhersage nutzt.
+        Das Baseline-Modell ist in diesem Fall ein Durchschnittsmodell für Anzahl der Ersatzfahrenden (Spalte \texttt{sby\_need}), das den mittleren Wert der schlussendlich gesuchten Zielvariable für jede Vorhersage nutzt.
         Der Durchschnitt über den Trainingsdatensatz hinweg beträgt \textit{29.99} Personen und ist damit weit unter den aktuell fest eingeplanten 90 Personen.
         
         Die Leistung des Baseline-Modells wird mittels des Mean Absolute Error (MAE) und dem Bestimmtgeitsmaß ($R^2$-Score) bewertet. 
@@ -705,7 +705,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Es ist schnell erkennbar, dass dieses Baseline-Modell keine Option sein kann, da es weiterhin eine statische Zahl von Ersatzfahrenden empfiehlt und noch dazu zu stärkeren Unterbestzungen führt.
         Allerdings verdeutlicht es nochmal gut, dass eine Dynamik bei der Planung der Ersatzfahrenden auf jeden Fall erforderlich ist, da es im Durchschnitt bereits viele Überbesetzungen gibt, aber für bestimmte Tage auch starke Unterbesetzungen.
         Sprich die aktuelle Planung ist in mehrfacher Hinsicht suboptimal und ein Mehrwert kann durch dynamische Vorhersage geschaffen werden.
-            
 
     % \subsection{Visualisierung der Ergebnisse} % Braucht man hier vermutlich auch nicht
 
@@ -747,7 +746,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Andere Features -- wie die Anzahl der Notrufe -- würden einen signifikanten Beitrag zur Vorhersagegenauigkeit leisten, stehen aber zum Zeitpunkt der Vorhersage im produktiven Einsatz nicht zur Verfügung.
         Daher fiel die engere Auswahl auf Algorithmen, die speziell für die Analyse von Zeitreihen entwickelt wurden.
         
-        Die Zeitreihe wird durch seine Zeitspalten repräsentiert, und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrenden (\texttt{sby\_need}) vorherzusagen. 
+        Die Zeitreihe wird durch seine Zeitspalten repräsentiert und das letztendliche Ziel besteht darin, die zukünftige Anzahl der benötigten Ersatzfahrenden (\texttt{sby\_need}) vorherzusagen. 
         Nach einer sorgfältigen Evaluierung der verschiedenen Zeitreihen-Algorithmen haben sich insbesondere drei Modelle als besonders leistungsfähig erwiesen: LSTM (Long Short-Term Memory), GRU (Gated Recurrent Unit) und CNN (Convolutional Neural Network).
         
         \begin{itemize}
@@ -769,7 +768,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Ansätze bei denen \texttt{sby\_need} direkt vorhersagt wird, haben sich im Rahmen der Bearbeitung als weniger genau herausgestellt.
 
         Der Code für die Top-Modelle findet sich im Anhang \ref{lst:keras_sklearn_wrapper} und ist inspiriert von folgenden Quellen: (\cite[][]{keras_cheat_sheet}) und (\cite[][]{tensorflow_keras}).
-        Für die Ausführung werden die Bibliotheken aus der requirements.txt Datei in ihren jeweilige Versionen benötigt, welches im Anhang \ref{lst:requirements} zu finden ist.
+        Für die Ausführung werden die Bibliotheken aus der requirements.txt Datei in ihren jeweilige Versionen benötigt, welche im Anhang \ref{lst:requirements} zu finden ist.
 
     \section{Training und Bewertung der Modelle}
 
@@ -799,7 +798,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Durch die Verwendung dieser spezialisierten Metriken in Kombination mit den klassischen Regressionsmetriken können die Modelle nicht nur hinsichtlich ihrer allgemeinen Vorhersagegüte, sondern auch in Bezug auf ihre Eignung für die spezifischen Anforderungen der Einsatzplanung bewertet werden. 
         Dies ermöglichte es, die Modelle zu optimieren und die besten Modelle für die Vorhersage des zukünftigen Ersatzfahrerbedarfs auszuwählen.
 
-        Bei dem perfekten Modell würde die Zusatzmetrik \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)} 100\% haben.
+        Bei dem perfekten Modell würde die Zusatzmetrik \textbf{Anteil an Tagen mit perfekter Vorhersage (\%)} 100\% betragen.
         Das perfekte Modell wird es nicht geben, es muss also abgewägt werden, wie hoch die anderen Zusatzmetriken ausfallen sollen.
         Der Anteil an Unterbesetzung sollte möglichst gering sein, aber die Anzahl der Überbesetzungen auch nicht viel zu hoch.
 
@@ -856,7 +855,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Die Ergebnisse der Modellbewertungen sind in Tabelle \ref{tab:model_comparison} zusammengefasst.
             Bei den Ergebnissen ist zu beachten, dass die allgemeinen Metriken sich auf die Spalte \texttt{calls} beziehen und die speziellen Metriken nur auf die Spalte \texttt{sby\_need}.
             Bei den Ergebnissen für \texttt{sby\_need} ist außerdem anzumerken, dass Ergebnisse kleiner Null automatisch auf Null gesetzt werden, da es nicht weniger als keinen Ersatzfahrenden geben kann.
-            Dieser Umstand sorgt dafür, dass sich die Ergebnissen gerade bei den perfekten Vorhersagen verbessern können, da es automatisch mehr Treffer für Null in Vorhersage und echten Wert gibt.
+            Dieser Umstand sorgt dafür, dass sich die Ergebnisse gerade bei den perfekten Vorhersagen verbessern können, da es automatisch mehr Treffer für Null in Vorhersage und echten Werten gibt.
 
             %To-Do: Zahlenwerte nochmal verifizieren
             \begin{table}[H]
@@ -887,11 +886,11 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             Auch die klassischen Regressionsmetriken wie MAE, RMSE und R²-Score verdeutlichen, dass die Modelle eher schwache Leistungen aufweisen.
 
             Insbesondere der niedrige R²-Score, der für alle Modelle um 0.4 bis 0.3 liegt, zeigt, dass die Modelle nur einen relativ niedrigen Anteil der Varianz in den Daten erklären können. 
-            Dies weist darauf hin, dass die Vorhersagegenauigkeit der Modelle begrenzt ist und viele externe Einflüsse, die das Personalbedarfsmanagement betreffen, möglicherweise nicht ausreichend durch die vorhandenen Daten abgedeckt werden. 
             Auch die MAE- und RMSE-Werte sind relativ hoch, was darauf hindeutet, dass die Modelle systematische Fehler in der Vorhersage aufweisen.
+            Dies weist darauf hin, dass die Vorhersagegenauigkeit der Modelle begrenzt ist und viele externe Einflüsse -- die das Personalbedarfsmanagement betreffen -- fehlen.
+            Die externen Einflüsse liegen aber zum Zeitpunkt der Vorhersage nicht vor und eine externe Anreicherung mit zusätzlichen Daten hat sich als nicht erfolgreich erwiesen, wie bereits in den Kapiteln zuvor erläutert.
 
             Trotz dieser insgesamt ernüchternden Ergebnisse zeigen die Modelle dennoch Potential im Vergleich zur statischen Planung mit konstant 90 Ersatzfahrenden pro Tag, wie in Tabelle \ref{tab:custom_metrics_90_sby} ersichtlich ist. 
-            Das Potential wird vor allem bei der Vorhersage der Notrufe (\texttt{calls}) ersichtlich und dadurch, dass die allermeisten Tage \enquote{perfekt} vorhergesagt wurden.
 
             %Betrachtet man die Ergebnisse der benutzerdefinierten Personalmetriken genauer, fällt auf, dass das GRU-Modell hinsichtlich des Anteil an Tagen mit Unterbesetzung bessere Ergebnisse liefert. 
             % Es weist den geringsten MAE (36.02) und RMSE (4817) auf und erzielt mit 5.88\% einen höheren Anteil an perfekten Vorhersagen als das LSTM-Modell (0\%) und liegt auch bei der Überbesetzung und der durchschnittlichen Überbesetzung mit 66.27\% und 19.16 respektive im vorteilhaften Bereich. 
@@ -901,7 +900,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             % Unterbesetzungen gilt es vielmerh zu vermeiden als Überbesetzungen.
             % Insgesamt zeigt das GRU-Modell jedoch den größten Mehrwert im Vergleich zur statischen Planung und ist daher als das leistungsfähigste Modell in dieser Analyse zu betrachten.
             
-            Zusätzlich ist festzuhalten, dass die in der Tabelle dargestellten Ergebnisse für die Modelle CNN, LSTM und GRU nicht allein auf die jeweilige Modellart zurückzuführen sind. 
+            Bei den Ergebnissen ist außerdem festzuhalten, dass die in der Tabelle dargestellten Ergebnisse für die Modelle CNN, LSTM und GRU nicht allein auf die jeweilige Modellart zurückzuführen sind. 
             Ein entscheidender Einflussfaktor auf die Leistungsfähigkeit der Modelle ist auch der spezifische Aufbau und die gewählten Parameter der Modelle. 
             Jedes Modell besitzt eine Vielzahl von Hyperparametern, wie beispielsweise die Anzahl der Neuronen in den Schichten, die Lernrate, die Batchgröße und die Anzahl der Epochen, die während des Trainings verwendet werden. 
             Diese Parameter können die Effizienz und Genauigkeit der Modelle erheblich beeinflussen.
@@ -916,7 +915,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
     \section{Anpassung der Verlustfunktion durch Straffaktor}
 
         Neben dem klassischen Hyperparameter-Tuning, bei dem Parameter wie die Lernrate, Batchgröße und Anzahl der Neuronen optimiert wurden, wurde eine spezielle Anpassung der Verlustfunktion vorgenommen. 
-        Ein Straffaktor wurde in die Verlustfunktion integriert, um Unterbesetzungen stärker zu gewichten als Überbesetzungen. 
+        Ein Straffaktor wurde in die Verlustfunktion integriert, um Unterbesetzungen stärker zu bestrafen als Überbesetzungen. 
         Dieser Ansatz zielt darauf ab, die Modelle so zu trainieren, dass sie Überbesetzungen bevorzugen und dadurch das Risiko von Unterbesetzungen minimieren, da gerade Unterbesetzungen in einem operationellen Umfeld kritisch sein können.
         (\cite[Vgl.][]{custom_loss})
         
@@ -975,7 +974,6 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
             \label{tab:straffaktor_comparison}
         \end{table}
         
-        
         Die Ergebnisse in Tabelle \ref{tab:straffaktor_comparison} zeigen, dass mit steigendem Straffaktor \( \lambda \) der Anteil der Tage mit Unterbesetzung reduziert wird. 
         Nachteil eines steigendem Straffaktor ist jedoch die zunehmende Überbesetzung.
         Das Modell mit einem höheren Straffaktor zeigt dies indem vermehrt Personal bereitstellt wird, um das Risiko von Unterbesetzungen zu verringern, jedoch auf Kosten der Effizienz und der allgemeinen Modellmetriken.
@@ -995,13 +993,13 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         \begin{figure}[H]
             \centering
             \includegraphics[width=1\textwidth]{assets/final_lstm_sby_need_prediction_performance.png}
-            \caption{\enquote{\texttt{sby\_need}} Vorhersageergebnisse für LSTM Modell mit Straffaktor von \( \lambda = 10 \)}
+            \caption{\enquote{Berechnete \texttt{sby\_need}} Vorhersageergebnisse für LSTM Modell mit Straffaktor von \( \lambda = 10 \)}
             \label{fig:lstm_sby_need_pred_performance}
         \end{figure}
 
         \subsection{Abschließende Bewertung des besten Modells}
 
-            Im Rahmen der abschließenden Modellbewertung wurden verschiedene Ansätze (LSTM, GRU, CNN) unter Berücksichtigung unterschiedlicher Straffaktoren für Unterschätzungen (\(\lambda\)) untersucht.
+            Im Rahmen der abschließenden Modellbewertung wurden die verschiedene Ansätze (LSTM, GRU, CNN) unter Berücksichtigung unterschiedlicher Straffaktoren für Unterschätzungen (\(\lambda\)) untersucht.
             Ziel war es, ein Modell zu identifizieren, das eine möglichst präzise Vorhersage der benötigten Einsatzfahrenden im Bereitschaftsdienst bietet, während gleichzeitig Unterbesetzungen minimiert und Überbesetzungen reduziert werden.
 
             Der Straffaktor bietet dabei eine Möglichkeit, die Vorhersagen gezielt an die Anforderungen der Einsatzplanung anzupassen. 
@@ -1050,24 +1048,38 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \section{Architektur und Implementierung}
 
-        Die Implementierung basiert auf einem Flask-Web-Framework, das als leichtgewichtiger Web-Server fungiert. 
+        Die Implementierung basiert auf dem Flask-Web-Framework, das als leichtgewichtiger Web-Server fungiert. 
         Das Modell und die erforderlichen Vorverarbeitungswerkzeuge werden als trainierte Artefakte gespeichert und bei Bedarf geladen. 
 
         Der folgende Code-Ausschnitt \ref{lst:api_server_base} zeigt die übersichtliche Struktur des Servers mit seinen zwei Endpunkten für Vorhersagen von Notrufen (\texttt{calls}) und den nötigen Ersatzfahrenden (\texttt{sby\_need}):
 
         \lstset{caption={Aufbau Vorhersage API}}
         \lstset{inputencoding=latin1} % rquires extra package: \usepackage[utf8]{inputenc}
-        \lstinputlisting[label={lst:api_server_base},firstline=74,firstnumber=74,language=Python,lastline=103]{../app/api_server.py}
+        \lstinputlisting[label={lst:api_server_base},firstline=139,firstnumber=139,language=Python,lastline=164]{../app/api_server.py}
 
         Der vollständige Code ist auch im Anhang \ref{lst:api_server_full} zu finden. % To-Do: Verlinkung und Anhang
 
     \section{Benutzerinteraktion}
 
         Die Benutzer können über eine einfache Web-Oberfläche oder direkt über HTTP-Requests mit der API interagieren. 
-        Dabei werden alle relevanten und zur Verfügung stehenden Informationen -- in dem Fall der ausgewählte Tag -- an die API gesendet.
+        Dabei werden alle relevanten und zur Verfügung stehenden Informationen -- in dem Fall die ausgewählten Tag -- an die API gesendet.
 
-        Der Request wendet sich als POST an \texttt{/predict-sby-need} mit einem einfachen Request-Body. 
-        Zu sehen im API Request Body Beispiel \ref{lst:request_body_example}.
+        Der Request wendet sich als POST an \texttt{<model\_name>/predict-sby-need} mit einem einfachen Request-Body. 
+        Die Variable \enquote{\texttt{<model\_name>}} kann durch eine der verfügbaren Modelle ersetzt werden und so lässt sich u. a. mit verschiedenen Straffaktoren oder gar anderen Modelltypen ein Vorhersage treffen.
+        Die Liste der verfügbaren Modelle wird ebenfalls, über API mitgeteilt. 
+        Dafür reicht ein einfacher Request zu einer beliebigen URL und spätestens die 404-Response teilt die verfügbaren Modelle mit.
+
+        Ein falscher Aufruf sorgt dann z. B. für die Response \ref{lst:404_response}.
+
+        \begin{lstlisting}[language=json, gobble=8, caption=Beispiel 404 Response, label={lst:404_response}]
+            {
+                "error": "Model 'lstm_ru_500' not found.",
+                "usable models": ["lstm_ru_1", "lstm_ru_5", "lstm_ru_10", "lstm_ru_15",  "lstm_ru_20", "lstm_ru_25", "lstm_ru_30",  "lstm_ru_35", "lstm_ru_40", "lstm_ru_45", "lstm_ru_50"]
+            }
+        \end{lstlisting}
+
+        Der Unterschied bei den Modellen ist in diesem Fall ein unterschiedlicher Straffaktor und zwar von 1 bis 50 in 5er Schritten
+        Ein einfacher API Request Body für den Aufruf an die \texttt{lstm\_ru\_10/predict-sby-need} API ist im Beispiel \ref{lst:request_body_example} zu sehen.
 
         \begin{lstlisting}[language=json, gobble=8, caption=Beispiel API Request Body, label={lst:request_body_example}]
             {
@@ -1095,7 +1107,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
         Langfristig könnte das System auch um zusätzliche Funktionen wie die automatische Anpassung des Modells an neue Daten und die Integration weiterer Datenquellen erweitert werden.
         Das Zukommen Lassen neuer Daten ließe sich dabei auch über die API abwickeln.
-        Dann würde das Modell mit den neuen Daten direkt neu trainiert werden können und durch das neue Training ließe sich dann auch der Straffaktor für Unterschätzungen ändern.
+        Dann würde das Modell mit den neuen Daten direkt neu trainiert werden können.
 
     \section{Einbindung in den Arbeitsalltag}
 
@@ -1111,16 +1123,25 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
     \chapter{Fazit \& Ausblick}
 
-        Die vorliegende Arbeit hat sich mit der Entwicklung und Implementierung eines Vorhersagemodells zur Optimierung des Bereitschaftsdienstplans für Einsatzfahrende beschäftigt. 
-        Durch die Anwendung verschiedener Zeitreihenmodelle wie LSTM, GRU und CNN sowie der Integration zusätzlicher Anpassungen, insbesondere der Einführung eines Straffaktors zur Gewichtung von Unterbesetzungen, konnte gezeigt werden, dass datengetriebene Ansätze zu einer verbesserten Personalplanung führen. 
+        Die vorliegende Arbeit beschäftigt sich mit der Entwicklung und Implementierung eines Vorhersagemodells zur Optimierung des Bereitschaftsdienstplans für Einsatzfahrende. 
+        Durch die Anwendung verschiedener Zeitreihenmodelle wie LSTM, GRU und CNN sowie der Integration zusätzlicher Anpassungen, insbesondere der Einführung eines Straffaktors zur Gewichtung von Unterbesetzungen, wird gezeigt, dass datengetriebene Ansätze zu einer verbesserten Personalplanung führen. 
+
+        Eine besonders interessante Erkenntnis im Rahmen der Modellierung war der starke Zusammenhang zwischen dem Anrufvolumen (\texttt{calls}) und dem tatsächlichen Bedarf an Einsatzfahrenden (\texttt{sby\_need}). 
+        Die Korrelation zwischen diesen beiden Variablen zeigte deutlich, dass das Anrufaufkommen ein verlässlicher Indikator für den Personalbedarf ist. 
+        Diese Einsicht bietet wertvolle Ansätze für zukünftige Entwicklungen, da durch die kontinuierliche Analyse von Notrufmustern eine noch präzisere Vorhersage des Personalbedarfs ermöglicht werden könnte. 
+        Dies verdeutlicht, dass der datengetriebene Ansatz nicht nur zur Optimierung der Ressourcenplanung beiträgt, sondern auch neue Einblicke in die Zusammenhänge operationaler Kennzahlen liefert.
+
+        Die Anwendung dieser Erkenntnisse zeigte sich auch in den Ergebnissen des entwickelten Modells. 
+        So konnte im Vergleich zur statischen Planung der Anteil an Tagen mit Überbesetzungen – abhängig von den Modellparametern – um 43.73\% reduziert und die durchschnittliche Unterbesetzung um 32 Personen gesenkt werden. 
+        Diese signifikanten Verbesserungen in der Einsatzplanung verdeutlichen das Potenzial eines datengetriebenen Ansatzes. 
         Dennoch gab es im Laufe der Arbeit mehrere Herausforderungen, die das Potenzial dieser Modelle in der Praxis beeinflussen.
 
-        Eines der zentralen Probleme lag in der Datenqualität und -verfügbarkeit. 
-        Während zeitliche Merkmale gut erfasst wurden, fehlten umfassende exogene Daten, die den Personalbedarf präziser modellieren könnten. 
-        Faktoren wie Wetter, Verkehrslage oder Großereignisse, die signifikanten Einfluss auf die Einsatzplanung haben, konnten nur bedingt in die Modelle integriert werden. 
-        Eine unzureichende Berücksichtigung dieser externen Einflüsse führte dazu, dass die Vorhersagemodelle in bestimmten Situationen nur eingeschränkt performten.
+        Eines der zentralen Probleme ist die Datenverfügbarkeit von Merkmalen und hohe Dynamik auf Tagesebene. 
+        Während zeitliche Merkmale gut erfasst sind, fehlen umfassende exogene Daten, die den Personalbedarf präziser modellieren könnten. 
+        Faktoren wie Wetter, Verkehrslage oder Großereignisse, die signifikanten Einfluss auf die Dynamik bei der Einsatzplanung haben, sind nicht oder zu spät verfügbar und ließen sich auch nur bedingt in die Modelle integrieren. 
+        Die fehlende Berücksichtigung dieser externen Einflüsse erklärt, dass die Vorhersagemodelle in bestimmten Situationen nur eingeschränkt performten.
         
-        Ein weiteres zentrales Problem war die Wahl und Anpassung des Straffaktors \( \lambda \) für Unterbesetzungen. 
+        Ein weitere zentrales Herausforderung ist die Wahl und Anpassung des Straffaktors \( \lambda \) für Unterbesetzungen. 
         Es zeigte sich, dass es keinen universellen Straffaktor gibt, der sowohl die Überbesetzung als auch die Unterbesetzung optimal balanciert. 
         Jede Veränderung des Straffaktors führte zu einer Verschiebung zwischen diesen beiden Zielen, was die Suche nach einem \enquote{perfekten} Modell erschwerte. 
         Hinzu kommt, dass unterschiedliche Einsatzanforderungen auch unterschiedliche Priorisierungen erfordern – eine Herausforderung, die nur durch eine dynamische Anpassung des Modells und des Straffaktors von den Einsatzplanern selbst gemeistert werden kann.
@@ -1130,12 +1151,14 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
         Dies zeigt die Notwendigkeit, weiterhin Modelle zu entwickeln, die besser auf die realen Herausforderungen der Einsatzplanung abgestimmt sind.
         
         In Zukunft bieten sich weitere Anpassungen an der Verlustfunktion an. 
-        Der Straffaktor \( \lambda \) hat sich als ein nützliches Mittel erwiesen, um den Fokus des Modells gezielt auf die Vermeidung von Unterbesetzungen zu lenken. 
+        Der Straffaktor für Unterschätzungen \( \lambda \) hat sich als ein nützliches Mittel erwiesen, um den Fokus des Modells gezielt auf die Vermeidung von Unterbesetzungen zu lenken. 
         Zukünftig könnten auch adaptivere Verlustfunktionen entwickelt werden, die den Straffaktor dynamisch an die aktuellen Bedingungen anpassen, anstatt einen festen Wert zu verwenden. 
         Dies würde den Planern die Möglichkeit geben, noch flexibler auf verschiedene Szenarien zu reagieren.
-        
-        Langfristig könnte auch der Einsatz von ensemblebasierten Methoden oder hybriden Modellen (z. B. Kombination von maschinellem Lernen und regelbasierten Systemen) untersucht werden. 
-        Diese Modelle könnten die Vorteile verschiedener Ansätze kombinieren und so die Vorhersagegenauigkeit und Effizienz weiter verbessern.
+
+        Durch die Bereitstellung einer REST-API wird das Vorhersagemodell nahtlos in den Planungsprozess integriert.
+        Die API ermöglicht eine schnelle und flexible Abfrage von Vorhersagen, wodurch Planer jederzeit auf aktuelle Daten zugreifen und präventiv Maßnahmen ergreifen können. 
+        Auch lassen sich zukünftige Engpässe in Echtzeit erkennen und frühzeitig berücksichtigen, ohne das die Nutzer sich an ein neu eingeführtes Tool gewöhnen müssen.
+        Eine kontinuierliche Verbesserung der API durch die Integration von zusätzlichen Datenquellen oder die Implementierung eines automatischen Re-Trainings des Modells bei neuen Daten könnte die Vorhersagegenauigkeit und Effizienz weiter steigern.
         
         Zusammenfassend lässt sich trotz Herausforderungen festhalten, dass das datengetriebene Vorhersagemodell einen deutlichen Mehrwert gegenüber der statischen Einsatzplanung bietet und eine zeitnahe Integration in den Planungsprozess definitiv zu empfehlen ist.
 
@@ -1252,7 +1275,7 @@ toc=bibliography,	% Literaturverzeichnis im Inhaltsverzeichnis darstellen
 
 \lstset{caption={Kompletter Code der Modelle: LSTM, CNN, GRU}}
 \lstset{inputencoding=utf8/latin1}
-\lstinputlisting[label={lst:keras_sklearn_wrapper},firstline=1,firstnumber=1, lastline=216, language=Python]{../app/sklearn_keras_wrapper.py}
+\lstinputlisting[label={lst:keras_sklearn_wrapper},firstline=1,firstnumber=1, lastline=373, language=Python]{../app/sklearn_keras_wrapper.py}
 
 \tocless\chapter{Notwendige Abhängigkeiten für Code}
 \label{sec:appendix:requirements}
